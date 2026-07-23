@@ -10,6 +10,12 @@
  * Apps may set --font-inter (or override --font-sans) for their own type face.
  */
 
+/* One-step setup: importing this theme also registers the design system's
+ * compiled classes for Tailwind to scan, so consumers no longer need a separate
+ * `@source`. Resolved relative to this file; the published package ships
+ * `dist/` alongside `theme.css` (package.json `files`). */
+@source "./dist";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

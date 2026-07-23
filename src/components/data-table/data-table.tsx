@@ -158,12 +158,29 @@ function accessor<Row>(col: DataTableColumn<Row>, row: Row): CellValue {
   return (row as Record<string, unknown>)[col.key] as CellValue;
 }
 
-function track<Row>(col: DataTableColumn<Row>): string {
+// Sample up to ~20 rows to decide whether an unmarked column is numeric — so it
+// auto-aligns right + sizes tight instead of ballooning to 1fr in the text
+// branch. Nulls are ignored; the column counts as numeric when its sampled
+// non-null values are predominantly `number`.
+function isNumericColumn<Row>(col: DataTableColumn<Row>, rows: Row[]): boolean {
+  let seen = 0;
+  let numeric = 0;
+  const limit = Math.min(rows.length, 20);
+  for (let i = 0; i < limit; i++) {
+    const v = accessor(col, rows[i]);
+    if (v == null) continue;
+    seen++;
+    if (typeof v === "number") numeric++;
+  }
+  return seen > 0 && numeric >= seen * 0.7;
+}
+
+function track<Row>(col: DataTableColumn<Row>, align: "left" | "right"): string {
   if (col.width != null) return typeof col.width === "number" ? `${col.width}px` : col.width;
   // Numeric (right-aligned) columns size to their content — **a number must never
   // truncate** (a dropped digit is silently wrong). So an auto-sized numeric
   // column is `max-content`: always wide enough for its longest value.
-  if (col.align === "right" && col.maxWidth == null) {
+  if (align === "right" && col.maxWidth == null) {
     return `minmax(${col.minWidth ?? 72}px,max-content)`;
   }
   // Text columns: a comfortable floor (min) that grows to share slack (1fr) or is
@@ -214,7 +231,14 @@ export function DataTable<Row>({
   const [filterValues, setFilterValues] = React.useState<FilterValues>({});
   const [activeTab, setActiveTab] = React.useState(defaultTab ?? tabs?.[0]?.key ?? "");
 
-  const grid = React.useMemo(() => columns.map(track).join(" "), [columns]);
+  // Resolved align per column: the consumer's `align` always wins; otherwise a
+  // numeric column (detected from the data) defaults to right, text to left.
+  // Used for header/cell alignment, tight track sizing, and export.
+  const aligns = React.useMemo<("left" | "right")[]>(
+    () => columns.map((c) => c.align ?? (isNumericColumn(c, rows) ? "right" : "left")),
+    [columns, rows],
+  );
+  const grid = React.useMemo(() => columns.map((c, i) => track(c, aligns[i])).join(" "), [columns, aligns]);
   const colByKey = React.useMemo(() => Object.fromEntries(columns.map((c) => [c.key, c])), [columns]);
 
   // Sticky identity columns: cumulative left offset per sticky column, and the
@@ -340,7 +364,7 @@ export function DataTable<Row>({
   const runExport = (kind: "csv" | "pdf") => {
     setMenuOpen(false);
     const headers = columns.map((c) => c.header);
-    const align = columns.map((c) => (c.align === "right" ? "right" : "left")) as ("left" | "right")[];
+    const align = aligns;
     const data = sorted.map((row) => columns.map((c) => accessor(c, row)));
     if (kind === "csv") downloadCsv(headers, data, exportFilename ?? "export");
     else void downloadPdf(headers, data, { filename: exportFilename ?? "export", title: pdfTitle, subtitle: pdfSubtitle, align });
@@ -436,7 +460,7 @@ export function DataTable<Row>({
               const active = sort?.key === c.key;
               const sc = stickyCell(
                 i,
-                cn("px-3 py-2.5", c.align === "right" && "text-right", c.sticky && "z-20 bg-muted"),
+                cn("px-3 py-2.5", aligns[i] === "right" && "text-right", c.sticky && "z-20 bg-muted"),
               );
               return (
                 <div key={c.key} className={sc.className} style={sc.style}>
@@ -447,7 +471,7 @@ export function DataTable<Row>({
                       aria-label={`Sort by ${c.header}`}
                       className={cn(
                         "inline-flex items-center gap-1 whitespace-nowrap transition hover:text-foreground",
-                        c.align === "right" && "flex-row-reverse",
+                        aligns[i] === "right" && "flex-row-reverse",
                         active && "text-foreground",
                       )}
                     >
@@ -472,7 +496,7 @@ export function DataTable<Row>({
                   style={{ height: rowHeight, gridTemplateColumns: grid }}
                 >
                   {columns.map((c, i) => (
-                    <div key={c.key} className={cn("px-3", c.align === "right" && "flex justify-end")}>
+                    <div key={c.key} className={cn("px-3", aligns[i] === "right" && "flex justify-end")}>
                       <div
                         className="h-3 animate-pulse rounded bg-muted"
                         style={{ width: SKELETON_WIDTHS[(r + i) % SKELETON_WIDTHS.length] }}
@@ -526,7 +550,7 @@ export function DataTable<Row>({
                           i,
                           cn(
                             "z-10 flex items-center self-stretch overflow-hidden bg-card px-3",
-                            c.align === "right" && "justify-end tabular-nums",
+                            aligns[i] === "right" && "justify-end tabular-nums",
                             c.className,
                           ),
                         );
@@ -547,7 +571,7 @@ export function DataTable<Row>({
                             "px-3",
                             // Numbers never truncate — nowrap + a max-content track keep every
                             // digit; text ellipsizes past its track.
-                            c.align === "right" ? "whitespace-nowrap text-right tabular-nums" : "truncate",
+                            aligns[i] === "right" ? "whitespace-nowrap text-right tabular-nums" : "truncate",
                             c.className,
                           )}
                         >

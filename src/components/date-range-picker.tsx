@@ -26,6 +26,19 @@ export interface DateRangeValue {
   presetKey?: string;
 }
 
+/**
+ * A custom preset a consumer can add to the left pane (e.g. "Since launch")
+ * without forking. Same shape as the built-in presets: `value` is the optional
+ * right-aligned hint (a month/quarter/year), `from`/`to` the resolved range.
+ */
+export interface DateRangePreset {
+  key: string;
+  label: string;
+  value?: string;
+  from: Date;
+  to: Date;
+}
+
 export interface DateRangePickerProps {
   value?: DateRangeValue;
   defaultValue?: DateRangeValue;
@@ -35,16 +48,12 @@ export interface DateRangePickerProps {
   /** 0 = Sunday, 1 = Monday (business default). */
   weekStartsOn?: 0 | 1;
   align?: "start" | "end";
+  /** Custom presets shown as a first section above the built-in "Today". */
+  presets?: DateRangePreset[];
   className?: string;
 }
 
-interface Preset {
-  key: string;
-  label: string;
-  value?: string;
-  from: Date;
-  to: Date;
-}
+type Preset = DateRangePreset;
 
 function buildPresets(now: Date, weekStartsOn: 0 | 1) {
   const w = { weekStartsOn };
@@ -140,6 +149,7 @@ export function DateRangePicker({
   today,
   weekStartsOn = 1,
   align = "end",
+  presets: customPresets,
   className,
 }: DateRangePickerProps) {
   const now = React.useMemo(() => today ?? new Date(), [today]);
@@ -200,7 +210,7 @@ export function DateRangePicker({
   };
 
   const label = current.presetKey
-    ? [...presets.toDate, ...presets.relative, ...presets.quarters].find((p) => p.key === current.presetKey)?.label ?? "Custom"
+    ? [...(customPresets ?? []), ...presets.toDate, ...presets.relative, ...presets.quarters].find((p) => p.key === current.presetKey)?.label ?? "Custom"
     : "Custom";
 
   const trigger = (
@@ -226,6 +236,14 @@ export function DateRangePicker({
     <Popover trigger={trigger} open={open} onOpenChange={setOpen} align={align} className="w-auto max-w-none p-0">
       <div className="flex">
         <div className="flex w-[188px] flex-col gap-0.5 border-r border-border p-2">
+          {customPresets?.length ? (
+            <>
+              {customPresets.map((p) => (
+                <PresetRow key={p.key} preset={p} active={current.presetKey === p.key} onClick={() => pickPreset(p)} />
+              ))}
+              <div role="separator" className="my-1 h-px bg-border" />
+            </>
+          ) : null}
           {presets.toDate.map((p) => (
             <PresetRow key={p.key} preset={p} active={current.presetKey === p.key} onClick={() => pickPreset(p)} />
           ))}

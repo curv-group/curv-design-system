@@ -231,11 +231,15 @@ export function DataTable<Row>({
   const [filterValues, setFilterValues] = React.useState<FilterValues>({});
   const [activeTab, setActiveTab] = React.useState(defaultTab ?? tabs?.[0]?.key ?? "");
 
-  // Resolved align per column: the consumer's `align` always wins; otherwise a
-  // numeric column (detected from the data) defaults to right, text to left.
+  // Resolved align per column: the consumer's `align` always wins. Otherwise only
+  // a PLAIN numeric column — a number value with NO custom `render` — auto-aligns
+  // right + sizes tight. A column with a `render` is presentation-controlled by
+  // the consumer, so it's never auto-aligned: a numeric value shown as stars,
+  // a badge, or a chip must keep the default left alignment (this is the bug
+  // where a "Rating" column rendered as stars had its header flipped right).
   // Used for header/cell alignment, tight track sizing, and export.
   const aligns = React.useMemo<("left" | "right")[]>(
-    () => columns.map((c) => c.align ?? (isNumericColumn(c, rows) ? "right" : "left")),
+    () => columns.map((c) => c.align ?? (!c.render && isNumericColumn(c, rows) ? "right" : "left")),
     [columns, rows],
   );
   const grid = React.useMemo(() => columns.map((c, i) => track(c, aligns[i])).join(" "), [columns, aligns]);

@@ -36,6 +36,25 @@ export interface ChartSeries {
    * Length should match `data`. Only used by the `tooltipTitle` tooltip layout.
    */
   pointLabels?: string[];
+  /**
+   * Which Y-axis this series is measured against — "left" (default) or "right".
+   * Use a right axis to overlay a different-unit metric (e.g. visitors on the
+   * left count axis, conversion rate on the right % axis). Only two axes exist;
+   * group all same-unit series onto the same side.
+   */
+  axis?: "left" | "right";
+  /**
+   * Per-series sentiment for the tooltip's "% from comparison" delta, overriding
+   * the chart-level `deltaTone` — so an overlay can colour a rise in conversion
+   * green while a rise in CPL reads red. Falls back to the chart's `deltaTone`.
+   */
+  deltaTone?: "up-positive" | "down-positive" | "neutral";
+  /**
+   * Groups a metric's current + comparison series (same `group` id) so the
+   * `focusMode` hover can reveal a metric's comparison and fade the rest.
+   * Also the unit key for the tooltip. Defaults to `label`.
+   */
+  group?: string;
   /** Line colour via a `text-*` class (defaults to the chart accent token). */
   className?: string;
 }
@@ -51,6 +70,18 @@ export interface LineChartProps {
   formatY?: (n: number) => string;
   /** Format values in the hover tooltip (defaults to `formatY`). */
   formatTooltip?: (n: number) => string;
+  /** Format the RIGHT y-axis ticks (when any series has `axis: "right"`). */
+  formatYRight?: (n: number) => string;
+  /** Format the right-axis series' tooltip values (defaults to `formatTooltip`). */
+  formatTooltipRight?: (n: number) => string;
+  /**
+   * Overlay/focus mode for multi-metric charts. When true: comparison series
+   * are hidden by default and only the current lines show; hovering focuses the
+   * nearest metric — its line stays solid, the others fade, and that metric's
+   * comparison line is revealed (dashed). The tooltip shows the focused metric.
+   * When false (default), every series (including comparisons) is always drawn.
+   */
+  focusMode?: boolean;
   /**
    * Tooltip title (e.g. the metric name — "Conversion rate"). When set, the
    * tooltip renders the Shopify period-over-period layout: the title, then each
@@ -180,47 +211,67 @@ export function LineChart({
   area = false,
   formatY = (n) => String(n),
   formatTooltip,
+  formatYRight,
+  formatTooltipRight,
   tooltipTitle,
   interactive = true,
   yBaseline = "zero",
   maxGridlines = 5,
   deltaTone = "up-positive",
+  focusMode = false,
   className,
 }: LineChartProps) {
   const [ref, width] = useWidth();
   const [active, setActive] = React.useState<number | null>(null);
+  const [activeY, setActiveY] = React.useState(0);
   const fmtTip = formatTooltip ?? formatY;
+  const fmtY2 = formatYRight ?? formatY;
+  const fmtTip2 = formatTooltipRight ?? formatYRight ?? fmtTip;
+
+  const isRight = (s: ChartSeries) => s.axis === "right";
+  const groupOf = (s: ChartSeries) => s.group ?? s.label ?? "";
 
   const padL = 44;
   const padB = 22;
   const padT = 8;
-  const padR = 8;
+  const hasRight = series.some(isRight);
+  const padR = hasRight ? 46 : 8; // room for right-axis labels
+
   const innerW = Math.max(0, width - padL - padR);
   const innerH = Math.max(0, height - padT - padB);
 
-  const allValues = series.flatMap((s) => s.data);
-  const dataMax = allValues.length ? Math.max(...allValues, 0) : 0;
-  const dataMin = allValues.length ? Math.min(...allValues) : 0;
-  // "auto" floors the axis to a nice number just below the data min so
-  // variation in large clustered values isn't squashed against a zero baseline.
-  const ticks = niceTicks(yBaseline === "auto" ? dataMin : 0, dataMax, maxGridlines);
+  // Independent left/right scales. Left drives the gridlines; the right axis
+  // reuses the SAME gridline pixels (same band count) so both labels align.
+  const leftVals = series.filter((s) => !isRight(s)).flatMap((s) => s.data).filter((v) => v != null);
+  const rightVals = series.filter(isRight).flatMap((s) => s.data).filter((v) => v != null);
+  const leftMax = leftVals.length ? Math.max(...leftVals, 0) : 0;
+  const leftMin = leftVals.length ? Math.min(...leftVals) : 0;
+  const ticks = niceTicks(yBaseline === "auto" ? leftMin : 0, leftMax, maxGridlines);
   const yMin = ticks[0];
   const yMax = ticks[ticks.length - 1] || 1;
   const ySpan = yMax - yMin || 1;
+  const rMax = (() => {
+    const nice = niceTicks(0, rightVals.length ? Math.max(...rightVals, 0) : 0, maxGridlines);
+    return nice[nice.length - 1] || 1;
+  })();
+  const k = ticks.length;
+  const rightTicks = Array.from({ length: k }, (_, i) => (i / (k - 1 || 1)) * rMax);
 
   const n = xLabels.length;
   const x = (i: number) => padL + (n <= 1 ? innerW / 2 : (i / (n - 1)) * innerW);
-  const y = (v: number) => padT + innerH - ((v - yMin) / ySpan) * innerH;
+  const yL = (v: number) => padT + innerH - ((v - yMin) / ySpan) * innerH;
+  const yR = (v: number) => padT + innerH - (v / (rMax || 1)) * innerH;
+  const yFor = (s: ChartSeries, v: number) => (isRight(s) ? yR(v) : yL(v));
 
-  const linePath = (data: number[]) =>
-    data.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-
-  // Path over an absolute index range [from..to] (for the solid/dashed split).
-  const rangePath = (data: number[], from: number, to: number) => {
+  // Null-safe path along a series over [from..to]; a gap starts a new subpath.
+  const pathFor = (s: ChartSeries, from = 0, to = s.data.length - 1) => {
     let d = "";
-    for (let i = Math.max(0, from); i <= Math.min(data.length - 1, to); i++) {
-      if (data[i] == null) continue;
-      d += `${d === "" ? "M" : "L"}${x(i).toFixed(1)},${y(data[i]).toFixed(1)}`;
+    let pen = false;
+    for (let i = Math.max(0, from); i <= Math.min(s.data.length - 1, to); i++) {
+      const v = s.data[i];
+      if (v == null) { pen = false; continue; }
+      d += `${pen ? "L" : "M"}${x(i).toFixed(1)},${yFor(s, v).toFixed(1)}`;
+      pen = true;
     }
     return d;
   };
@@ -234,10 +285,33 @@ export function LineChart({
     const mx = e.clientX - rect.left;
     const i = n <= 1 ? 0 : Math.max(0, Math.min(n - 1, Math.round((mx - padL) / (innerW / (n - 1)))));
     setActive(i);
+    setActiveY(e.clientY - rect.top);
   };
 
-  const tipRows = active != null ? series.filter((s) => s.data[active] != null) : [];
+  // focusMode: the current (non-comparison) line nearest the cursor is focused;
+  // its comparison is revealed and the other metrics fade.
+  const currents = series.filter((s) => !s.comparison);
+  const focusGroup =
+    focusMode && active != null
+      ? currents.reduce<{ g: string; d: number } | null>((best, s) => {
+          const v = s.data[active];
+          if (v == null) return best;
+          const dist = Math.abs(activeY - yFor(s, v));
+          return best == null || dist < best.d ? { g: groupOf(s), d: dist } : best;
+        }, null)?.g ?? null
+      : null;
+
+  // Which series are drawn, and the tooltip rows.
+  const visible = (s: ChartSeries) =>
+    !focusMode ? true : s.comparison ? focusGroup != null && groupOf(s) === focusGroup : true;
+  const tipRows =
+    active == null
+      ? []
+      : focusMode
+        ? series.filter((s) => groupOf(s) === focusGroup && s.data[active] != null)
+        : series.filter((s) => s.data[active] != null);
   const tipX = active != null ? x(active) : 0;
+  const fmtRow = (s: ChartSeries, v: number) => (isRight(s) ? fmtTip2(v) : fmtTip(v));
 
   return (
     <div ref={ref} className={cn("relative w-full", className)}>
@@ -250,9 +324,9 @@ export function LineChart({
           onMouseMove={onMove}
           onMouseLeave={() => setActive(null)}
         >
-          {/* gridlines + y labels */}
+          {/* gridlines + left y labels */}
           {ticks.map((t) => {
-            const gy = y(t);
+            const gy = yL(t);
             return (
               <g key={t}>
                 <line x1={padL} x2={width - padR} y1={gy} y2={gy} className="stroke-border" strokeWidth={1} />
@@ -262,6 +336,14 @@ export function LineChart({
               </g>
             );
           })}
+
+          {/* right y labels — aligned to the same gridlines */}
+          {hasRight &&
+            ticks.map((t, i) => (
+              <text key={`r${i}`} x={width - padR + 6} y={yL(t)} textAnchor="start" dominantBaseline="middle" className="fill-muted-foreground text-[10px] tabular-nums">
+                {fmtY2(rightTicks[i])}
+              </text>
+            ))}
 
           {/* x labels */}
           {xLabels.map((lbl, i) =>
@@ -273,64 +355,59 @@ export function LineChart({
           )}
 
           {/* area under the first series */}
-          {area && series[0] && series[0].data.length > 1 && (
+          {area && !focusMode && series[0] && series[0].data.length > 1 && (
             <path
-              d={`${linePath(series[0].data)} L${x(n - 1).toFixed(1)},${(padT + innerH).toFixed(1)} L${x(0).toFixed(1)},${(padT + innerH).toFixed(1)} Z`}
+              d={`${pathFor(series[0])} L${x(n - 1).toFixed(1)},${(padT + innerH).toFixed(1)} L${x(0).toFixed(1)},${(padT + innerH).toFixed(1)} Z`}
               className={cn("opacity-[0.10]", series[0].className ?? "text-chart")}
               fill="currentColor"
               stroke="none"
             />
           )}
 
-          {/* series lines (comparison/partial under the primary) */}
-          {[...series].reverse().map((s, ri) => {
-            if (s.data.length < 2) return null;
-            const stroke = {
-              className: seriesClass(s),
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: 1.75,
-              strokeLinecap: "round" as const,
-              strokeLinejoin: "round" as const,
-              vectorEffect: "non-scaling-stroke" as const,
-            };
-            // Solid → dashed split at partialFrom (the "actual then projected" line).
-            if (s.partialFrom != null && s.partialFrom > 0 && s.partialFrom < s.data.length - 1) {
-              return (
-                <g key={ri}>
-                  <path d={rangePath(s.data, 0, s.partialFrom)} {...stroke} />
-                  <path d={rangePath(s.data, s.partialFrom, s.data.length - 1)} {...stroke} strokeDasharray="5 4" />
-                </g>
-              );
-            }
-            return (
-              <path
-                key={ri}
-                d={linePath(s.data)}
-                {...stroke}
-                strokeDasharray={DASH[seriesVariant(s)]}
-              />
-            );
-          })}
+          {/* series lines (comparison/partial under the primary; focused on top) */}
+          {[...series]
+            .map((s, i) => ({ s, i }))
+            .filter(({ s }) => visible(s) && s.data.length >= 2)
+            .sort((a, b) => Number(focusGroup != null && groupOf(a.s) === focusGroup) - Number(focusGroup != null && groupOf(b.s) === focusGroup))
+            .map(({ s, i: ri }) => {
+              const faded = focusMode && focusGroup != null && groupOf(s) !== focusGroup;
+              const stroke = {
+                className: cn(seriesClass(s), "transition-opacity duration-150", faded && "opacity-25"),
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 1.75,
+                strokeLinecap: "round" as const,
+                strokeLinejoin: "round" as const,
+                vectorEffect: "non-scaling-stroke" as const,
+              };
+              // Solid → dashed split at partialFrom (the "actual then projected" line).
+              if (s.partialFrom != null && s.partialFrom > 0 && s.partialFrom < s.data.length - 1) {
+                return (
+                  <g key={ri}>
+                    <path d={pathFor(s, 0, s.partialFrom)} {...stroke} />
+                    <path d={pathFor(s, s.partialFrom, s.data.length - 1)} {...stroke} strokeDasharray="5 4" />
+                  </g>
+                );
+              }
+              return <path key={ri} d={pathFor(s)} {...stroke} strokeDasharray={DASH[seriesVariant(s)]} />;
+            })}
 
-          {/* hover crosshair + per-series dots */}
-          {active != null && (
+          {/* hover crosshair + per-series dots (focused group in focusMode) */}
+          {active != null && tipRows.length > 0 && (
             <g pointerEvents="none">
               <line x1={tipX} x2={tipX} y1={padT} y2={padT + innerH} className="stroke-border" strokeWidth={1} />
-              {series.map((s, si) =>
-                s.data[active] != null ? (
-                  <circle
-                    key={si}
-                    cx={tipX}
-                    cy={y(s.data[active])}
-                    r={3.5}
-                    className={seriesClass(s)}
-                    fill={s.comparison ? "var(--card)" : "currentColor"}
-                    stroke={s.comparison ? "currentColor" : "var(--card)"}
-                    strokeWidth={2}
-                  />
-                ) : null,
-              )}
+              {tipRows.map((s, si) => (
+                <circle
+                  key={si}
+                  cx={tipX}
+                  cy={yFor(s, s.data[active]!)}
+                  r={3.5}
+                  className={seriesClass(s)}
+                  fill={s.comparison ? "var(--card)" : "currentColor"}
+                  stroke={s.comparison ? "currentColor" : "var(--card)"}
+                  strokeWidth={2}
+                />
+              ))}
             </g>
           )}
         </svg>
@@ -342,14 +419,17 @@ export function LineChart({
           className="pointer-events-none absolute top-1 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg border border-border bg-popover px-2.5 py-2 text-[12px] text-popover-foreground shadow-lg"
           style={{ left: Math.max(70, Math.min(width - 70, tipX)) }}
         >
-          {tooltipTitle != null ? (
+          {tooltipTitle != null || focusMode ? (
             /* Shopify period-over-period layout: metric title, then each series
-               as its own date + value chip, with the delta under the current. */
+               as its own date + value chip, with the delta under the current.
+               In focusMode the title is the focused metric's own label. */
             <>
-              <div className="mb-1.5 font-medium text-foreground">{tooltipTitle}</div>
+              <div className="mb-1.5 font-medium text-foreground">
+                {focusMode ? (tipRows.find((r) => !r.comparison)?.label ?? tooltipTitle) : tooltipTitle}
+              </div>
               <div className="flex flex-col gap-2">
                 {tipRows.map((s, si) => {
-                  const cmp = series.find((c) => c.comparison && c.data[active!] != null);
+                  const cmp = tipRows.find((c) => c.comparison && c.data[active!] != null);
                   const showDelta = !s.comparison && cmp != null && cmp.data[active!] !== 0;
                   const dateLabel = s.pointLabels?.[active] ?? xLabels[active];
                   return (
@@ -365,9 +445,9 @@ export function LineChart({
                         {dateLabel}
                       </span>
                       <span className="w-fit rounded-md bg-muted px-1.5 py-0.5 font-medium tabular-nums text-foreground">
-                        {fmtTip(s.data[active])}
+                        {fmtRow(s, s.data[active]!)}
                       </span>
-                      {showDelta && <TooltipDelta cur={s.data[active]} base={cmp!.data[active!]} tone={deltaTone} />}
+                      {showDelta && <TooltipDelta cur={s.data[active]!} base={cmp!.data[active!]!} tone={s.deltaTone ?? deltaTone} />}
                     </div>
                   );
                 })}
@@ -378,7 +458,7 @@ export function LineChart({
               <div className="mb-1 font-medium text-foreground">{xLabels[active]}</div>
               <div className="flex flex-col gap-1.5">
                 {tipRows.map((s, si) => {
-                  const cmp = series.find((c) => c.comparison && c.data[active!] != null);
+                  const cmp = tipRows.find((c) => c.comparison && c.data[active!] != null);
                   const showDelta = !s.comparison && cmp != null && cmp.data[active!] !== 0;
                   return (
                     <div key={si} className="flex flex-col gap-0.5">
@@ -393,9 +473,9 @@ export function LineChart({
                           />
                           {s.label ?? "Value"}
                         </span>
-                        <span className="font-medium tabular-nums text-foreground">{fmtTip(s.data[active])}</span>
+                        <span className="font-medium tabular-nums text-foreground">{fmtRow(s, s.data[active]!)}</span>
                       </div>
-                      {showDelta && <TooltipDelta cur={s.data[active]} base={cmp!.data[active!]} tone={deltaTone} />}
+                      {showDelta && <TooltipDelta cur={s.data[active]!} base={cmp!.data[active!]!} tone={s.deltaTone ?? deltaTone} />}
                     </div>
                   );
                 })}

@@ -1,0 +1,128 @@
+# Consuming the design system in a Curv OS
+
+`@curvgroup/design-system` is git-installed into each OS app. This is the one-time
+**setup** that makes an OS look and behave like the others, plus the checklist to
+verify it's wired correctly. Getting this right up front prevents the whole class
+of "wrong background / raw colours / hand-rolled shell / it looks broken" drift —
+every one of those is a missed step below.
+
+## Quick checklist
+
+- [ ] Dependency pinned to a **tag** (`#vX.Y.Z`) in `package.json` — not bare `main`
+- [ ] `theme.css` imported in the app's global stylesheet
+- [ ] Tailwind **scans the design system's built output** (so its classes generate)
+- [ ] ESLint config imported (so the guards run — a `bg-neutral-100` must error)
+- [ ] Pages use `AppFrame` + `PageContainer` — **no hand-rolled shell**
+- [ ] Only semantic tokens in `className` — no raw Tailwind palette / hex
+
+## 1. Install & pin
+
+```bash
+npm install github:jillesworks/curv-design-system#v0.2.2
+```
+
+It is **git-installed, not auto-updating** — npm locks the resolved commit in
+`package-lock.json`, so nothing changes until you re-install. Pin to a **tag**
+(not `main`) so builds are reproducible. To update later: bump the tag,
+`npm install`, commit `package.json` + `package-lock.json`.
+
+## 2. Import the theme (the tokens)
+
+In your global stylesheet (e.g. `app/globals.css`), after Tailwind:
+
+```css
+@import "tailwindcss";
+@import "@curvgroup/design-system/theme.css";
+```
+
+This registers every token — `bg-background`, `bg-card`, `bg-muted`,
+`text-foreground`, `border-border`, and the `verdict-*` / `chart-*` families.
+Without it those utilities don't exist, and you'll be tempted to reach for raw
+Tailwind colours (`bg-neutral-100`) — the drift.
+
+## 3. Let Tailwind see the design system's classes
+
+The components ship as built JS whose `className`s are Tailwind utilities — your
+app's Tailwind has to **generate** them. In Tailwind v4, add a source (adjust the
+relative path to your CSS file):
+
+```css
+@source "../node_modules/@curvgroup/design-system/dist";
+```
+
+Skip this and the components render **unstyled** — the classic "why does it look
+broken?" symptom.
+
+## 4. Wire the ESLint config (this is the enforcement)
+
+```js
+// eslint.config.js
+import curv from "@curvgroup/design-system/eslint";
+
+export default [
+  ...curv,
+  // …your app's framework rules (Next, React, import order)…
+];
+```
+
+This is what catches raw palette colours (`bg-neutral-100`), raw hex, and
+uppercase labels **in CI**, before they reach a screen. **Without this step, none
+of the design-language guards run.** Verify: drop `bg-neutral-100` into any file
+and run `npm run lint` — it must error (`curv/no-palette-utility`).
+
+## 5. Use the shell — never hand-roll it
+
+```tsx
+import { AppFrame, TopBar, Sidebar, PageContainer } from "@curvgroup/design-system";
+
+<AppFrame topBar={<TopBar … />} sidebar={<Sidebar>…</Sidebar>}>
+  <PageContainer>            {/* or <PageContainer bleed> for a full-width table */}
+    …page content…
+  </PageContainer>
+</AppFrame>
+```
+
+`AppFrame` owns the content background (`bg-background`), the dark cradle, the
+sticky bar, and the sidebar. **Do not** wrap pages in your own
+`min-h-screen bg-neutral-100 px-6 py-8` div — that re-implements `PageContainer`
+with the wrong colour, and is the exact bug that this doc exists to prevent. If
+`AppFrame`/`PageContainer` *almost* fit, improve them **in the design system** —
+don't fork a local shell.
+
+## 6. Style through tokens only
+
+`bg-card`, `text-muted-foreground`, `border-border`,
+`verdict-{green,amber,red}`, `chart-1…5` — **never** a raw Tailwind palette
+utility (`bg-neutral-100`, `text-slate-500`) or a hex value. Step 4 enforces it;
+step 2 makes it possible. (See `design-system.md` → *Surface hierarchy* and
+*Semantic color* for which token means what.)
+
+## 7. Point Claude Code at the rules
+
+The package ships the **docs and skills**, so once installed they live under
+`node_modules/@curvgroup/design-system/`. Before building or changing UI, have
+Claude Code:
+
+1. **Read** `@curvgroup/design-system/docs/design-system.md` — the source of truth.
+2. Use the **`curv-ui`** skill (taste, shared components, tokens, polish, a11y).
+3. For a page **redesign/rebuild**, run **`redesign-brief` first** (decide what the
+   page is *for* + a cut-list), then build with `curv-ui`, then run the
+   **design-review** agent on the diff.
+
+## Updating an already-wired OS
+
+```bash
+npm install github:jillesworks/curv-design-system#vX.Y.Z   # bump the tag
+git add package.json package-lock.json
+git commit -m "chore: bump design-system to vX.Y.Z"
+```
+
+Then tell Claude Code: *"the design system updated to vX.Y.Z — re-read its
+`design-system.md` + the `curv-ui`/`redesign-brief` skills and apply the changes."*
+
+**What updates automatically vs. what needs a code change:** improvements baked
+into a component you already use apply on install (e.g. a `PageHeader` size
+change). *Applying a new rule to a page you already built* — setting a new prop,
+restoring a dropped element, moving tabs — is a code change Claude Code makes. The
+library can ship a better `DataTable`; it can't decide *your* Name column should
+be 300px wide.

@@ -1,0 +1,229 @@
+/* @curvgroup/design-system — shared theme tokens (Tailwind v4, CSS-first).
+ * Extracted from the revenue-OS reference implementation. Every Curv OS app
+ * imports this AFTER `@import "tailwindcss"` so all apps share identical
+ * colors, elevation, radii and verdict/chart vocabulary in light + dark.
+ *
+ * In an app's globals.css:
+ *     @import "tailwindcss";
+ *     @import "@curvgroup/design-system/theme.css";
+ *
+ * Apps may set --font-inter (or override --font-sans) for their own type face.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-topbar: var(--topbar);
+  --color-topbar-foreground: var(--topbar-foreground);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-overlay: var(--overlay);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-border-strong: var(--border-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-verdict-green: var(--verdict-green);
+  --color-verdict-green-soft: var(--verdict-green-soft);
+  --color-verdict-amber: var(--verdict-amber);
+  --color-verdict-amber-soft: var(--verdict-amber-soft);
+  --color-verdict-red: var(--verdict-red);
+  --color-verdict-red-soft: var(--verdict-red-soft);
+  --color-chart: var(--chart);
+  --color-chart-soft: var(--chart-soft);
+  --color-chart-prev: var(--chart-prev);
+  --color-chart-compare: var(--chart-compare);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+}
+
+:root {
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-inter), system-ui, sans-serif; /* monospace retired — legacy font-mono renders Inter */
+
+  /* Neutral palette — hue-agnostic grays, navy tint removed. Elevation:
+     sidebar (recessed) → canvas → card (raised). */
+  --background: #FCFCFD;
+  --foreground: #1B1B1B;
+  --card: #FFFFFF;
+  --card-foreground: #1B1B1B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1B1B1B;
+  --overlay: rgba(27, 27, 27, 0.40); /* modal scrim */
+  --primary: #171717; /* black CTAs / active states */
+  --primary-foreground: #FFFFFF;
+  --secondary: #E5E5E6;
+  --secondary-foreground: #1B1B1B;
+  --muted: #F3F3F4;
+  --muted-foreground: #6B6B6F;
+  --accent: rgba(27, 27, 27, 0.05);
+  --accent-foreground: #1B1B1B;
+  --destructive: #D6453F;
+  --border: rgba(27, 27, 27, 0.08);
+  --input: rgba(27, 27, 27, 0.12);
+  --ring: rgba(27, 27, 27, 0.20);
+  --chart-1: #1B1B1B;
+  --chart-2: #6B6B6F;
+  --chart-3: #8A8A8E;
+  --chart-4: #D4D4D6;
+  --chart-5: #E5E5E6;
+  --radius: 0.75rem; /* 12px cards */
+  /* App chrome — the three surfaces every OS must share pixel-for-pixel. Do NOT
+   * override these per app: the dark top bar, the recessed gray sidebar, and the
+   * content background. If an OS looks "off", it isn't importing this theme.css
+   * (or is overriding these). The top bar is deliberately the same in both themes. */
+  --topbar: #1B1B1B;
+  --topbar-foreground: #FFFFFF;
+  --sidebar: #F3F3F4; /* recessed layer — was white */
+  --sidebar-foreground: #1B1B1B;
+  --sidebar-primary: #1B1B1B;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EBEBEC; /* hover */
+  --sidebar-active: #E5E5E6; /* active nav item — distinct from hover */
+  --sidebar-accent-foreground: #1B1B1B;
+  --sidebar-border: rgba(27, 27, 27, 0.06);
+  --sidebar-ring: rgba(27, 27, 27, 0.20);
+
+  /* Curv OS ink-system extensions */
+  --surface-2: #F3F3F4;
+  --surface-3: #E5E5E6;
+  --text-2: #6B6B6F;
+  --text-3: #8A8A8E;
+  --border-strong: rgba(27, 27, 27, 0.12);
+  --accent-soft: rgba(27, 27, 27, 0.05);
+  --accent-line: rgba(27, 27, 27, 0.20);
+  --verdict-green: #1F7A33;
+  --verdict-green-soft: #D7F7C2;
+  --verdict-amber: #A35C00;
+  --verdict-amber-soft: #FCEDB9;
+  --verdict-red: #D6453F;
+  --verdict-red-soft: #F7E6E5;
+  /* Cards lift with a subtle shadow instead of a border. First layer is a
+     hairline "border" (0.5px spread); the two soft drops give the lift. */
+  --shadow-card:
+    0 0 0 0.5px rgba(0, 0, 0, 0.088),
+    0 3px 6px -2px rgba(0, 0, 0, 0.02),
+    0 1px 1px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover:
+    0 0 0 0.5px rgba(0, 0, 0, 0.11),
+    0 6px 16px -4px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+
+  /* Curv OS chart vocabulary (curv-os-tokens.json v2) — data series ONLY.
+     Never on buttons, never as a verdict. */
+  --chart: #2E90FA;
+  --chart-soft: rgba(46, 144, 250, 0.09);
+  --chart-prev: #9DC6FB;
+  /* Second data series, for overlaying a distinct metric on the same chart
+     (e.g. Revenue + Gross profit on the P&L). A deliberate second hue — the
+     ONLY exception to the one-blue rule — used purely to tell two metric lines
+     apart. Matches Finance OS's compare violet for cross-app consistency. */
+  --chart-compare: #7C3AED;
+}
+
+.dark {
+  /* Neutral-dark scale — same navy-free logic as light. Elevation:
+     sidebar (recessed) → canvas → card (raised). */
+  --background: #0B0B0C;
+  --foreground: #EDEDED;
+  --card: #161618;
+  --card-foreground: #EDEDED;
+  --popover: #161618;
+  --popover-foreground: #EDEDED;
+  --overlay: rgba(0, 0, 0, 0.60); /* modal scrim */
+  --primary: #EDEDED;
+  --primary-foreground: #0B0B0C;
+  --secondary: #2A2A2C;
+  --secondary-foreground: #EDEDED;
+  --muted: #1E1E20;
+  --muted-foreground: #A1A1A6;
+  --accent: rgba(255, 255, 255, 0.08);
+  --accent-foreground: #EDEDED;
+  --destructive: #F2545B;
+  --border: rgba(255, 255, 255, 0.10);
+  --input: rgba(255, 255, 255, 0.14);
+  --ring: rgba(255, 255, 255, 0.24);
+  --chart-1: #EDEDED;
+  --chart-2: #A1A1A6;
+  --chart-3: #6B6B6F;
+  --chart-4: #3A3A3D;
+  --chart-5: #2A2A2C;
+  --sidebar: #101011; /* recessed layer */
+  --sidebar-foreground: #EDEDED;
+  --sidebar-primary: #EDEDED;
+  --sidebar-primary-foreground: #0B0B0C;
+  --sidebar-accent: #1E1E20; /* hover */
+  --sidebar-active: #2A2A2C; /* active nav item */
+  --sidebar-accent-foreground: #EDEDED;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(255, 255, 255, 0.24);
+
+  --surface-2: #1E1E20;
+  --surface-3: #2A2A2C;
+  --text-2: #A1A1A6;
+  --text-3: #6B6B6F;
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent-line: rgba(255, 255, 255, 0.24);
+  --verdict-green: #30B15C;
+  --verdict-green-soft: rgba(48, 177, 92, 0.13);
+  --verdict-amber: #E8A23D;
+  --verdict-amber-soft: rgba(232, 162, 61, 0.13);
+  --verdict-red: #F2545B;
+  --verdict-red-soft: rgba(242, 84, 91, 0.12);
+  /* On dark, a drop shadow barely reads — use a hairline light ring so raised
+     cards still separate from the surface, with a faint drop for depth. */
+  --shadow-card:
+    0 0 0 0.5px rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover:
+    0 0 0 0.5px rgba(255, 255, 255, 0.12),
+    0 4px 12px -2px rgba(0, 0, 0, 0.5);
+
+  --chart: #5BA8FF;
+  --chart-soft: rgba(91, 168, 255, 0.10);
+  --chart-prev: rgba(91, 168, 255, 0.45);
+  --chart-compare: #A78BFA;
+}

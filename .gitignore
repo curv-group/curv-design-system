@@ -1,0 +1,8 @@
+node_modules
+dist
+*.log
+.DS_Store
+.turbo
+
+# local-only Claude Code permissions
+.claude/settings.json

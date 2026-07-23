@@ -68,6 +68,30 @@ component's TSDoc for the full surface. **Style through tokens, never raw hex.**
 `ChartSeries` (for the charts): `data: (number \| null)[]` (a `null` is a gap),
 `label`, `comparison`, `partialFrom`, `variant`.
 
+### DataTable column widths (the Linear model)
+
+Columns never wrap and never push each other — content clips with `…`. Width is
+decided per column:
+
+- **Leave exactly ONE primary text column with no `width` and no `maxWidth`** — it
+  is the **filler**: it stretches to fill the row when there's space, and shrinks
+  + truncates (down to `minWidth`, default 120px) when there isn't. This is what
+  keeps the table full *and* prevents a runaway column. (Miss this and you get
+  dead space on the right, or — if you cap the only text column — nothing fills.)
+- **Give every other column a `width`** (fixed) — numbers, dates, badges, status.
+  A numeric column auto-aligns right + sizes tight; a column with a custom
+  `render` keeps left alignment (set `align` to override).
+- **Set `minWidth` on the filler** if 120px is too tight before it truncates.
+- **When the table is wider than its container**, the filler sits at its
+  `minWidth` and truncates; horizontal scroll is driven by the fixed columns —
+  the filler never blows out to its full content.
+- **A truncating text cell must render inline/string content** (a Fragment of
+  `<span>`s, not a wrapping `<div>`) or the `…` won't show — CSS only ellipsizes
+  inline content. Set `value` for search/export.
+- **Never hand-roll a table or the export button** — use `DataTable` +
+  `exportFilename`/`pdfTitle`; the Export control is the built-in right-aligned
+  dropdown and must not be moved or replaced.
+
 ## Surfaces
 
 | Use when | Component | Key props |

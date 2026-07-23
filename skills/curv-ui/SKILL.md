@@ -104,7 +104,14 @@ off-colour, or with a hand-rolled `bg-neutral-100` shell.*
      `MultiSelect`, `Checkbox`, `Radio`/`RadioGroup`, `Switch`, `Field`,
      `DateRangePicker`.
    - **Data display:** `DataTable` (+ filter bar, `TableLink`/`getRowHref` for
-     real row links, CSV/PDF export, sticky columns, loading skeleton), the
+     real row links, CSV/PDF export, sticky columns, loading skeleton). **Column
+     widths follow the Linear model:** leave exactly ONE primary text column with
+     no `width`/`maxWidth` (the filler — it stretches to fill and truncates down
+     to `minWidth` when narrow), give every other column a fixed `width`, and
+     render truncating text cells as inline/string content (a `<span>` Fragment,
+     not a wrapping `<div>`) so `…` shows. Never hand-roll a table or the export
+     button — use `DataTable` + `exportFilename`. (Full rules: `docs/cheatsheet.md`
+     → *DataTable column widths*.) The
      **reporting engine** — `StatCard`/`StatGroup`, `Sparkline`, `LineChart`,
      `BarChart`, `BarBreakdown`, `ChartCard` (the shell that hosts chart
      controls; chart stays a dumb primitive), `ReportTable` (P&L/matrix grid),

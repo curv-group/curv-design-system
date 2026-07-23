@@ -456,7 +456,7 @@ export function DataTable<Row>({
         <div style={minWidth ? { minWidth } : undefined}>
           {/* header */}
           <div
-            className="sticky top-0 z-20 grid min-w-max border-b border-border bg-muted/95 text-[12px] font-medium text-muted-foreground backdrop-blur"
+            className="sticky top-0 z-20 grid w-full min-w-min border-b border-border bg-muted/95 text-[12px] font-medium text-muted-foreground backdrop-blur"
             style={{ gridTemplateColumns: grid }}
           >
             {columns.map((c, i) => {
@@ -496,7 +496,7 @@ export function DataTable<Row>({
               {Array.from({ length: 8 }).map((_, r) => (
                 <div
                   key={r}
-                  className="grid min-w-max items-center border-b border-border"
+                  className="grid w-full min-w-min items-center border-b border-border"
                   style={{ height: rowHeight, gridTemplateColumns: grid }}
                 >
                   {columns.map((c, i) => (
@@ -522,7 +522,7 @@ export function DataTable<Row>({
                     key={getRowId ? getRowId(row, vi.index) : vi.key}
                     onClick={onRowClick ? () => onRowClick(row) : undefined}
                     className={cn(
-                      "group absolute left-0 top-0 grid min-w-max w-full items-center border-b border-border text-[13px] hover:bg-accent/30",
+                      "group absolute left-0 top-0 grid w-full min-w-min w-full items-center border-b border-border text-[13px] hover:bg-accent/30",
                       (onRowClick || href) && "cursor-pointer",
                     )}
                     style={{ height: rowHeight, transform: `translateY(${vi.start}px)`, gridTemplateColumns: grid }}
@@ -581,7 +581,7 @@ export function DataTable<Row>({
                             "min-w-0 overflow-hidden px-3",
                             // Numbers never truncate — nowrap + a max-content track keep every
                             // digit; text ellipsizes past its track.
-                            aligns[i] === "right" ? "whitespace-nowrap text-right tabular-nums" : "truncate",
+                            aligns[i] === "right" ? "whitespace-nowrap text-right tabular-nums" : "min-w-0 truncate",
                             c.className,
                           )}
                         >

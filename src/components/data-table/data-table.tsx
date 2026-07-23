@@ -568,7 +568,13 @@ export function DataTable<Row>({
                         <div
                           key={c.key}
                           className={cn(
-                            "px-3",
+                            // `min-w-0` lets the cell shrink to its grid track instead of
+                            // its content — without it, a long value (or a custom multi-line
+                            // `render`) forces the track wider and shoves every later column.
+                            // `overflow-hidden` clips tall custom content to the row height so
+                            // it can't overlap the next row. Together: content NEVER breaks the
+                            // grid — it truncates/clips inside its own cell, whatever it is.
+                            "min-w-0 overflow-hidden px-3",
                             // Numbers never truncate — nowrap + a max-content track keep every
                             // digit; text ellipsizes past its track.
                             aligns[i] === "right" ? "whitespace-nowrap text-right tabular-nums" : "truncate",

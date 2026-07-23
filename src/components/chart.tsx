@@ -11,7 +11,8 @@ import { cn } from "../lib/cn";
  * layer yet (a follow-up).
  */
 export interface ChartSeries {
-  data: number[];
+  /** A `null` breaks the line into a gap (missing data) — never plotted as 0. */
+  data: (number | null)[];
   label?: string;
   /** solid = current, dashed = comparison, dotted = partial/projected. */
   variant?: "solid" | "dashed" | "dotted";
@@ -198,7 +199,8 @@ export function LineChart({
   const innerW = Math.max(0, width - padL - padR);
   const innerH = Math.max(0, height - padT - padB);
 
-  const allValues = series.flatMap((s) => s.data);
+  // Nulls are gaps, not values — exclude them from the axis min/max.
+  const allValues = series.flatMap((s) => s.data).filter((v): v is number => v != null);
   const dataMax = allValues.length ? Math.max(...allValues, 0) : 0;
   const dataMin = allValues.length ? Math.min(...allValues) : 0;
   // "auto" floors the axis to a nice number just below the data min so
@@ -212,15 +214,57 @@ export function LineChart({
   const x = (i: number) => padL + (n <= 1 ? innerW / 2 : (i / (n - 1)) * innerW);
   const y = (v: number) => padT + innerH - ((v - yMin) / ySpan) * innerH;
 
-  const linePath = (data: number[]) =>
-    data.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-
-  // Path over an absolute index range [from..to] (for the solid/dashed split).
-  const rangePath = (data: number[], from: number, to: number) => {
+  // A `null` breaks the line: the next non-null point starts a fresh subpath (M)
+  // instead of drawing a segment across the gap.
+  const linePath = (data: (number | null)[]) => {
     let d = "";
+    let move = true;
+    for (let i = 0; i < data.length; i++) {
+      const v = data[i];
+      if (v == null) {
+        move = true;
+        continue;
+      }
+      d += `${move ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
+      move = false;
+    }
+    return d;
+  };
+
+  // Path over an absolute index range [from..to] (for the solid/dashed split);
+  // nulls break the line into a gap here too.
+  const rangePath = (data: (number | null)[], from: number, to: number) => {
+    let d = "";
+    let move = true;
     for (let i = Math.max(0, from); i <= Math.min(data.length - 1, to); i++) {
-      if (data[i] == null) continue;
-      d += `${d === "" ? "M" : "L"}${x(i).toFixed(1)},${y(data[i]).toFixed(1)}`;
+      const v = data[i];
+      if (v == null) {
+        move = true;
+        continue;
+      }
+      d += `${move ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
+      move = false;
+    }
+    return d;
+  };
+
+  // Area fill under a series, null-safe: each contiguous non-null run is its own
+  // filled region down to the baseline, so gaps in the line are gaps in the fill.
+  const areaPath = (data: (number | null)[], baselineY: number) => {
+    let d = "";
+    let i = 0;
+    while (i < data.length) {
+      if (data[i] == null) {
+        i++;
+        continue;
+      }
+      const start = i;
+      let end = i;
+      while (end + 1 < data.length && data[end + 1] != null) end++;
+      d += `M${x(start).toFixed(1)},${baselineY.toFixed(1)}`;
+      for (let k = start; k <= end; k++) d += `L${x(k).toFixed(1)},${y(data[k]!).toFixed(1)}`;
+      d += `L${x(end).toFixed(1)},${baselineY.toFixed(1)}Z`;
+      i = end + 1;
     }
     return d;
   };
@@ -275,7 +319,7 @@ export function LineChart({
           {/* area under the first series */}
           {area && series[0] && series[0].data.length > 1 && (
             <path
-              d={`${linePath(series[0].data)} L${x(n - 1).toFixed(1)},${(padT + innerH).toFixed(1)} L${x(0).toFixed(1)},${(padT + innerH).toFixed(1)} Z`}
+              d={areaPath(series[0].data, padT + innerH)}
               className={cn("opacity-[0.10]", series[0].className ?? "text-chart")}
               fill="currentColor"
               stroke="none"
@@ -322,7 +366,7 @@ export function LineChart({
                   <circle
                     key={si}
                     cx={tipX}
-                    cy={y(s.data[active])}
+                    cy={y(s.data[active]!)}
                     r={3.5}
                     className={seriesClass(s)}
                     fill={s.comparison ? "var(--card)" : "currentColor"}
@@ -365,9 +409,9 @@ export function LineChart({
                         {dateLabel}
                       </span>
                       <span className="w-fit rounded-md bg-muted px-1.5 py-0.5 font-medium tabular-nums text-foreground">
-                        {fmtTip(s.data[active])}
+                        {fmtTip(s.data[active]!)}
                       </span>
-                      {showDelta && <TooltipDelta cur={s.data[active]} base={cmp!.data[active!]} tone={deltaTone} />}
+                      {showDelta && <TooltipDelta cur={s.data[active]!} base={cmp!.data[active!]!} tone={deltaTone} />}
                     </div>
                   );
                 })}
@@ -393,9 +437,9 @@ export function LineChart({
                           />
                           {s.label ?? "Value"}
                         </span>
-                        <span className="font-medium tabular-nums text-foreground">{fmtTip(s.data[active])}</span>
+                        <span className="font-medium tabular-nums text-foreground">{fmtTip(s.data[active]!)}</span>
                       </div>
-                      {showDelta && <TooltipDelta cur={s.data[active]} base={cmp!.data[active!]} tone={deltaTone} />}
+                      {showDelta && <TooltipDelta cur={s.data[active]!} base={cmp!.data[active!]!} tone={deltaTone} />}
                     </div>
                   );
                 })}
@@ -450,7 +494,7 @@ export function BarChart({
   const n = xLabels.length;
 
   const totals = xLabels.map((_, i) => series.reduce((s, ser) => s + (ser.data[i] ?? 0), 0));
-  const dataMax = stacked ? Math.max(0, ...totals) : Math.max(0, ...series.flatMap((s) => s.data));
+  const dataMax = stacked ? Math.max(0, ...totals) : Math.max(0, ...series.flatMap((s) => s.data.map((v) => v ?? 0)));
   const ticks = niceTicks(0, dataMax, maxGridlines);
   const yMax = ticks[ticks.length - 1] || 1;
   const y = (v: number) => padT + innerH - (v / yMax) * innerH;

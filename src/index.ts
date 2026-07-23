@@ -27,7 +27,7 @@ export {
   type ReportSummaryColumn,
 } from "./components/report-table";
 export { ChartCard, type ChartCardProps, type ChartLegendItem, type ChartCardState } from "./components/chart-card";
-export { DateRangePicker, type DateRangePickerProps, type DateRange, type DateRangeValue } from "./components/date-range-picker";
+export { DateRangePicker, type DateRangePickerProps, type DateRange, type DateRangeValue, type DateRangePreset } from "./components/date-range-picker";
 export { StatCard, StatGroup, BreakdownRow, type StatCardProps, type StatDelta } from "./components/stat-card";
 export { SummaryStrip, type SummaryStripProps, type SummaryStripItem } from "./components/summary-strip";
 export { CopyButton, type CopyButtonProps } from "./components/copy-button";

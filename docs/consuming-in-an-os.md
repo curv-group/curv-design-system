@@ -9,8 +9,7 @@ every one of those is a missed step below.
 ## Quick checklist
 
 - [ ] Dependency pinned to a **tag** (`#vX.Y.Z`) in `package.json` — not bare `main`
-- [ ] `theme.css` imported in the app's global stylesheet
-- [ ] Tailwind **scans the design system's built output** (so its classes generate)
+- [ ] `theme.css` imported in the app's global stylesheet (registers tokens **and** scans the built output)
 - [ ] ESLint config imported (so the guards run — a `bg-neutral-100` must error)
 - [ ] Pages use `AppFrame` + `PageContainer` — **no hand-rolled shell**
 - [ ] Only semantic tokens in `className` — no raw Tailwind palette / hex
@@ -26,7 +25,7 @@ It is **git-installed, not auto-updating** — npm locks the resolved commit in
 (not `main`) so builds are reproducible. To update later: bump the tag,
 `npm install`, commit `package.json` + `package-lock.json`.
 
-## 2. Import the theme (the tokens)
+## 2. Import the theme (tokens **and** class scanning)
 
 In your global stylesheet (e.g. `app/globals.css`), after Tailwind:
 
@@ -35,25 +34,19 @@ In your global stylesheet (e.g. `app/globals.css`), after Tailwind:
 @import "@curvgroup/design-system/theme.css";
 ```
 
-This registers every token — `bg-background`, `bg-card`, `bg-muted`,
-`text-foreground`, `border-border`, and the `verdict-*` / `chart-*` families.
-Without it those utilities don't exist, and you'll be tempted to reach for raw
-Tailwind colours (`bg-neutral-100`) — the drift.
+This one import does **two** things:
 
-## 3. Let Tailwind see the design system's classes
+1. **Registers every token** — `bg-background`, `bg-card`, `bg-muted`,
+   `text-foreground`, `border-border`, and the `verdict-*` / `chart-*` families.
+   Without them those utilities don't exist, and you'll be tempted to reach for
+   raw Tailwind colours (`bg-neutral-100`) — the drift.
+2. **Points Tailwind at the design system's built output** — `theme.css` carries
+   an `@source` for its own `dist/`, so the components' `className` utilities
+   actually **generate**. (No separate `@source` line to add anymore.) Skip the
+   theme import and the components render **unstyled** — the classic "why does it
+   look broken?" symptom.
 
-The components ship as built JS whose `className`s are Tailwind utilities — your
-app's Tailwind has to **generate** them. In Tailwind v4, add a source (adjust the
-relative path to your CSS file):
-
-```css
-@source "../node_modules/@curvgroup/design-system/dist";
-```
-
-Skip this and the components render **unstyled** — the classic "why does it look
-broken?" symptom.
-
-## 4. Wire the ESLint config (this is the enforcement)
+## 3. Wire the ESLint config (this is the enforcement)
 
 ```js
 // eslint.config.js
@@ -70,7 +63,7 @@ uppercase labels **in CI**, before they reach a screen. **Without this step, non
 of the design-language guards run.** Verify: drop `bg-neutral-100` into any file
 and run `npm run lint` — it must error (`curv/no-palette-utility`).
 
-## 5. Use the shell — never hand-roll it
+## 4. Use the shell — never hand-roll it
 
 ```tsx
 import { AppFrame, TopBar, Sidebar, PageContainer } from "@curvgroup/design-system";
@@ -89,15 +82,15 @@ with the wrong colour, and is the exact bug that this doc exists to prevent. If
 `AppFrame`/`PageContainer` *almost* fit, improve them **in the design system** —
 don't fork a local shell.
 
-## 6. Style through tokens only
+## 5. Style through tokens only
 
 `bg-card`, `text-muted-foreground`, `border-border`,
 `verdict-{green,amber,red}`, `chart-1…5` — **never** a raw Tailwind palette
-utility (`bg-neutral-100`, `text-slate-500`) or a hex value. Step 4 enforces it;
+utility (`bg-neutral-100`, `text-slate-500`) or a hex value. Step 3 enforces it;
 step 2 makes it possible. (See `design-system.md` → *Surface hierarchy* and
 *Semantic color* for which token means what.)
 
-## 7. Point Claude Code at the rules
+## 6. Point Claude Code at the rules
 
 The package ships the **docs and skills**, so once installed they live under
 `node_modules/@curvgroup/design-system/`. Before building or changing UI, have
@@ -108,6 +101,10 @@ Claude Code:
 3. For a page **redesign/rebuild**, run **`redesign-brief` first** (decide what the
    page is *for* + a cut-list), then build with `curv-ui`, then run the
    **design-review** agent on the diff.
+
+For a fast *"I need X → use component Y"* lookup, point it at
+`@curvgroup/design-system/docs/cheatsheet.md` — a one-page API reference (use-when
++ key props for every export), the anti-"grep the `.d.ts`" doc.
 
 ## Updating an already-wired OS
 

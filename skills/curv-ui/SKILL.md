@@ -104,7 +104,13 @@ off-colour, or with a hand-rolled `bg-neutral-100` shell.*
      `MultiSelect`, `Checkbox`, `Radio`/`RadioGroup`, `Switch`, `Field`,
      `DateRangePicker`.
    - **Data display:** `DataTable` (+ filter bar, `TableLink`/`getRowHref` for
-     real row links, CSV/PDF export, sticky columns, loading skeleton). **Column
+     real row links, CSV/PDF export, sticky columns, loading skeleton,
+     customize/saved views, bounded or virtualized rendering, and family
+     hierarchy). Any interactive table — search, filter, sort, export, select,
+     customize, or views — uses this package component. Native `<table>` is only
+     for bounded read-only detail; matrices/calculators/permission grids stay
+     specialized. Never create a local `DataTable` / `StandardTable` or copy the
+     package implementation. **Column
      widths follow the Linear model:** leave exactly ONE primary text column with
      no `width`/`maxWidth` (the filler — it stretches to fill and truncates down
      to `minWidth` when narrow), give every other column a fixed `width`, and

@@ -12,6 +12,8 @@ every one of those is a missed step below.
 - [ ] `theme.css` imported in the app's global stylesheet (registers tokens **and** scans the built output)
 - [ ] ESLint config imported (so the guards run — a `bg-neutral-100` must error)
 - [ ] Pages use `AppFrame` + `PageContainer` — **no hand-rolled shell**
+- [ ] Interactive tables import package `DataTable` — no local/vendored table primitive
+- [ ] Repo agent instructions require `curv-ui` + `design-review` for table changes
 - [ ] Only semantic tokens in `className` — no raw Tailwind palette / hex
 
 ## 1. Install & pin
@@ -105,6 +107,22 @@ Claude Code:
 For a fast *"I need X → use component Y"* lookup, point it at
 `@curvgroup/design-system/docs/cheatsheet.md` — a one-page API reference (use-when
 + key props for every export), the anti-"grep the `.d.ts`" doc.
+
+For Claude, Codex, Cursor, Grok, and future agents, put the same non-negotiable
+rule in the consumer repo's `AGENTS.md` / equivalent project instructions:
+
+> Any interactive table (search, filter, sort, export, select, customize, or
+> saved views) uses `DataTable` from `@curvgroup/design-system`. Never create a
+> local table primitive. Improve the package first, tag it, then bump this app.
+> Native `<table>` is only for bounded, read-only detail; matrices, calculators,
+> and permission grids remain specialized.
+
+The package's `curv-ui` skill and `design-review` agent repeat this rule, but a
+repo-level instruction makes it tool-agnostic. The shared ESLint config rejects
+new local `DataTable` / `StandardTable` imports and declarations; design review
+catches differently named hand-rolls. If an app has legacy primitives, add a
+tightly scoped ESLint override for only those files, then remove each exception
+as it migrates — never disable the rule repo-wide.
 
 ## Updating an already-wired OS
 

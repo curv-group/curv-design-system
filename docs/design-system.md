@@ -577,6 +577,26 @@ meaning is "progress".
   it*; that's normal and the shadow absorbs it. (`sticky` does accept multiple
   leftmost columns if a product genuinely needs one always visible — but that's
   a deliberate opt-in trading width for persistence, not the default.)
+- **Customize columns and saved views live on `DataTable`.** Pass `customizable`
+  for show/hide/reorder (locked columns stay first and cannot be hidden). Pass
+  `persistence` (`load` / `save`) for named views. Search, filters, sort, tab,
+  visible columns, order, and expansion are one `DataTableState` (`version: 1`).
+  Control it with `state` / `onStateChange` when the page also owns that state.
+  The active named view auto-saves as its state changes; without a named view,
+  the user's default column visibility/order still persists. Saves are serialized
+  and a failed initial load makes view controls read-only until Retry succeeds —
+  never overwrite a workspace that could not be read. The adapter owns durable
+  storage/auth and should save the whole workspace atomically; the package never
+  imports an app database client.
+  `mobilePriority` (`primary` | `secondary` | `hidden`) is independent of
+  `locked` — a required column is not automatically a mobile-primary column.
+- **Family hierarchy is opt-in and narrow.** `getSubRows` is for Inventory /
+  Products-style catalogs: sort parents only, keep every sibling when a child
+  matches search and auto-expand that parent, persist expansion on parent ids,
+  child ids are
+  `parentId::childId`. Return children only when the row should disclose (omit
+  for a one-SKU family). Do not use this for matrices or trees with deeper
+  nesting.
 - **Read-only by default; selection is opt-in.** Our tables display data — they
   don't edit or remove rows from the table itself. So `DataTable` ships **no row
   selection**; that's correct, not a gap. When (and only when) a table gains a
@@ -607,8 +627,8 @@ server). So reach for it only when scale actually demands it:
 
 | Realistic max rows | Implementation |
 | ------------------ | -------------- |
-| Bounded, ≤ ~1.5–2k | Plain semantic `<table>`, **render all rows**. Keep Cmd+F, print, a11y, clean SSR. Soft-cap the render (e.g. 1,500) with a "narrow the range" hint so a freak-wide filter can't freeze the browser. Example: `app/(app)/deals/deals-table.tsx`. |
-| Thousands+ / unbounded / can't fit the client | **Virtualize** (`@tanstack/react-virtual`) + fetch row windows on scroll. Div-grid rows, sticky header, a bottom count/aggregation bar. Example: `app/(app)/customers/customers-table.tsx` + `app/api/customers`. |
+| Bounded, ≤ ~1.5–2k | Render all rows. Interactive/queryable lists use `DataTable virtualized={false}` for Cmd+F + SSR; pure read-only blocks use a semantic `<table>`. Soft-cap the render (e.g. 1,500) with a "narrow the range" hint so a freak-wide filter can't freeze the browser. |
+| Thousands+ / unbounded / can't fit the client | Use virtualized `DataTable` (`virtualized` defaults to `true`) + fetch row windows on scroll. Div-grid rows, sticky header, a bottom count/aggregation bar. Example: `app/(app)/customers/customers-table.tsx` + `app/api/customers`. |
 
 **Two independent questions — don't conflate them.**
 
@@ -617,12 +637,13 @@ server). So reach for it only when scale actually demands it:
    opt-in; enable only what the view needs). No → a read-only block of a few
    bounded rows you just present (a SKU's warehouses, a summary, PO detail) → a
    plain semantic `<table>`, keeping Cmd+F / print / clean SSR.
-2. **Read-only fallback by size.** For a *read-only* block, size picks the
+2. **Rendering mode by size.** For a *read-only* block, size picks the
    render: bounded (≤ ~2k) → a plain `<table>` that renders all rows (keeps
-   Cmd+F / print / clean SSR); larger → it must virtualize. **`DataTable` always
-   virtualizes** — a CSS div-grid, never a `<table>`, at any size — so it also
-   covers *large* read-only data, trading native find/print for its chrome.
-   Render-all is the plain-`<table>` path, **not** a mode inside `DataTable`.
+   Cmd+F / print / clean SSR); larger → it must virtualize. **`DataTable` uses a
+   CSS div-grid with explicit table/row/cell ARIA roles**, never a native
+   `<table>`. Its default virtualized mode is for large lists; pass
+   `virtualized={false}` for a bounded queryable catalog to render every row and
+   keep Cmd+F + SSR. Pure display still prefers native table semantics.
 
 **Size is not the trigger for `DataTable` — intent-to-query is.** A six-row list
 people filter is a `DataTable` (Shopify's Products index, Linear's issues, a
@@ -633,6 +654,13 @@ or "detail" table is **not** "always plain," and `DataTable` is **not**
 (sort / filter / search / export / select) enters the picture; use a plain
 `<table>` only for pure display — and give even that plain table the soft-cap +
 "narrow the range" hint above, so a freak-large case can't freeze the page.
+
+**Agent/consumer contract:** every interactive OS table imports this `DataTable`
+from `@curvgroup/design-system`; no repo may keep a vendored/local `DataTable`,
+`StandardTable`, or duplicate export/customize/views implementation. Specialized
+matrices, calculators, permission grids, and small read-only detail tables are
+explicitly outside this primitive. If the shared component nearly fits, extend
+it here first, tag it, then bump the consumer — never fork it in an OS repo.
 
 ### Summary strip — the breakdown above a table
 

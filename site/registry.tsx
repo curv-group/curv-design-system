@@ -27,6 +27,8 @@ import {
   Checkbox,
   DataTable,
   type DataTableColumn,
+  type DataTableWorkspace,
+  emptyTableWorkspace,
   Dialog,
   DialogClose,
   Field,
@@ -239,8 +241,8 @@ function DealsPage() {
         <Kpi label="To collect" value="50" sub="pending" />
       </div>
       <Card className="mt-4 grid h-[560px] place-items-center text-sm text-muted-foreground">
-        DataTable — the next component we extract &amp; fine-tune.
-        <span className="mt-1 text-[12px]">(scroll — the sidebar corner stays pinned under the bar)</span>
+        Wide data tables use the full-bleed page container.
+        <span className="mt-1 text-[12px]">The sidebar corner stays pinned under the bar while the page scrolls.</span>
       </Card>
     </PageContainer>
   );
@@ -301,8 +303,8 @@ function PersonCell({ name }: { name: string | null }) {
 }
 
 const DEAL_COLUMNS: DataTableColumn<DealRow>[] = [
-  { key: "customer", header: "Customer", width: 220, sticky: true, render: (r) => <TableLink href={`#/customer-${r.id}`}>{r.customer}</TableLink>, value: (r) => r.customer },
-  { key: "status", header: "Status", width: 132, render: (r) => <Badge variant={r.status === "Confirmed" ? "green" : "neutral"}>{r.status}</Badge>, value: (r) => r.status },
+  { key: "customer", header: "Customer", width: 220, sticky: true, locked: true, mobilePriority: "primary", render: (r) => <TableLink href={`#/customer-${r.id}`}>{r.customer}</TableLink>, value: (r) => r.customer },
+  { key: "status", header: "Status", width: 132, mobilePriority: "primary", render: (r) => <Badge variant={r.status === "Confirmed" ? "green" : "neutral"}>{r.status}</Badge>, value: (r) => r.status },
   {
     key: "order",
     header: "Order #",
@@ -882,6 +884,16 @@ function EmptyStateDemo() {
 function DealsTableDemo() {
   const collectedGp = DEAL_ROWS.reduce((s, r) => s + r.gp, 0);
   const [loading, setLoading] = React.useState(false);
+  const workspace = React.useRef<DataTableWorkspace>(emptyTableWorkspace());
+  const persistence = React.useMemo(
+    () => ({
+      load: () => workspace.current,
+      save: (next: DataTableWorkspace) => {
+        workspace.current = next;
+      },
+    }),
+    [],
+  );
   const simulate = () => {
     setLoading(true);
     window.setTimeout(() => setLoading(false), 1800);
@@ -894,12 +906,15 @@ function DealsTableDemo() {
         getRowId={(r) => r.id}
         getRowHref={(r) => `#/deal-${r.order}`}
         getRowLabel={(r) => `Open deal ${r.order} — ${r.customer}`}
+        ariaLabel="Example deals"
         loading={loading}
         initialSort={{ key: "revenue", order: "desc" }}
         searchable
         searchPlaceholder="Search customer or order #"
         searchKeys={["customer", "order"]}
         filters={DEAL_FILTERS}
+        customizable
+        persistence={persistence}
         tabs={[
           { key: "all", label: "All deals" },
           { key: "confirmed", label: "Confirmed", filter: (r) => r.status === "Confirmed" },
@@ -1225,13 +1240,14 @@ export const COMPONENTS: Entry[] = [
     group: "Data display",
     isNew: true,
     summary:
-      "The one table every OS uses. Search, Linear-style filters, view tabs, a summary slot, and CSV/PDF export — each optional. Virtualized rows; column-config driven.",
+      "The one interactive table every OS uses. Controlled state, customize columns, saved views, hierarchy, mobile priority, search, filters, sorting, and export are opt-in from one column-driven primitive.",
     usage: `import { DataTable } from "@curvgroup/design-system";
 
 const columns = [
   // Primary text column: a comfortable min-width so typical names fit; longer
   // values truncate with an ellipsis. Numeric columns can stay at the default.
-  { key: "customer", header: "Customer", minWidth: 240 },
+  { key: "customer", header: "Customer", minWidth: 240,
+    locked: true, mobilePriority: "primary" },
   { key: "revenue", header: "Revenue", align: "right",
     render: (r) => usd.format(r.revenue), value: (r) => r.revenue },
 ];
@@ -1239,7 +1255,10 @@ const columns = [
 <DataTable
   columns={columns}
   rows={rows}
+  ariaLabel="Deals"
   searchable
+  customizable
+  persistence={tablePersistence}
   exportFilename="deals"
   initialSort={{ key: "revenue", order: "desc" }}
 />`,
@@ -1247,7 +1266,7 @@ const columns = [
       {
         title: "Deals",
         description:
-          "Everything on: search + Filter (Linear-style chips) + view tabs + summary + Export. Sort by header; scroll is virtualized. Any of these is optional per table.",
+          "Search, filters, status views, customize columns, saved views, summary, and Export. Sort by header; all capabilities are optional per table.",
         canvas: "surface",
         render: () => <DealsTableDemo />,
       },

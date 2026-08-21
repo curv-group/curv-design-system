@@ -83,7 +83,26 @@ export {
   type DataTableProps,
   type DataTableColumn,
   type DataTableTab,
+  type DataTableState,
+  type DataTableLayout,
+  type DataTableView,
+  type DataTableWorkspace,
+  type TablePersistenceAdapter,
+  type MobilePriority,
 } from "./components/data-table/data-table";
+export {
+  defaultTableState,
+  emptyTableWorkspace,
+  sanitizeTableState,
+  sanitizeTableWorkspace,
+  createView,
+  renameView,
+  duplicateView,
+  deleteView,
+  applyView,
+  currentView,
+  updateViewState,
+} from "./components/data-table/state";
 export { TableLink, type TableLinkProps } from "./components/data-table/table-link";
 export { toCsv, downloadCsv, downloadPdf, type CellValue } from "./components/data-table/export";
 export {

@@ -1,6 +1,6 @@
 {
   "name": "@curvgroup/design-system",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "private": true,
   "description": "Curv shared design system — components, theme tokens, and Claude Code skills used across all Curv OS apps.",
   "type": "module",
@@ -26,6 +26,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsup",
+    "test": "node --test eslint/plugin.test.js src/components/data-table/columns.test.ts src/components/data-table/hierarchy.test.ts src/components/data-table/state.test.ts",
     "prepare": "tsup",
     "watch": "tsup --watch",
     "site:build": "vite build",

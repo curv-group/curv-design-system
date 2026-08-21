@@ -20,6 +20,7 @@ export default [
     },
     plugins: { curv: curvPlugin },
     rules: {
+      "curv/no-local-data-table-primitive": "error",
       "curv/no-uppercase-utility": "error",
       "curv/no-raw-hex": "error",
       "curv/no-palette-utility": "error",

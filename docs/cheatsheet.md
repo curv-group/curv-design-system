@@ -50,7 +50,7 @@ component's TSDoc for the full surface. **Style through tokens, never raw hex.**
 
 | Use when | Component | Key props |
 | --- | --- | --- |
-| A sortable, searchable, filterable table (virtualized) | `DataTable` (+ `TableLink`, `downloadCsv`/`downloadPdf`) | `columns`, `rows`, `searchable`, `filters`, `tabs`, `getRowHref`, `exportFilename` |
+| A sortable, searchable, filterable table (bounded or virtualized) | `DataTable` (+ `TableLink`, `downloadCsv`/`downloadPdf`) | `columns`, `rows`, `ariaLabel`, `searchable`, `filters`, `tabs`, `customizable`, `persistence`, `getSubRows`, `state` / `onStateChange`, `virtualized` |
 | A P&L / period matrix with drill-down | `ReportTable` | `sections`, `periods`, `summaryColumns`, `view`, `formatValue` |
 | A single KPI (label + value + delta + sparkline) | `StatCard` (+ `StatGroup`, `BreakdownRow`) | `label`, `value`, `delta`, `sparkline`, `href`, `breakdown` |
 | A headline total broken into shares with a bar | `SummaryStrip` | `label`, `total`, `caption`, `items`, `hideBar` |

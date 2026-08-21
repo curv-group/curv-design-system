@@ -117,6 +117,53 @@ const PALETTE_UTILITY = new RegExp(
 );
 
 const rules = {
+  "no-local-data-table-primitive": {
+    meta: {
+      type: "problem",
+      docs: {
+        description:
+          "Require the shared DataTable instead of a local DataTable or StandardTable primitive.",
+      },
+      schema: [],
+      messages: {
+        localTable:
+          "Do not create or import a local {{name}}. Use DataTable from @curvgroup/design-system and improve it upstream when needed.",
+      },
+    },
+    create(context) {
+      const banned = new Set(["DataTable", "StandardTable"]);
+      const reportIdentifier = (node) => {
+        if (node?.type === "Identifier" && banned.has(node.name)) {
+          context.report({ node, messageId: "localTable", data: { name: node.name } });
+        }
+      };
+      return {
+        ImportDeclaration(node) {
+          if (node.source.value === "@curvgroup/design-system") return;
+          for (const specifier of node.specifiers) {
+            if (specifier.type === "ImportSpecifier") {
+              if (specifier.imported.type === "Identifier" && banned.has(specifier.imported.name)) {
+                reportIdentifier(specifier.imported);
+              } else {
+                reportIdentifier(specifier.local);
+              }
+            } else {
+              reportIdentifier(specifier.local);
+            }
+          }
+        },
+        FunctionDeclaration(node) {
+          reportIdentifier(node.id);
+        },
+        ClassDeclaration(node) {
+          reportIdentifier(node.id);
+        },
+        VariableDeclarator(node) {
+          reportIdentifier(node.id);
+        },
+      };
+    },
+  },
   "no-uppercase-utility": makeClassRule({
     description: "Disallow full-uppercase / wide-tracking label styles.",
     messageId: "noUppercase",

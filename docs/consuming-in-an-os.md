@@ -17,7 +17,7 @@ every one of those is a missed step below.
 ## 1. Install & pin
 
 ```bash
-npm install github:jillesworks/curv-design-system#v0.2.2
+npm install github:jillesworks/curv-design-system#v0.3.0
 ```
 
 It is **git-installed, not auto-updating** — npm locks the resolved commit in

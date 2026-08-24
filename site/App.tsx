@@ -14,6 +14,7 @@ import {
   cn,
 } from "../src";
 import { Logo } from "./logo";
+import { ForAiPage } from "./ForAi";
 import { COMPONENTS, GROUP_ORDER, PREVIEWS, type Demo, type Entry } from "./registry";
 import pkg from "../package.json";
 
@@ -115,6 +116,11 @@ function SiteSidebar({
           active={route === "overview"}
           onClick={() => onNavigate("overview")}
         />
+        <SidebarItem
+          label="For AI"
+          active={route === "for-ai"}
+          onClick={() => onNavigate("for-ai")}
+        />
       </SidebarSection>
 
       {/* Each category is a collapsible section; the one holding the active
@@ -196,7 +202,7 @@ function Canvas({ demo }: { demo: Demo }) {
   if (demo.canvas === "frame") {
     return (
       <div className={cn(STAGE, "p-6")} style={DOTS}>
-        <FramePreview>{demo.render()}</FramePreview>
+        <FramePreview height={demo.height ?? 640}>{demo.render()}</FramePreview>
       </div>
     );
   }
@@ -359,14 +365,14 @@ function InstallDialog({
   onOpenChange: (o: boolean) => void;
   version: string;
 }) {
-  const setupPrompt = `Install (or update) the Curv design system to github:jillesworks/curv-design-system#v${version}. If this is the first time, set it up by following its docs/consuming-in-an-os.md guide (theme, Tailwind, the ESLint config, and the AppFrame/PageContainer shell). Either way, re-read its design-system.md and its curv-ui and redesign-brief skills, and apply any new or changed components and rules to my pages. Then confirm the app still builds and runs.`;
-  const usePrompt = `Read the Curv design system's design-system.md and its curv-ui and redesign-brief skills, then redesign [the page you want to improve] using its components — keep it fully consistent with the design system.`;
+  const setupPrompt = `Install or update the Curv design system to github:jillesworks/curv-design-system#v${version}. Follow docs/consuming-in-an-os.md (theme, Tailwind, ESLint, AppFrame). Run: npx @curvgroup/design-system init-agent. Confirm the app builds.`;
+  const usePrompt = `Build the product screen. I need to know if we should reorder. Show stock, suppliers, and sales — but not all on one canvas.`;
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
       title="Add or update Curv"
-      description="No terminal or code needed — open your OS's project in Claude Code and paste a prompt. It handles the technical part. Re-run the first prompt anytime we ship a new version to pull the update."
+      description="Paste a prompt in Cursor or Claude inside your OS repo. Re-run the first one when we ship a new version. For more examples, open For AI in the sidebar."
       footer={
         <>
           <a
@@ -400,6 +406,7 @@ export function App() {
   const cmdItems = React.useMemo<CommandItem[]>(
     () => [
       { id: "overview", label: "Overview", group: "General", onSelect: () => navigate("overview") },
+      { id: "for-ai", label: "For AI — how to prompt", group: "General", onSelect: () => navigate("for-ai") },
       ...COMPONENTS.map((c) => ({
         id: c.slug,
         label: c.name,
@@ -425,7 +432,13 @@ export function App() {
         }
         sidebar={<SiteSidebar route={route} onNavigate={navigate} />}
       >
-        {entry ? <ComponentPage entry={entry} /> : <OverviewPage onNavigate={navigate} />}
+        {entry ? (
+          <ComponentPage entry={entry} />
+        ) : route === "for-ai" ? (
+          <ForAiPage version={pkg.version} />
+        ) : (
+          <OverviewPage onNavigate={navigate} />
+        )}
       </AppFrame>
       <CommandPalette
         open={cmdOpen}

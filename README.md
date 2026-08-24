@@ -1,105 +1,99 @@
 # @curvgroup/design-system
 
-The shared design system for every **Curv OS** app (Revenue OS, Product OS, Marketing OS, …). One source of truth for how they all look and behave, so consistency is **structural** — not something anyone has to enforce by hand.
+The shared **npm package** for every Curv OS (Revenue OS, Product OS, Marketing OS, …). One install, one visual language. We do **not** copy components into each app (the shadcn/ReUI model) — a restyle here updates every OS that depends on this package.
 
-It ships three things together:
+It ships four layers:
 
-1. **Theme tokens** (`theme.css`) — the colors, elevation, radii, type scale and verdict/chart vocabulary, in light + dark. Import this and every app shares an identical visual language.
-2. **Components** (`@curvgroup/design-system`) — the actual reusable UI: `Card` today; `DataTable`, `Tabs`, `PageNav`, headings, filters next. Apps *use* these instead of hand-rolling their own.
-3. **Skills & docs** (`skills/`, `docs/`) — the *rules* that carry taste: `docs/design-system.md` (the north star) and the `motion-system` Claude Code skill. These guide how anyone (human or agent) builds and extends any OS.
+1. **Theme tokens** (`theme.css`) — color, type, elevation, verdict/chart vocabulary.
+2. **Primitives** — `AppFrame`, `DataTable`, `StatCard`, `Tabs`, …
+3. **Page shells** — `ListPage`, `DetailPage`, `DashboardPage`, `ReportPage`, `SettingsPage`. These own information architecture: extra data has nowhere to go except a tab, a drawer, or a hover.
+4. **Agent kit** — a short always-on skill, an installer, and an MCP server so Cursor / Claude / Codex pick a shell from a plain-language prompt.
 
-> Parts + rules together. The component library makes everyone use the same parts; the skills make everyone build with the same taste.
+> Parts make everyone use the same UI. Shells make everyone use the same page. Skills tell the agent which shell. Humans never have to say `DetailPage`.
 
 ---
 
 ## Consuming it in an OS app
 
-**1. Install** (resolves from GitHub Packages — see `.npmrc`):
+**1. Install** (git pin until GitHub Packages publish is live):
 
 ```bash
-npm install @curvgroup/design-system
+npm install github:jillesworks/curv-design-system#v0.3.0
 ```
 
-**2. Import the theme** in your app's global stylesheet, *after* Tailwind, and tell Tailwind v4 to scan the package for classes:
+**2. Import the theme** after Tailwind:
 
 ```css
-/* app/globals.css */
 @import "tailwindcss";
 @import "@curvgroup/design-system/theme.css";
-@source "../node_modules/@curvgroup/design-system/dist";
 ```
 
-**3. Use the components:**
+**3. Wire ESLint** (token errors fail CI; density is warn-only and will not trap a PR):
+
+```js
+import curv from "@curvgroup/design-system/eslint";
+export default [...curv];
+```
+
+**4. Use a page shell**, not a pile of primitives:
 
 ```tsx
-import { Card, cn } from "@curvgroup/design-system";
-
-export function Example() {
-  return <Card className="p-5">Same card, every OS.</Card>;
-}
+import { DetailPage, PageHeader, Banner, StatCard } from "@curvgroup/design-system";
 ```
 
-That's it — colors, dark mode, elevation and radii now match Revenue OS exactly, and the components are the same ones.
+**5. Point agents at the rules** (once per OS repo):
+
+```bash
+npx @curvgroup/design-system init-agent
+```
+
+That writes `.cursor/rules/curv.mdc`, `.claude/skills/curv-ui`, `AGENTS.md`, and `CLAUDE.md`. Optional MCP:
+
+```json
+{ "mcpServers": { "curv": { "command": "npx", "args": ["@curvgroup/design-system", "mcp"] } } }
+```
+
+Copyable examples live in `examples/`. How to prompt (plain language, no shell names) is on the showcase **For AI** page (`npm run dev` → `#/for-ai`).
 
 ---
 
-## Staying up to date (how changes propagate)
+## Page shells (pick one)
 
-The package is **versioned**. When a component or token changes here and a new version is published, **Renovate** (configured in each OS repo) automatically opens a "bump `@curvgroup/design-system`" PR in every app. CI runs; you merge.
-
-- **Non-breaking** changes (restyles, tweaks) → safe to **auto-merge**. Effectively automatic.
-- **Breaking** changes → a **major** version bump; the PR waits for a human so one change can't silently break every app at once.
-
-You never hand-copy anything between repos. Change it once here, and it flows out.
-
----
-
-## Adding a component
-
-1. Build it in `src/components/`, using `cn()` and the shared tokens (never raw hex).
-2. Export it from `src/index.ts`.
-3. Add it to the **enforcement registry** so `eslint-config-curv` starts flagging hand-rolled copies of it in the apps (the rule only fires for components that exist here — see the design-review setup).
-4. Document it (Storybook + a line in `docs/design-system.md`).
-5. Publish a new version → the apps get their update PRs.
-
-The rule of thumb: if you need a variant a shared component doesn't support, **improve the shared component** — don't fork it in an app.
+| Screen | Shell | What does not fit |
+| --- | --- | --- |
+| List / queue / catalog | `ListPage` | KPI walls, charts |
+| One record (SKU, deal, customer) | `DetailPage` | A 5th vital — use a tab |
+| Overview / home | `DashboardPage` | A 6th KPI or 3rd chart |
+| P&L / statement | `ReportPage` | A KPI strip |
+| Settings / form | `SettingsPage` | Dashboard chrome |
 
 ---
 
-## Enforcement — how deviations get caught, not hoped away
+## Staying up to date
 
-Consistency can't rely on everyone remembering the rules. Four layers, strongest
-first:
+Versioned package. Change a component here, bump, OS apps pull the new version. Restyles are patches; API breaks are majors.
 
-1. **Components** — if it's `AppFrame` / `Sidebar` / `Card`, deviation is
-   structurally impossible. Consuming apps never rebuild a cradle or a sidebar,
-   so that whole class of mistake disappears.
-2. **`@curvgroup/design-system/eslint`** — mechanical, deterministic, fails CI.
-   Bans `uppercase` / `tracking-wider`, `rounded-xl`+ (too round), and raw hex in
-   `className`. Wire it into an app's `eslint.config.js`:
-   ```js
-   import curv from "@curvgroup/design-system/eslint";
-   export default [ ...curv /*, your app rules */ ];
-   ```
-3. **`skills/curv-ui`** — a Claude Code skill that forces "read `design-system.md`
-   first, use the shared components" *before* any UI is written.
-4. **`agents/design-review`** — a review agent for the taste-level things lint
-   can't see: clutter, weak hierarchy, hand-rolled copies of shared components.
+---
 
-Layers 1–2 are machine-enforced; 3–4 keep humans and agents honest.
+## Enforcement
+
+1. **Shells + primitives** — structurally hard to rebuild the cradle or dump 20 cards into `vitals`.
+2. **ESLint errors** — no hex, no `bg-neutral-100`, no uppercase. One-line fixes. These fail CI.
+3. **ESLint warnings** — missing page shell / StatCard wall. They do **not** fail CI.
+4. **`curv-ui` skill** — maps “product screen” → `DetailPage`. Always on after `init-agent`.
+5. **design-review** — PR **comments**. Not a required GitHub check.
 
 ## What lives here
 
 ```
-theme.css                  shared Tailwind v4 tokens (light + dark)
-src/                       components + the cn() helper
-site/                      the "OS Design System" showcase (npm run dev → :6006)
-eslint/                    the shared ESLint config + design-language plugin
-skills/curv-ui/            Claude Code skill: read-first + use-the-components
-skills/motion-system/      Claude Code skill: motion & interaction rules
-.claude/skills/            symlinks → skills/ so Claude Code auto-loads them here
-agents/design-review.md    the design-review agent
-docs/design-system.md      the north star — read before building UI
+src/components/pages/   ListPage, DetailPage, DashboardPage, ReportPage, SettingsPage
+examples/               copyable TSX agents clone
+agent-kit/              AGENTS.md, CLAUDE.md, Cursor rule
+bin/cli.mjs             init-agent + mcp
+mcp/                    search, compose_page, get_component, validate_usage
+skills/curv-ui/         short always-on skill
+site/                   showcase (For AI + live shells) — npm run dev → :6006
+docs/                   design-system.md (human spec), cheatsheet.md, llms.txt
 ```
 
 Owned by design (Jilles); consumed by every OS team.

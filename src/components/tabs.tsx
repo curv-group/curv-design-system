@@ -41,6 +41,8 @@ export interface TabsProps {
   /** Accessible name for the tablist. */
   "aria-label"?: string;
   className?: string;
+  /** Optional TabPanel children. Page shells typically own panels instead. */
+  children?: React.ReactNode;
 }
 
 export function Tabs({
@@ -50,6 +52,7 @@ export function Tabs({
   onValueChange,
   bar = true,
   className,
+  children,
   "aria-label": ariaLabel,
 }: TabsProps) {
   return (
@@ -81,6 +84,22 @@ export function Tabs({
           </T.Tab>
         ))}
       </T.List>
+      {children}
     </T.Root>
+  );
+}
+
+export interface TabPanelProps {
+  value: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+/** Panel for a Tabs item. Use when composing Tabs yourself; DetailPage owns this. */
+export function TabPanel({ value, children, className }: TabPanelProps) {
+  return (
+    <T.Panel value={value} className={className}>
+      {children}
+    </T.Panel>
   );
 }

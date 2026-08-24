@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "curv": {
+      "command": "node",
+      "args": ["mcp/server.mjs"]
+    }
+  }
+}

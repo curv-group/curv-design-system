@@ -35,6 +35,24 @@ export { Kbd, type KbdProps } from "./components/kbd";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export { ConfirmDialog, type ConfirmDialogProps } from "./components/confirm-dialog";
 export { PageHeader, type PageHeaderProps } from "./components/page-header";
+export { ListPage, type ListPageProps } from "./components/pages/list-page";
+export {
+  DetailPage,
+  type DetailPageProps,
+  type DetailPageTab,
+} from "./components/pages/detail-page";
+export {
+  DashboardPage,
+  type DashboardPageProps,
+} from "./components/pages/dashboard-page";
+export { ReportPage, type ReportPageProps } from "./components/pages/report-page";
+export { SettingsPage, type SettingsPageProps } from "./components/pages/settings-page";
+export {
+  capSlot,
+  type AtMost2,
+  type AtMost4,
+  type AtMost5,
+} from "./components/pages/slot-limit";
 export { Banner, type BannerProps, type BannerVariant } from "./components/banner";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Popover, PopoverClose, type PopoverProps } from "./components/popover";
@@ -50,7 +68,7 @@ export {
   type SegmentedControlProps,
   type SegmentedItem,
 } from "./components/segmented-control";
-export { Tabs, type TabsProps, type TabItem } from "./components/tabs";
+export { Tabs, TabPanel, type TabsProps, type TabItem, type TabPanelProps } from "./components/tabs";
 export { Field, type FieldProps } from "./components/field";
 export { Tooltip, TooltipProvider, type TooltipProps } from "./components/tooltip";
 export {

@@ -1,0 +1,32 @@
+# Curv design system — llms.txt
+
+Shared npm package `@curvgroup/design-system`. Do not copy files into the app. Do not invent layouts.
+
+## Page shells (required)
+
+Humans describe the job in plain language. Map:
+
+- list / table / queue / catalog → ListPage (header, optional SummaryStrip, DataTable)
+- product / deal / customer / SKU / one record → DetailPage (tabs, header, verdict, max 4 vitals, tab body, optional Drawer)
+- overview / dashboard / home → DashboardPage (max 5 KPIs, max 2 charts, optional table/tabs)
+- P&L / statement → ReportPage (header, one ChartCard, ReportTable)
+- settings / form → SettingsPage (narrow Field stack)
+
+Copy examples/list-page.tsx (and siblings). Wire real data. Do not add sections.
+
+## Hard limits
+
+- DetailPage.vitals ≤ 4
+- DashboardPage.kpis ≤ 5, charts ≤ 2
+- Extra fields → tab, Drawer, or StatCard breakdown. Never a data wall.
+
+## Chrome
+
+AppFrame + TopBar + Sidebar. Tokens only (bg-card, text-muted-foreground, verdict-*). No hex, no bg-neutral-100.
+
+## Tools
+
+- Cheatsheet: docs/cheatsheet.md
+- Skill: skills/curv-ui/SKILL.md
+- MCP: npx @curvgroup/design-system mcp (search, compose_page, get_component, get_examples, validate_usage, get_agent_skill)
+- Installer: npx @curvgroup/design-system init-agent

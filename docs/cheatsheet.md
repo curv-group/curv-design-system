@@ -14,8 +14,13 @@ component's TSDoc for the full surface. **Style through tokens, never raw hex.**
 
 | Use when | Component | Key props |
 | --- | --- | --- |
+| A list / queue / catalog | `ListPage` | `header`, `summary?`, `table` |
+| One record (SKU, deal, customer) | `DetailPage` | `tabs`, `header`, `verdict?`, `vitals?` (max 4), `children`, `drawer?` |
+| An overview / home dashboard | `DashboardPage` | `header`, `kpis?` (max 5), `charts?` (max 2), `table?`, `tabs?` |
+| A P&L / statement | `ReportPage` | `header`, `chart`, `table` |
+| Settings / a form | `SettingsPage` | `header`, `children` |
 | You need the whole app shell (dark cradle, sticky top bar, sidebar + content) | `AppFrame` | `topBar`, `sidebar`, `children` |
-| Wrapping a page's content at the right width | `PageContainer` | `size`, `bleed` (edge-to-edge for wide tables) |
+| Wrapping a page's content at the right width | `PageContainer` | `size`, `bleed` (prefer a page shell) |
 | A page's title block (eyebrow, count, badge, actions) | `PageHeader` | `title`, `eyebrow`, `count`, `badge`, `actions` |
 | A row of cards/chips scrolls sideways with edge-fades | `HScroll` | `children`, `containerClassName`, `fade` |
 

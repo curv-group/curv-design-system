@@ -440,8 +440,9 @@ hover:shadow-card-hover`). Canvas → gray column → white card.
    (Overview / All deals). Use the package **`Tabs`** (base-ui `tablist`,
    arrow-key roving). Renders as a **full-width `bg-card` (white) bar with
    `border-b border-border`, directly under the top bar** (separated from the
-   content by its border). Tabs align to the content's left edge (pull the
-   nav back by the tab padding, e.g. `-ml-3`), active marked with an
+   content by its border). Tab *labels* share `PageContainer`'s column
+   (`max-w-[1200px]` + `px-6` gutter) so they line up with the header below,
+   not the sidebar. Active marked with an
    **underline** (`after:-bottom-px after:h-0.5 after:bg-foreground`),
    inactive muted. Chrome/navigation — the Clerk/GitHub pattern.
 2. **Filter toggles within a view** — mutually-exclusive filters on the

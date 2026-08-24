@@ -15,9 +15,11 @@ import { cn } from "../lib/cn";
  * the DataTable `tabs` prop in the toolbar, NOT a page Tabs bar. (design-system.md
  * → Page tabs — always at the top, full-width.)
  *
- * The tab labels align to the content's left edge: the list is pulled back by
- * one tab's padding (`-ml-3`) while the bar's border stays full-width. Pass
- * `bar={false}` to drop the bar chrome when embedding in a card header.
+ * The bar's border is full-width; labels sit on the same column as
+ * `PageContainer` (centered `max-w-[1200px]`, `px-6` gutter). Each tab already
+ * has `px-3`, so the list adds `px-3` more. Pass `bar={false}` to drop the bar
+ * chrome when embedding in a card header — then `-ml-3` keeps labels on the
+ * card's content edge.
  *
  * <Tabs
  *   aria-label="Views"
@@ -62,7 +64,16 @@ export function Tabs({
       onValueChange={onValueChange ? (v) => onValueChange(String(v)) : undefined}
       className={cn(bar && "border-b border-border bg-card", className)}
     >
-      <T.List aria-label={ariaLabel} className="-ml-3 flex items-center">
+      <T.List
+        aria-label={ariaLabel}
+        className={cn(
+          "flex items-center",
+          // Page shells render this bar *outside* PageContainer so the hairline
+          // can span the content well. Match that column: list px-3 + tab px-3
+          // = PageContainer px-6. `-ml-3` is only for bar={false} (card header).
+          bar ? "mx-auto w-full max-w-[1200px] px-3" : "-ml-3",
+        )}
+      >
         {items.map((it) => (
           <T.Tab
             key={it.value}

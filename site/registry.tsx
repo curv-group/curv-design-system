@@ -2369,7 +2369,7 @@ function SegmentedControlDemo() {
 function TabsDemo() {
   const [view, setView] = React.useState("overview");
   return (
-    <div className="w-[440px]">
+    <div className="w-full overflow-hidden rounded-lg bg-card shadow-card">
       <Tabs
         aria-label="Deal views"
         value={view}
@@ -2380,7 +2380,7 @@ function TabsDemo() {
           { value: "collect", label: "To collect" },
         ]}
       />
-      <div className="px-3 py-5 text-[13px] text-muted-foreground">
+      <div className="px-6 py-5 text-[13px] text-muted-foreground">
         {view === "overview" && "The overview view."}
         {view === "all" && "Every deal, unfiltered."}
         {view === "collect" && "Deals with an outstanding balance."}

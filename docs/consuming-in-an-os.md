@@ -90,21 +90,25 @@ utility (`bg-neutral-100`, `text-slate-500`) or a hex value. Step 3 enforces it;
 step 2 makes it possible. (See `design-system.md` → *Surface hierarchy* and
 *Semantic color* for which token means what.)
 
-## 6. Point Claude Code at the rules
+## 6. Point agents at the rules
 
-The package ships the **docs and skills**, so once installed they live under
-`node_modules/@curvgroup/design-system/`. Before building or changing UI, have
-Claude Code:
+Once, in the OS repo:
 
-1. **Read** `@curvgroup/design-system/docs/design-system.md` — the source of truth.
-2. Use the **`curv-ui`** skill (taste, shared components, tokens, polish, a11y).
-3. For a page **redesign/rebuild**, run **`redesign-brief` first** (decide what the
-   page is *for* + a cut-list), then build with `curv-ui`, then run the
-   **design-review** agent on the diff.
+```bash
+npx @curvgroup/design-system init-agent
+```
 
-For a fast *"I need X → use component Y"* lookup, point it at
-`@curvgroup/design-system/docs/cheatsheet.md` — a one-page API reference (use-when
-+ key props for every export), the anti-"grep the `.d.ts`" doc.
+That writes always-on Cursor / Claude / `AGENTS.md` rules so a prompt like “build the product screen” becomes a `DetailPage` with tabs. Humans do not name shells.
+
+Copyable prompts: showcase **For AI** (`#/for-ai`). Copyable TSX: `examples/`.
+
+Optional MCP in `.cursor/mcp.json`:
+
+```json
+{ "mcpServers": { "curv": { "command": "npx", "args": ["@curvgroup/design-system", "mcp"] } } }
+```
+
+Cheatsheet: `@curvgroup/design-system/docs/cheatsheet.md`.
 
 ## Updating an already-wired OS
 
@@ -114,12 +118,10 @@ git add package.json package-lock.json
 git commit -m "chore: bump design-system to vX.Y.Z"
 ```
 
-Then tell Claude Code: *"the design system updated to vX.Y.Z — re-read its
-`design-system.md` + the `curv-ui`/`redesign-brief` skills and apply the changes."*
+Then: *"the design system updated — re-run init-agent if the skill changed, and apply new shells/tokens to pages you touch."*
 
 **What updates automatically vs. what needs a code change:** improvements baked
 into a component you already use apply on install (e.g. a `PageHeader` size
 change). *Applying a new rule to a page you already built* — setting a new prop,
-restoring a dropped element, moving tabs — is a code change Claude Code makes. The
-library can ship a better `DataTable`; it can't decide *your* Name column should
-be 300px wide.
+restoring a dropped element, moving tabs — is a code change. The library can
+ship a better `DataTable`; it can't decide *your* Name column should be 300px wide.

@@ -23,8 +23,10 @@ export default [
       "curv/no-uppercase-utility": "error",
       "curv/no-raw-hex": "error",
       "curv/no-palette-utility": "error",
-      // Radius is a *concentric* (relational) rule now, not a fixed one — a linter
-      // can't compute concentricity, so it's enforced by curv-ui + design-review.
+      // Density / missing-shell: warnings only. They comment locally; they must
+      // not trap a GitHub PR. Token rules above stay errors (one-line fix).
+      "curv/prefer-page-shell": "warn",
+      "curv/no-stat-wall": "warn",
     },
   },
 ];

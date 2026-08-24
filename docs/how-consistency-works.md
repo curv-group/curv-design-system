@@ -48,10 +48,10 @@ below exist for.
 
 | Layer | What it enforces | Needs an agent? |
 |---|---|---|
-| **1. Components** | `AppFrame` / `Sidebar` / `DataTable` — deviation is *structurally impossible*. Consuming apps never rebuild a cradle, so that whole class of mistake disappears. | No |
-| **2. `@curvgroup/design-system/eslint`** | Mechanical, deterministic, **fails CI**: bans full uppercase / `tracking-wider`, over-round radii, raw hex in `className`. | No |
-| **3. `curv-ui` skill** | "Read `design-system.md` first, reach for a shared component before hand-rolling." It **auto-loads** whenever UI is written. | It *is* the agent — but automatic |
-| **4. `design-review` agent** | The taste layer lint can't see: clutter, weak hierarchy, hand-rolled copies of shared components. Runs **on the diff (at PR time)**. | Yes — but on diffs, not perpetually |
+| **1. Page shells + components** | `DetailPage` / `ListPage` / `AppFrame` — extra data has no canvas slot. | No |
+| **2. `@curvgroup/design-system/eslint`** | Token errors **fail CI** (hex, palette, uppercase). Density / missing-shell are **warnings** and do not trap a PR. | No |
+| **3. `curv-ui` skill** | Always-on after `init-agent`. Maps “product screen” → `DetailPage`. | It *is* the agent — automatic |
+| **4. `design-review` agent** | Taste on the diff. **Comments** on the PR; not a required GitHub check. | Yes — on diffs |
 
 Layers 1–2 are machine-enforced. Layers 3–4 keep humans and agents honest for
 the parts that *aren't* a shared component yet.
@@ -77,22 +77,12 @@ not in a perpetual loop.
 
 ## Honest caveat: what's not live yet
 
-The structural half only pays off once (a) an OS actually **adopts** the shared
-components, and (b) we've **published + wired the plumbing**. As of now:
+The structural half only pays off once an OS **adopts** the shared package and
+runs `npx @curvgroup/design-system init-agent`. As of now:
 
-- The package has **never been published** (still `0.0.0`).
-- There's **no publish CI workflow**.
-- **Renovate isn't configured** in the OS repos.
-- The **skills aren't activated** in the OS repos (installed in `node_modules`
-  ≠ active in `.claude/skills`).
+- Publish CI / Renovate in OS repos may still be incomplete.
+- Skills in `node_modules` do nothing until `init-agent` copies them into
+  `.cursor/rules`, `.claude/skills`, `AGENTS.md`.
 
-So *today* it's still manual. The work that converts "keep running an agent"
-into "it just happens" is exactly:
-
-1. A **publish CI workflow** here (version tag → build → publish).
-2. **Renovate config** in each OS repo (auto-merge minor/patch).
-3. **Activate the skills** in each OS repo (symlink `node_modules/.../skills`
-   into `.claude/skills`, or ship the system as a Claude Code plugin).
-
-Once those three exist, Jonas's vision is real: change it once here, it flows
-everywhere it's used, and every new page is built to spec by default.
+Once those exist: change it once here, it flows everywhere it's used, and a
+plain-language “product screen” lands on `DetailPage` with tabs.

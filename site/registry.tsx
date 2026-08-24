@@ -90,6 +90,13 @@ import {
   cn,
   toast,
 } from "../src";
+import {
+  DashboardPageDemo,
+  DetailPageDemo,
+  ListPageDemo,
+  ReportPageDemo,
+  SettingsPageDemo,
+} from "./shell-demos";
 
 /**
  * The showcase registry. Each entry is one component: its metadata, a usage
@@ -103,6 +110,7 @@ export interface Demo {
   title?: string;
   description?: string;
   canvas: CanvasKind;
+  height?: number;
   render: () => React.ReactNode;
 }
 
@@ -1065,6 +1073,111 @@ function ThemeToggleDemo() {
 }
 
 export const COMPONENTS: Entry[] = [
+  {
+    slug: "list-page",
+    name: "List Page",
+    group: "Pages",
+    isNew: true,
+    summary:
+      "Catalogs, queues, deals, customers. Header + optional summary strip + one table. Filters live on the table. No KPI wall, no charts.",
+    usage: `import { ListPage, PageHeader, SummaryStrip, DataTable, Button } from "@curvgroup/design-system";
+
+<ListPage
+  header={<PageHeader title="Customers" count="6" actions={<Button>Add customer</Button>} />}
+  summary={<SummaryStrip label="Revenue by status" total="$548K" items={[
+    { label: "Active", value: "$397K", share: 72, colorClassName: "bg-verdict-green" },
+    { label: "Paused", value: "$151K", share: 28 },
+  ]} />}
+  table={<DataTable columns={columns} rows={rows} searchable getRowHref={(r) => \`/customers/\${r.id}\`} />}
+/>`,
+    demos: [{ canvas: "frame", height: 640, render: () => <ListPageDemo /> }],
+  },
+  {
+    slug: "detail-page",
+    name: "Detail Page",
+    group: "Pages",
+    isNew: true,
+    summary:
+      "One entity. Verdict + at most four vitals, then tabs for everything else. Extra numbers go in a tab, a drawer, or a hover — never a fifth card.",
+    usage: `import { DetailPage, PageHeader, Banner, StatCard, Badge, Button } from "@curvgroup/design-system";
+
+<DetailPage
+  tabs={[
+    { value: "overview", label: "Overview" },
+    { value: "inventory", label: "Inventory" },
+    { value: "sales", label: "Sales" },
+  ]}
+  header={<PageHeader title="Trail Pack 22L" badge={<Badge variant="amber">Low cover</Badge>} />}
+  verdict={<Banner variant="warning" title="Reorder now — 27d cover, no open PO" />}
+  vitals={[
+    <StatCard key="cover" label="Cover" value="27d" />,
+    <StatCard key="onhand" label="On hand" value="412" />,
+    <StatCard key="velocity" label="Velocity" value="14 / wk" />,
+    <StatCard key="margin" label="Margin" value="41%" />,
+  ]}
+>
+  {(tab) => tab === "inventory" ? <Inventory /> : tab === "sales" ? <Sales /> : <OverviewNotes />}
+</DetailPage>`,
+    demos: [{ canvas: "frame", height: 720, render: () => <DetailPageDemo /> }],
+  },
+  {
+    slug: "dashboard-page",
+    name: "Dashboard Page",
+    group: "Pages",
+    isNew: true,
+    summary:
+      "Mixed overview. At most five KPIs and two charts, centered. More metrics become tabs, not more cards.",
+    usage: `import { DashboardPage, PageHeader, StatCard, ChartCard, LineChart } from "@curvgroup/design-system";
+
+<DashboardPage
+  header={<PageHeader title="Marketing overview" />}
+  kpis={[
+    <StatCard key="spend" label="Spend" value="$84K" />,
+    <StatCard key="rev" label="Attributed revenue" value="$312K" />,
+    <StatCard key="roas" label="ROAS" value="3.7×" />,
+    <StatCard key="cpa" label="CPA" value="$18" />,
+  ]}
+  charts={[
+    <ChartCard key="rev" title="Attributed revenue" value="$312K">
+      <LineChart height={220} xLabels={months} series={[{ data, label: "Revenue" }]} />
+    </ChartCard>,
+  ]}
+/>`,
+    demos: [{ canvas: "frame", height: 640, render: () => <DashboardPageDemo /> }],
+  },
+  {
+    slug: "report-page",
+    name: "Report Page",
+    group: "Pages",
+    isNew: true,
+    summary:
+      "P&L / matrix. Period control on the header, one chart, one statement table. No KPI strip.",
+    usage: `import { ReportPage, PageHeader, ChartCard, LineChart, ReportTable, DateRangePicker } from "@curvgroup/design-system";
+
+<ReportPage
+  header={<PageHeader title="Profit and loss" actions={<DateRangePicker value={range} onValueChange={setRange} />} />}
+  chart={<ChartCard title="Gross profit" value="$14.3M"><LineChart height={200} xLabels={months} series={[...]} /></ChartCard>}
+  table={<ReportTable periods={periods} sections={sections} />}
+/>`,
+    demos: [{ canvas: "frame", height: 720, render: () => <ReportPageDemo /> }],
+  },
+  {
+    slug: "settings-page",
+    name: "Settings Page",
+    group: "Pages",
+    isNew: true,
+    summary:
+      "A form or account surface. Narrow. Field around every control. No dashboard chrome.",
+    usage: `import { SettingsPage, PageHeader, Field, Input, Switch, Button } from "@curvgroup/design-system";
+
+<SettingsPage header={<PageHeader title="Notifications" description="How this workspace emails you." />}>
+  <Field label="Reply-to email" htmlFor="reply">
+    <Input id="reply" defaultValue="ops@curvgroup.com" />
+  </Field>
+  <Button>Save</Button>
+</SettingsPage>`,
+    demos: [{ canvas: "frame", height: 560, render: () => <SettingsPageDemo /> }],
+  },
   {
     slug: "app-frame",
     name: "App Frame",
@@ -2039,6 +2152,7 @@ toast.success("Deal confirmed", { description: "SO-1042 moved to Confirmed." });
 ];
 
 export const GROUP_ORDER = [
+  "Pages",
   "Layout and structure",
   "Navigation",
   "Forms & input",
@@ -2282,6 +2396,55 @@ function Bar({ w, className }: { w: string; className?: string }) {
 }
 
 export const PREVIEWS: Record<string, () => React.ReactNode> = {
+  "list-page": () => (
+    <div className="flex w-full max-w-[220px] flex-col gap-1.5">
+      <Bar w="40%" className="bg-foreground/30" />
+      <div className="h-4 rounded bg-muted" />
+      <div className="overflow-hidden rounded-md border border-border bg-card">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex gap-2 border-b border-border px-2 py-1 last:border-b-0">
+            <Bar w="50%" />
+            <Bar w="20%" />
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+  "detail-page": () => (
+    <div className="flex w-full max-w-[220px] flex-col gap-1.5">
+      <div className="flex gap-2 border-b border-border pb-1 text-[10px]">
+        <span className="font-medium text-foreground">Overview</span>
+        <span className="text-muted-foreground">Inventory</span>
+      </div>
+      <div className="grid grid-cols-2 gap-1">
+        <div className="rounded bg-card px-1.5 py-1 shadow-card"><Bar w="60%" /></div>
+        <div className="rounded bg-card px-1.5 py-1 shadow-card"><Bar w="50%" /></div>
+      </div>
+    </div>
+  ),
+  "dashboard-page": () => (
+    <div className="flex w-full max-w-[220px] flex-col gap-1.5">
+      <div className="grid grid-cols-4 gap-1">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-7 rounded bg-card shadow-card" />
+        ))}
+      </div>
+      <div className="h-10 rounded-md bg-muted" />
+    </div>
+  ),
+  "report-page": () => (
+    <div className="flex w-full max-w-[220px] flex-col gap-1.5">
+      <div className="h-10 rounded-md bg-muted" />
+      <div className="h-12 rounded-md border border-border bg-card" />
+    </div>
+  ),
+  "settings-page": () => (
+    <div className="flex w-40 flex-col gap-1.5">
+      <Bar w="50%" className="bg-foreground/30" />
+      <div className="h-6 rounded-md border border-border bg-card" />
+      <div className="h-6 rounded-md border border-border bg-card" />
+    </div>
+  ),
   "app-frame": () => (
     <div className="flex h-24 w-40 flex-col overflow-hidden rounded-md bg-topbar shadow-card">
       <div className="h-3 w-full" />

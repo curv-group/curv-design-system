@@ -148,4 +148,110 @@ const rules = {
   }),
 };
 
+const SHELLS = new Set([
+  "ListPage",
+  "DetailPage",
+  "DashboardPage",
+  "ReportPage",
+  "SettingsPage",
+]);
+
+function jsxName(node) {
+  if (!node || node.type !== "JSXOpeningElement") return null;
+  const n = node.name;
+  if (n.type === "JSXIdentifier") return n.name;
+  if (n.type === "JSXMemberExpression") return n.property.name;
+  return null;
+}
+
+function importedNames(context) {
+  const names = new Set();
+  const body = context.sourceCode?.ast?.body || context.getSourceCode()?.ast?.body || [];
+  for (const stmt of body) {
+    if (stmt.type !== "ImportDeclaration") continue;
+    const src = stmt.source && stmt.source.value;
+    if (typeof src !== "string") continue;
+    if (!src.includes("design-system") && !src.endsWith("/src") && src !== "../src" && src !== "../../src") continue;
+    for (const spec of stmt.specifiers) {
+      if (spec.type === "ImportSpecifier") names.add(spec.imported.name);
+    }
+  }
+  return names;
+}
+
+function isAppRoute(filename) {
+  const f = filename.replace(/\\/g, "/");
+  return /\/(app|pages)\//.test(f) || /(^|\/)page\.(t|j)sx$/.test(f);
+}
+
+rules["prefer-page-shell"] = {
+  meta: {
+    type: "suggestion",
+    docs: {
+      description:
+        "Warn when an app route builds UI without a Curv page shell (does not fail CI).",
+    },
+    schema: [],
+    messages: {
+      preferShell:
+        "This looks like a page. Import ListPage, DetailPage, DashboardPage, ReportPage, or SettingsPage from @curvgroup/design-system instead of assembling primitives. Extra data goes in a tab, not on the canvas.",
+    },
+  },
+  create(context) {
+    if (!isAppRoute(context.filename || context.getFilename())) return {};
+    let usedUi = false;
+    const usedShell = { current: false };
+    return {
+      JSXOpeningElement(node) {
+        const name = jsxName(node);
+        if (SHELLS.has(name)) usedShell.current = true;
+        if (name === "PageHeader" || name === "StatCard" || name === "DataTable" || name === "ReportTable") {
+          usedUi = true;
+        }
+      },
+      "Program:exit"(node) {
+        const imported = importedNames(context);
+        const hasShell = usedShell.current || [...imported].some((n) => SHELLS.has(n));
+        if (usedUi && !hasShell) {
+          context.report({ node, messageId: "preferShell" });
+        }
+      },
+    };
+  },
+};
+
+rules["no-stat-wall"] = {
+  meta: {
+    type: "suggestion",
+    docs: {
+      description:
+        "Warn when a route mounts more than 5 StatCards outside a page shell (does not fail CI).",
+    },
+    schema: [],
+    messages: {
+      statWall:
+        "{{count}} StatCards on this page. DetailPage allows 4 vitals; DashboardPage allows 5 KPIs. Put extras in a tab, drawer, or hover — this warning does not fail CI.",
+    },
+  },
+  create(context) {
+    if (!isAppRoute(context.filename || context.getFilename())) return {};
+    let count = 0;
+    let hasShell = false;
+    return {
+      JSXOpeningElement(node) {
+        const name = jsxName(node);
+        if (name === "StatCard") count += 1;
+        if (SHELLS.has(name)) hasShell = true;
+      },
+      "Program:exit"(node) {
+        const imported = importedNames(context);
+        if ([...imported].some((n) => SHELLS.has(n))) hasShell = true;
+        if (!hasShell && count > 5) {
+          context.report({ node, messageId: "statWall", data: { count: String(count) } });
+        }
+      },
+    };
+  },
+};
+
 export default { rules, meta: { name: "eslint-plugin-curv" } };

@@ -893,6 +893,7 @@ system and add it below — the second copy is the signal to extract, never to f
 
 **From `@curvgroup/design-system` — always the first choice:**
 
+- **Pages (pick one per screen)**: `ListPage`, `DetailPage` (max 4 vitals + tabs), `DashboardPage` (max 5 KPIs, max 2 charts), `ReportPage`, `SettingsPage`. Extra data goes in a tab, drawer, or hover — never a new card on the canvas.
 - **Shell / layout**: `AppFrame` (the whole cradle — never rebuild it), `TopBar`,
   `Sidebar` / `SidebarSection` / `SidebarItem`, `PageContainer`, `PageHeader`.
 - **Primitives**: `Button`, `Badge`, `Avatar` / `AvatarGroup`, `Card`, `Kbd`,

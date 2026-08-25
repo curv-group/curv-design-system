@@ -711,6 +711,54 @@ chart carries a comparison, give `ChartCard`'s legend items a `key` + a
 render-prop child so the legend **toggles series on/off** (the chart stays a
 dumb primitive; the card hands you the hidden keys).
 
+A **landing-page / campaign performance** workbook is the same shell
+(`ReportPage`): one chart, one table, a `Drawer` to peek at a row. It is not a
+`ListPage` (no chart slot) and not a `DashboardPage` (hundreds of rows are not
+a side table). Copy `examples/report-page-performance.tsx`.
+
+## Page shells — one per screen
+
+Every data screen is exactly one shell from `@curvgroup/design-system`. Humans
+describe the **job** in plain language; you (or the agent) pick the shell. Do
+not invent a layout, and do not assemble StatCards + a table by hand.
+
+| Job | Shell | What belongs | What does not |
+| --- | --- | --- | --- |
+| Scan many records | `ListPage` | Header + optional `SummaryStrip` + one table | A KPI card wall, a chart |
+| One record (SKU, customer, deal) | `DetailPage` | Tabs + header + verdict + **max 4 vitals on the strip** | A 5th vital; a section home (Analytics, Marketing) |
+| Glance / home | `DashboardPage` | Max **5** KPIs, max **2** charts, optional table | Card 6–17; a default of three tabs |
+| Workbook / P&L / landing-page performance | `ReportPage` | Header + **one** chart + **one** table. Row peek = `Drawer` | A KPI strip; splitting into two pages |
+| Form / account | `SettingsPage` | Narrow fields | Dashboard chrome |
+
+**DetailPage is one record**, not a section overview. The four-vitals cap is the
+headline strip on a SKU — not a cap on the whole product, and not a reason to
+stuff Analytics into DetailPage.
+
+Copy `examples/<shell>.tsx`. Wire real data. Do not add sections.
+
+### Tabs — count jobs, do not default to three
+
+Page tabs are **optional**. They are not a default of three, and they are not
+Overview / Reporting / Marketing unless those jobs were named.
+
+- **One job that fits** → **no page tabs.** A customers list, a settings form, a
+  P&L, a marketing overview with ≤5 KPIs and ≤2 charts. Agents copy
+  `examples/dashboard-page.tsx`.
+- **One job that overflows** (6th KPI, 3rd chart, another table) → **a tab** for
+  the extra job, not more cards and not a super-long scroll.
+- **N named jobs in the prompt** → **N tabs.** Each tab is still one shell.
+  Two jobs (glance + campaigns) copy `examples/dashboard-page-tabs.tsx`. Never
+  invent a third.
+
+The 5-KPI / 2-chart cap stays. Five is a glance; ten-plus is another page (or
+another tab), not a bigger dashboard. Duplicate numbers (sparkline cards that
+repeat a Reporting grid) are not extra jobs — pick five headlines and leave
+the grid on its own tab or page.
+
+Page tabs are the top-most bar under the app chrome (`DashboardPage` /
+`DetailPage` / `ReportPage` `tabs`). Table chips (All / Confirmed) stay on
+`DataTable`. A peek at one row is a `Drawer`, not a new route and not a new tab.
+
 ## Choosing a control: segmented vs dropdown vs tabs
 
 Which control a setting gets is not taste — it's a function of **how many
@@ -739,26 +787,28 @@ comparison basis (2, frequent, glanceable → **segmented**); brand (5, occasion
 occasional → **dropdown**); reporting period (preset plus through-month →
 **popover**). All five land where the rule predicts.
 
-### Page tabs — always at the top, full-width
+### Page tabs — when they exist, always at the top, full-width
 
-Where page/view tabs sit is **not** a per-page decision. Page-level tabs are
-**always the top-most element of the content area, pinned directly under the app
-bar, and always full-width** — the underline bar (`border-b border-border`) runs
-edge to edge across the content column. You read the tabs first ("I need the
-Marketing view"), *then* the content. This holds even on an **entity-detail** page
-where the title is identical on every tab: the entity header (title, ids, status,
+Page tabs are optional (see *Tabs — count jobs* above). **When they exist**,
+where they sit is **not** a per-page decision. Page-level tabs are **always the
+top-most element of the content area, pinned directly under the app bar, and
+always full-width** — the underline bar (`border-b border-border`) runs edge to
+edge across the content column. You read the tabs first ("I need the Campaigns
+view"), *then* the content. This holds even on an **entity-detail** page where
+the title is identical on every tab: the entity header (title, ids, status,
 freshness) lives **below** the tab bar, inside the active panel — never above it.
 Customs OS Deals is the reference — Overview / All deals / My deals sit at the top
 full-width; the "Deals" title and its controls live underneath.
 
 **The test — section-switch, not row-filter.** Page tabs switch between distinct
-*views or sections* of the page: each tab is a different screenful of content
-(Overview vs Inventory & supply vs Sales on a product-detail page; a list's
-Overview dashboard vs its full table). If a set of tab-looking chips instead
-**filters or scopes the rows of a single table** — a status filter like *Active /
-Scale / Keep / Cut / All* — it is **not** a page tab. Same content, fewer rows =
-**filter → it stays in the table's toolbar**, never hoisted above the page header.
-Different section = page tab → top.
+*jobs* of the page: each tab is a different screenful of content (Inventory vs
+Sales on a product-detail page; Overview vs Campaigns when those two jobs were
+named). A customers **list** is one job — it does not grow an Overview tab by
+default. If a set of tab-looking chips instead **filters or scopes the rows of a
+single table** — a status filter like *Active / Scale / Keep / Cut / All* — it is
+**not** a page tab. Same content, fewer rows = **filter → it stays in the
+table's toolbar**, never hoisted above the page header. Different job = page tab
+→ top.
 
 - **Full-width bar, per-tab inner width.** The tab *strip* is always full-width;
   what sits *under* it takes the level its content needs (see *Page container*):
@@ -894,7 +944,7 @@ system and add it below — the second copy is the signal to extract, never to f
 
 **From `@curvgroup/design-system` — always the first choice:**
 
-- **Pages (pick one per screen)**: `ListPage`, `DetailPage` (max 4 vitals + tabs), `DashboardPage` (max 5 KPIs, max 2 charts), `ReportPage`, `SettingsPage`. Extra data goes in a tab, drawer, or hover — never a new card on the canvas.
+- **Pages (pick one per screen)**: `ListPage` (table, no KPI wall), `DetailPage` (one record — max 4 vitals on the strip + tabs; not Analytics), `DashboardPage` (max 5 KPIs, max 2 charts; tabs only when >1 job), `ReportPage` (one chart + one table, optional drawer), `SettingsPage`. Extra data goes in a tab, drawer, or hover — never a new card on the canvas. Never invent Overview / Reporting / Marketing unless those jobs were named.
 - **Shell / layout**: `AppFrame` (the whole cradle — never rebuild it), `TopBar`,
   `Sidebar` / `SidebarSection` / `SidebarItem`, `PageContainer`, `PageHeader`.
 - **Primitives**: `Button`, `Badge`, `Avatar` / `AvatarGroup`, `Card`, `Kbd`,

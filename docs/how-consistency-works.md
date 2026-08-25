@@ -85,4 +85,5 @@ runs `npx @curvgroup/design-system init-agent`. As of now:
   `.cursor/rules`, `.claude/skills`, `AGENTS.md`.
 
 Once those exist: change it once here, it flows everywhere it's used, and a
-plain-language “product screen” lands on `DetailPage` with tabs.
+plain-language “product screen” lands on `DetailPage` with tabs, and a
+one-job overview lands on a tabless `DashboardPage`.

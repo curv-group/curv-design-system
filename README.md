@@ -6,7 +6,7 @@ It ships four layers:
 
 1. **Theme tokens** (`theme.css`) — color, type, elevation, verdict/chart vocabulary.
 2. **Primitives** — `AppFrame`, `DataTable`, `StatCard`, `Tabs`, …
-3. **Page shells** — `ListPage`, `DetailPage`, `DashboardPage`, `ReportPage`, `SettingsPage`. These own information architecture: extra data has nowhere to go except a tab, a drawer, or a hover.
+3. **Page shells** — `ListPage`, `DetailPage`, `DashboardPage`, `ReportPage`, `SettingsPage`. They encode IA: extra data has no canvas slot except a tab, a drawer, or a hover. Tabs are optional — one fitting job has none; N named jobs become N tabs. Never invent Overview / Reporting / Marketing.
 4. **Agent kit** — a short always-on skill, an installer, and an MCP server so Cursor / Claude / Codex pick a shell from a plain-language prompt.
 
 > Parts make everyone use the same UI. Shells make everyone use the same page. Skills tell the agent which shell. Humans never have to say `DetailPage`.
@@ -62,10 +62,15 @@ Copyable examples live in `examples/`. How to prompt (plain language, no shell n
 | Screen | Shell | What does not fit |
 | --- | --- | --- |
 | List / queue / catalog | `ListPage` | KPI walls, charts |
-| One record (SKU, deal, customer) | `DetailPage` | A 5th vital — use a tab |
-| Overview / home | `DashboardPage` | A 6th KPI or 3rd chart |
-| P&L / statement | `ReportPage` | A KPI strip |
+| One record (SKU, deal, customer) | `DetailPage` | A 5th vital; a section home (Analytics) |
+| Overview / home | `DashboardPage` | A 6th KPI or 3rd chart; a default of three tabs |
+| P&L / landing pages / workbook | `ReportPage` | A KPI strip |
 | Settings / form | `SettingsPage` | Dashboard chrome |
+
+Tabs are optional. One job that fits → no page tabs. N named jobs → N tabs.
+Never invent Overview / Reporting / Marketing unless they named those jobs.
+Copy `examples/dashboard-page.tsx` (one job) or `examples/dashboard-page-tabs.tsx`
+(two jobs). A row peek is a Drawer (`examples/report-page-performance.tsx`).
 
 ---
 

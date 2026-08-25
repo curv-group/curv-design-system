@@ -24,8 +24,10 @@ export interface DetailPageProps {
   /** One verdict line/banner. Omit when the entity is healthy and the vitals suffice. */
   verdict?: React.ReactNode;
   /**
-   * At most 4 StatCards. A 5th number belongs in a tab or in a StatCard
-   * `breakdown` hover — not as another card. Extra items are dropped at runtime.
+   * At most 4 StatCards on the **headline strip** — not a cap on the whole
+   * screen. Tables, history, and warehouses live in tabs / drawer / hover.
+   * A 5th vital is dropped at runtime. This shell is one record (SKU, deal,
+   * customer), not a section overview like Analytics.
    */
   vitals?: readonly React.ReactNode[];
   /**
@@ -41,9 +43,9 @@ export interface DetailPageProps {
 }
 
 /**
- * DetailPage — one entity (SKU, deal, customer). Anti-overload shell: a
- * verdict, at most four vitals, and tabs for everything else. Do not pass a
- * sibling wall of cards; if it is not a slot, it does not belong on the canvas.
+ * DetailPage — one entity (SKU, deal, customer), not an Analytics home.
+ * Anti-overload: a verdict, at most four vitals on the strip, and tabs for
+ * everything else. Do not pass a sibling wall of cards.
  */
 export function DetailPage({
   tabs,

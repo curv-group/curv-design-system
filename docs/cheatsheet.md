@@ -15,14 +15,19 @@ component's TSDoc for the full surface. **Style through tokens, never raw hex.**
 | Use when | Component | Key props |
 | --- | --- | --- |
 | A list / queue / catalog | `ListPage` | `header`, `summary?`, `table` |
-| One record (SKU, deal, customer) | `DetailPage` | `tabs`, `header`, `verdict?`, `vitals?` (max 4), `children`, `drawer?` |
-| An overview / home dashboard | `DashboardPage` | `header`, `kpis?` (max 5), `charts?` (max 2), `table?`, `tabs?` |
-| A P&L / statement | `ReportPage` | `header`, `chart`, `table` |
+| One record (SKU, deal, customer) — not a section home | `DetailPage` | `tabs`, `header`, `verdict?`, `vitals?` (max 4 on the strip), `children`, `drawer?` |
+| An overview / home dashboard (≤5 KPIs, ≤2 charts) | `DashboardPage` | `header`, `kpis?`, `charts?`, `table?`, `tabs?` (only when >1 job) |
+| A P&L / landing-page performance / workbook | `ReportPage` | `header`, `chart`, `table`, `tabs?`, `drawer?`, `children?` |
 | Settings / a form | `SettingsPage` | `header`, `children` |
 | You need the whole app shell (dark cradle, sticky top bar, sidebar + content) | `AppFrame` | `topBar`, `sidebar`, `children` |
 | Wrapping a page's content at the right width | `PageContainer` | `size`, `bleed` (prefer a page shell) |
 | A page's title block (eyebrow, count, badge, actions) | `PageHeader` | `title`, `eyebrow`, `count`, `badge`, `actions` |
 | A row of cards/chips scrolls sideways with edge-fades | `HScroll` | `children`, `containerClassName`, `fade` |
+
+Page tabs (`tabs` on Detail / Dashboard / Report) are optional. One job that
+fits → omit them. N named jobs → N tabs. Never a default of three, and never
+invent Overview / Reporting / Marketing unless the prompt named those jobs.
+A peek at one row is `drawer`, not a new route.
 
 ## Navigation
 

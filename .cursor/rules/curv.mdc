@@ -11,9 +11,11 @@ This is a Curv OS app. UI comes from `@curvgroup/design-system`.
 When the user asks for a screen, pick one shell (they will not name it):
 
 - list / table / queue / catalog → `ListPage`
-- one product / deal / customer / SKU → `DetailPage` (verdict + max 4 vitals + tabs)
+- one product / deal / customer / SKU → `DetailPage` (one record: verdict + max 4 vitals + tabs). Not a section home.
 - overview / dashboard / home → `DashboardPage` (max 5 KPIs, max 2 charts)
-- P&L / statement → `ReportPage`
+- P&L / statement / landing-page performance → `ReportPage` (one chart + table, optional drawer)
 - settings / form → `SettingsPage`
 
-Copy `node_modules/@curvgroup/design-system/examples/<shell>.tsx`. Replace data. Do not add sections. Extra data goes in a tab, drawer, or hover — never a new card on the canvas. Never hand-roll AppFrame, DataTable, or a page layout. Do not invent props.
+Tabs are not a default of three. One job that fits → no page tabs. Overflow or N named jobs → N tabs; each tab is still one shell. Copy `examples/dashboard-page.tsx` (one job) or `examples/dashboard-page-tabs.tsx` (two jobs). Chart + long table + row peek: `examples/report-page-performance.tsx`. Never invent Overview / Reporting / Marketing unless they named those jobs.
+
+Copy `node_modules/@curvgroup/design-system/examples/<shell>.tsx`. Replace data. Do not add sections. Extra data goes in a tab, drawer, or hover — never a new card on the canvas. Never hand-roll AppFrame, DataTable, or a page layout. Do not invent props. Sentence case; no CSS `uppercase`.

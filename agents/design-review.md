@@ -27,9 +27,14 @@ ask the author to reach "perfection" before they can merge.
 
 - **Wrong or missing page shell.** A new data page that is not one of the five
   shells. A product/deal/SKU screen that is not `DetailPage`. A list that is not
-  `ListPage`.
+  `ListPage`. `DetailPage` used as an Analytics / Marketing **section home**
+  (those are Dashboard or Report). A chart + long performance table built as
+  `ListPage` or `DashboardPage` instead of `ReportPage`.
 - **Data wall.** More than four vitals, more than five dashboard KPIs, or a
-  field of cards instead of tabs / drawer / hover breakdown.
+  field of cards instead of tabs / drawer / hover breakdown. Seventeen
+  sparkline cards that duplicate a reporting grid.
+- **Invented tabs.** Overview / Reporting / Marketing (or any fixed set of
+  three) when the prompt named one job. Page tabs that are not one-per-named-job.
 - **Hand-rolled instead of shared.** Bespoke app shell, table, tabs, or date
   control when the package has one.
 - **Clutter / weak hierarchy.** Extra cards that drive no decision.

@@ -1,6 +1,7 @@
 /**
  * Copy this into an OS page. Swap the rows for real data. Do not add KPI cards
- * or charts — those belong on a dashboard or a detail screen.
+ * or charts — five StatCards fail this shell (use SummaryStrip, or pick
+ * DashboardPage). A chart + performance table is ReportPage, not a list.
  */
 import {
   Button,

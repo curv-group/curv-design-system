@@ -1,6 +1,8 @@
 /**
- * Copy this into an OS overview. At most five KPIs and two charts. The full
- * table is a ListPage, not more cards here.
+ * Copy this into an OS overview. One job that fits: at most five KPIs, two
+ * charts, **no page tabs**. Two named jobs → dashboard-page-tabs.tsx. Do not
+ * invent Overview / Reporting / Marketing. The full table is a ListPage or a
+ * second tab — not card 6–17.
  */
 import {
   ChartCard,

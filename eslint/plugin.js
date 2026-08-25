@@ -194,7 +194,7 @@ rules["prefer-page-shell"] = {
     schema: [],
     messages: {
       preferShell:
-        "This looks like a page. Import ListPage, DetailPage, DashboardPage, ReportPage, or SettingsPage from @curvgroup/design-system instead of assembling primitives. Extra data goes in a tab, not on the canvas.",
+        "This looks like a page. Import ListPage, DetailPage, DashboardPage, ReportPage, or SettingsPage from @curvgroup/design-system instead of assembling primitives. Extra data goes in a tab, drawer, or hover — not on the canvas. Do not default to three tabs.",
     },
   },
   create(context) {
@@ -230,7 +230,7 @@ rules["no-stat-wall"] = {
     schema: [],
     messages: {
       statWall:
-        "{{count}} StatCards on this page. DetailPage allows 4 vitals; DashboardPage allows 5 KPIs. Put extras in a tab, drawer, or hover — this warning does not fail CI.",
+        "{{count}} StatCards on this page. DetailPage allows 4 vitals on the strip; DashboardPage allows 5 KPIs. A 17-card wall is wrong — pick five headlines and put the rest in a tab. This warning does not fail CI.",
     },
   },
   create(context) {

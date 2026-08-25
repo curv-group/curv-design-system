@@ -1,6 +1,8 @@
 /**
  * Copy this into a P&L / statement page. Period control on the header. One
- * chart. One table. No KPI strip.
+ * chart. One table. No KPI strip, no page tabs — one job that fits.
+ * A row peek is `drawer` (see report-page-performance.tsx). Extra report jobs
+ * become `tabs`, never a second chart on this canvas.
  */
 import {
   ChartCard,

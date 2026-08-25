@@ -1,6 +1,7 @@
 /**
- * Copy this into an OS entity page. Lead with the decision. At most four
- * vitals. Warehouses, POs, and history live in tabs — not on the overview.
+ * Copy this into an OS entity page (one SKU, customer, or deal — not Analytics
+ * or a Marketing home). Lead with the decision. At most four vitals on the
+ * strip. Warehouses, POs, and history live in tabs — not on the overview.
  */
 import {
   Badge,

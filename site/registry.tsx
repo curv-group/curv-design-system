@@ -92,6 +92,7 @@ import {
 } from "../src";
 import {
   DashboardPageDemo,
+  DashboardPageTabsDemo,
   DetailPageDemo,
   ListPageDemo,
   ReportPageDemo,
@@ -1079,7 +1080,7 @@ export const COMPONENTS: Entry[] = [
     group: "Pages",
     isNew: true,
     summary:
-      "Catalogs, queues, deals, customers. Header + optional summary strip + one table. Filters live on the table. No KPI wall, no charts.",
+      "Catalogs, queues, deals, customers. Header + optional summary strip + one table. Filters live on the table. No KPI wall, no charts. A chart + performance table is ReportPage.",
     usage: `import { ListPage, PageHeader, SummaryStrip, DataTable, Button } from "@curvgroup/design-system";
 
 <ListPage
@@ -1098,7 +1099,7 @@ export const COMPONENTS: Entry[] = [
     group: "Pages",
     isNew: true,
     summary:
-      "One entity. Verdict + at most four vitals, then tabs for everything else. Extra numbers go in a tab, a drawer, or a hover — never a fifth card.",
+      "One record (SKU, deal, customer) — not an Analytics or Marketing home. Verdict + at most four vitals on the strip, then tabs for everything else. Extra numbers go in a tab, a drawer, or a hover — never a fifth card.",
     usage: `import { DetailPage, PageHeader, Banner, StatCard, Badge, Button } from "@curvgroup/design-system";
 
 <DetailPage
@@ -1126,7 +1127,7 @@ export const COMPONENTS: Entry[] = [
     group: "Pages",
     isNew: true,
     summary:
-      "Mixed overview. At most five KPIs and two charts, centered. More metrics become tabs, not more cards.",
+      "Mixed glance. At most five KPIs and two charts, centered. Tabs only when there is more than one job — never a default of three. Extra metrics become a tab, not card 6–17.",
     usage: `import { DashboardPage, PageHeader, StatCard, ChartCard, LineChart } from "@curvgroup/design-system";
 
 <DashboardPage
@@ -1143,7 +1144,20 @@ export const COMPONENTS: Entry[] = [
     </ChartCard>,
   ]}
 />`,
-    demos: [{ canvas: "frame", height: 640, render: () => <DashboardPageDemo /> }],
+    demos: [
+      {
+        title: "One job — no tabs",
+        canvas: "frame",
+        height: 640,
+        render: () => <DashboardPageDemo />,
+      },
+      {
+        title: "Two jobs — two tabs",
+        canvas: "frame",
+        height: 640,
+        render: () => <DashboardPageTabsDemo />,
+      },
+    ],
   },
   {
     slug: "report-page",
@@ -1151,7 +1165,7 @@ export const COMPONENTS: Entry[] = [
     group: "Pages",
     isNew: true,
     summary:
-      "P&L / matrix. Period control on the header, one chart, one statement table. No KPI strip.",
+      "P&L / landing-page performance / workbook. Period control on the header, one chart, one table. Optional drawer for a row peek. No KPI strip. Tabs only when there is more than one report job.",
     usage: `import { ReportPage, PageHeader, ChartCard, LineChart, ReportTable, DateRangePicker } from "@curvgroup/design-system";
 
 <ReportPage

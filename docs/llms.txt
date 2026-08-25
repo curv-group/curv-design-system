@@ -6,18 +6,26 @@ Shared npm package `@curvgroup/design-system`. Do not copy files into the app. D
 
 Humans describe the job in plain language. Map:
 
-- list / table / queue / catalog → ListPage (header, optional SummaryStrip, DataTable)
-- product / deal / customer / SKU / one record → DetailPage (tabs, header, verdict, max 4 vitals, tab body, optional Drawer)
-- overview / dashboard / home → DashboardPage (max 5 KPIs, max 2 charts, optional table/tabs)
-- P&L / statement → ReportPage (header, one ChartCard, ReportTable)
+- list / table / queue / catalog → ListPage (header, optional SummaryStrip, DataTable). No KPI wall.
+- product / deal / customer / SKU / one record → DetailPage (tabs, header, verdict, max 4 vitals on the strip, tab body, optional Drawer). Not a section home (Analytics, Marketing).
+- overview / dashboard / home → DashboardPage (max 5 KPIs, max 2 charts, optional table). Tabs only when there is more than one job.
+- P&L / statement / landing-page performance / workbook → ReportPage (header, one ChartCard, one table, optional Drawer for a row peek)
 - settings / form → SettingsPage (narrow Field stack)
 
-Copy examples/list-page.tsx (and siblings). Wire real data. Do not add sections.
+Copy examples/list-page.tsx (and siblings). One fitting job: examples/dashboard-page.tsx (no tabs). Two named jobs: examples/dashboard-page-tabs.tsx. Chart + long table + row peek: examples/report-page-performance.tsx. Wire real data. Do not add sections.
+
+## Tabs — count jobs
+
+- One job that fits → no page tabs.
+- Overflow (6th KPI, 3rd chart, extra table) → a tab, not more cards.
+- N named jobs → N tabs. Each tab is still one shell.
+- Never invent Overview / Reporting / Marketing unless the prompt named those jobs.
+- Table chips stay on DataTable. Row peek = Drawer, not a new route.
 
 ## Hard limits
 
-- DetailPage.vitals ≤ 4
-- DashboardPage.kpis ≤ 5, charts ≤ 2
+- DetailPage.vitals ≤ 4 (the strip, not the whole screen)
+- DashboardPage.kpis ≤ 5, charts ≤ 2. A 17-card wall is wrong; pick 5 headlines.
 - Extra fields → tab, Drawer, or StatCard breakdown. Never a data wall.
 
 ## Chrome

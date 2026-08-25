@@ -25,7 +25,6 @@ export function ProfitAndLossPage() {
       header={
         <PageHeader
           title="Profit and loss"
-          eyebrow="Finance"
           actions={<DateRangePicker />}
         />
       }

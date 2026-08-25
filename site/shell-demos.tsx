@@ -186,7 +186,6 @@ export function DetailPageDemo() {
         ]}
         header={
           <PageHeader
-            eyebrow="Catalog"
             title="Trail Pack 22L"
             badge={<Badge variant="amber">Low cover</Badge>}
             actions={<Button onClick={() => setOpen(true)}>Create PO</Button>}
@@ -267,10 +266,7 @@ export function DashboardPageDemo() {
     <ShellChrome>
       <DashboardPage
         header={
-          <PageHeader
-            title="Marketing overview"
-            description="Spend and return for the selected period. The full campaign table is its own list."
-          />
+          <PageHeader title="Marketing overview" />
         }
         kpis={[
           <StatCard key="spend" label="Spend" value="$84K" delta={{ value: "6%", direction: "up", sentiment: "negative" }} caption="vs last period" />,
@@ -316,10 +312,7 @@ export function DashboardPageTabsDemo() {
     <ShellChrome>
       <DashboardPage
         header={
-          <PageHeader
-            title="Marketing"
-            description="Glance, then the campaign table. Two jobs, two tabs."
-          />
+          <PageHeader title="Marketing" />
         }
         tabs={[
           { value: "overview", label: "Overview" },
@@ -378,7 +371,6 @@ export function ReportPageDemo() {
         header={
           <PageHeader
             title="Profit and loss"
-            eyebrow="Finance"
             actions={
               <DateRangePicker value={range} onValueChange={setRange} align="end" today={new Date(2026, 6, 19)} />
             }
@@ -451,10 +443,7 @@ export function SettingsPageDemo() {
     <ShellChrome>
       <SettingsPage
         header={
-          <PageHeader
-            title="Notifications"
-            description="How this workspace emails you. No charts, no tables."
-          />
+          <PageHeader title="Notifications" />
         }
       >
         <Field label="Reply-to email" htmlFor="reply" hint="Used on customer-facing mail.">

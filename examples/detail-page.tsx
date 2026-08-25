@@ -23,7 +23,6 @@ export function ProductPage() {
       ]}
       header={
         <PageHeader
-          eyebrow="Catalog"
           title="Trail Pack 22L"
           badge={<Badge variant="amber">Low cover</Badge>}
           actions={<Button>Create PO</Button>}

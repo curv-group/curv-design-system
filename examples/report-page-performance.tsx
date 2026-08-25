@@ -34,7 +34,7 @@ export function LandingPagesReport() {
 
   return (
     <ReportPage
-      header={<PageHeader title="Landing pages" description="One chart, one table. Click a row to peek." />}
+      header={<PageHeader title="Landing pages" />}
       chart={
         <ChartCard title="Sessions" value="30.5K">
           <LineChart

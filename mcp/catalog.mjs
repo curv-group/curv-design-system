@@ -57,7 +57,7 @@ export const COMPONENTS = [
   { name: "TopBar", group: "shell", summary: "Global dark bar.", props: ["logo", "center", "actions", "className"] },
   { name: "Sidebar", group: "shell", summary: "Left nav.", props: ["children", "className"] },
   { name: "PageContainer", group: "shell", summary: "Width: size or bleed. Prefer a page shell.", props: ["size", "bleed", "className", "children"] },
-  { name: "PageHeader", group: "shell", summary: "Title block.", props: ["title", "eyebrow", "count", "badge", "description", "actions", "className"] },
+  { name: "PageHeader", group: "shell", summary: "Title + optional count/badge/actions. Omit eyebrow and description on a page shell.", props: ["title", "eyebrow", "count", "badge", "description", "actions", "className"] },
   { name: "Button", group: "forms", summary: "The one button.", props: ["variant", "size", "loading", "className", "children"] },
   { name: "Input", group: "forms", summary: "h-9 text field.", props: ["className"] },
   { name: "Field", group: "forms", summary: "Label + hint/error wrapper.", props: ["label", "hint", "error", "htmlFor", "children", "className"] },

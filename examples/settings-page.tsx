@@ -8,10 +8,7 @@ export function NotificationSettingsPage() {
   return (
     <SettingsPage
       header={
-        <PageHeader
-          title="Notifications"
-          description="How this workspace emails you."
-        />
+        <PageHeader title="Notifications" />
       }
     >
       <Field label="Reply-to email" htmlFor="reply">

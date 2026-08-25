@@ -24,6 +24,10 @@ the job in plain language; you pick the shell. Do not invent a layout.
 
 Chrome is `AppFrame` + `TopBar` + `Sidebar`. Never hand-roll those.
 
+**Page titles are the headline only.** `PageHeader` is `title`, optional
+`count` / `badge`, optional `actions`. No eyebrow, no subtitle — the sidebar
+already locates you. If the title is unclear, rename it.
+
 **DetailPage is one record**, not a section home. “Analytics” / “Marketing” in
 the sidebar is a Dashboard or Report, never Detail — the four vitals cap is the
 headline strip on a SKU, not a cap on the whole product.

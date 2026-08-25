@@ -2,18 +2,31 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 /**
- * PageHeader — the top of every OS page: an optional eyebrow, the title with an
- * optional count + status badge, a description, and right-aligned controls
- * (date range, filters, export, a primary action). Stacks on narrow screens.
+ * PageHeader — the top of every OS page.
+ *
+ * Default on a page shell: `title`, optional `count` / `badge`, optional
+ * `actions`. No eyebrow, no description. The sidebar already says where you
+ * are; a paragraph under the H1 is teaching copy, not a product header.
+ * Linear Issues and Shopify Products are the reference — headline + actions.
+ *
+ * `eyebrow` and `description` stay on the type as a rare escape hatch. Do not
+ * copy them into a page shell. If the title is unclear, rename the title.
  */
 export interface PageHeaderProps {
   title: React.ReactNode;
-  /** Small category/context above the title, e.g. "Reporting" or "Finance / Refunds". */
+  /**
+   * Rare. Category above the title. Omit on page shells — it duplicates the
+   * sidebar ("Finance" over "Profit and loss").
+   */
   eyebrow?: React.ReactNode;
-  /** A muted count after the title, e.g. "2,369". */
+  /** A muted count after the title, e.g. "6". */
   count?: React.ReactNode;
   /** A status pill next to the title (pass a <Badge/>). */
   badge?: React.ReactNode;
+  /**
+   * Rare. A line under the title. Omit on page shells — scope belongs in the
+   * title, a Banner, or a control, not a muted paragraph.
+   */
   description?: React.ReactNode;
   /** Right-aligned controls/actions. */
   actions?: React.ReactNode;

@@ -98,7 +98,7 @@ Once, in the OS repo:
 npx @curvgroup/design-system init-agent
 ```
 
-That writes always-on Cursor / Claude / `AGENTS.md` rules so a prompt like “build the product screen” becomes a `DetailPage` with tabs. Humans do not name shells.
+That writes always-on Cursor / Claude / `AGENTS.md` rules so a prompt like “build the product screen” becomes a `DetailPage`. “Build the marketing overview” is a tabless `DashboardPage`. Two named jobs become two tabs. Humans do not name shells.
 
 Copyable prompts: showcase **For AI** (`#/for-ai`). Copyable TSX: `examples/`.
 

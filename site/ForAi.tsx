@@ -32,7 +32,11 @@ const INSTALL = `Install or update @curvgroup/design-system in this OS, follow i
 const LIST = `Build the customers list. Search and filters on the table. Click a row to open the customer.`;
 const DETAIL = `Build the product screen for a SKU. I need to know if we should reorder. Show stock, suppliers, and sales — but not all on one canvas.`;
 const DASH = `Build the marketing overview. A few KPIs and one chart. The full table is a separate view.`;
+const TWO = `Build Analytics. I need a glance at the last 30 days, and a campaigns table I can scan. Those are two jobs.`;
+const REPORT = `Build the landing pages report. One chart, the table of pages, and a details drawer when I click a row. Stay on this page.`;
 const BAD = `Show all SKU fields, every warehouse, every supplier, MoM%, returns, and the full PO history on one page.`;
+const BAD_WALL = `Build Analytics. Put a card on the canvas for every metric — sessions, conversion, AOV, returning, bounce, and the rest — all as sparkline cards.`;
+const BAD_TABS = `Build the analytics home. Make it complete.`;
 const GOOD = `Build the product screen. The first question is reorder or not. Warehouses and POs can live in tabs.`;
 
 export function ForAiPage({ version }: { version: string }) {
@@ -44,8 +48,9 @@ export function ForAiPage({ version }: { version: string }) {
         <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">How to prompt</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
           You do not need to name components. Describe the job: who opens the screen and what they
-          need to decide. If the design system is installed in the repo, the agent picks the right
-          page and puts extra data in tabs.
+          need to decide. If the design system is installed, the agent picks the page. Extra data
+          goes in a tab, a drawer, or a hover — and page tabs only exist when you named more than
+          one job.
         </p>
       </div>
 
@@ -64,16 +69,37 @@ export function ForAiPage({ version }: { version: string }) {
           Say what the person is trying to do. Naming Button or DetailPage is optional.
         </p>
         <CopyBlock label="A list" prompt={LIST} />
-        <p className="text-[12px] text-muted-foreground">Works because a list is one table, not a dashboard.</p>
+        <p className="text-[12px] text-muted-foreground">
+          Works because a list is one table, not five KPI cards. Totals go on a summary strip.
+        </p>
         <CopyBlock label="One record" prompt={DETAIL} />
         <p className="text-[12px] text-muted-foreground">Works because it names the decision and asks for tabs, not a dump.</p>
-        <CopyBlock label="An overview" prompt={DASH} />
-        <p className="text-[12px] text-muted-foreground">Works because extra data is a separate view.</p>
+        <CopyBlock label="An overview — one job" prompt={DASH} />
+        <p className="text-[12px] text-muted-foreground">
+          Works because one fitting job has no page tabs. Extra data is a separate view, not card 6.
+        </p>
+        <CopyBlock label="Two named jobs — two tabs" prompt={TWO} />
+        <p className="text-[12px] text-muted-foreground">
+          Name the jobs. Two jobs become two tabs. Do not add a third unless you named it — Overview /
+          Reporting / Marketing is not a default.
+        </p>
+        <CopyBlock label="A workbook" prompt={REPORT} />
+        <p className="text-[12px] text-muted-foreground">
+          Chart plus a long table plus a row peek is one report. The peek is a drawer, not a new page.
+        </p>
       </section>
 
       <section className="mb-10 max-w-2xl space-y-3">
         <h2 className="text-sm font-semibold text-foreground">Bad → good</h2>
         <CopyBlock label="Avoid — everything on one canvas" prompt={BAD} />
+        <CopyBlock label="Avoid — a wall of KPI cards" prompt={BAD_WALL} />
+        <p className="text-[12px] text-muted-foreground">
+          Seventeen sparkline cards are not a glance. Five headlines; the rest is a tab or another page.
+        </p>
+        <CopyBlock label="Avoid — “make it complete”" prompt={BAD_TABS} />
+        <p className="text-[12px] text-muted-foreground">
+          “Complete” is not three named jobs. Do not invent Overview / Reporting / Marketing.
+        </p>
         <CopyBlock label="Use instead" prompt={GOOD} />
       </section>
 

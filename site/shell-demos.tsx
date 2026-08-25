@@ -294,6 +294,73 @@ export function DashboardPageDemo() {
   );
 }
 
+type CampaignRow = { id: string; name: string; spend: string; roas: string };
+
+const CAMPAIGNS: CampaignRow[] = [
+  { id: "1", name: "Evergreen search", spend: "$18.4K", roas: "4.1×" },
+  { id: "2", name: "Spring prospecting", spend: "$12.2K", roas: "2.8×" },
+  { id: "3", name: "Retargeting — packs", spend: "$9.1K", roas: "5.2×" },
+  { id: "4", name: "Brand exact", spend: "$6.8K", roas: "6.0×" },
+];
+
+const CAMPAIGN_COLUMNS: DataTableColumn<CampaignRow>[] = [
+  { key: "name", header: "Campaign", minWidth: 220 },
+  { key: "spend", header: "Spend", width: 100, align: "right" },
+  { key: "roas", header: "ROAS", width: 80, align: "right" },
+];
+
+/** Two named jobs → two tabs. Not a default of three. */
+export function DashboardPageTabsDemo() {
+  const months = ["Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+  return (
+    <ShellChrome>
+      <DashboardPage
+        header={
+          <PageHeader
+            title="Marketing"
+            description="Glance, then the campaign table. Two jobs, two tabs."
+          />
+        }
+        tabs={[
+          { value: "overview", label: "Overview" },
+          { value: "campaigns", label: "Campaigns" },
+        ]}
+        kpis={[
+          <StatCard key="spend" label="Spend" value="$84K" delta={{ value: "6%", direction: "up", sentiment: "negative" }} caption="vs last period" />,
+          <StatCard key="rev" label="Attributed revenue" value="$312K" delta={{ value: "11%", direction: "up" }} />,
+          <StatCard key="roas" label="ROAS" value="3.7×" delta={{ value: "0.2×", direction: "up" }} />,
+          <StatCard key="cpa" label="CPA" value="$18" delta={{ value: "4%", direction: "down", sentiment: "positive" }} />,
+        ]}
+        charts={[
+          <ChartCard key="rev" title="Attributed revenue" value="$312K" delta={{ value: "11%", direction: "up" }}>
+            <LineChart
+              height={220}
+              area
+              xLabels={months}
+              formatY={(n) => `$${Math.round(n / 1000)}K`}
+              series={[{ data: [38, 42, 40, 51, 48, 62], label: "Revenue", className: "text-chart" }]}
+            />
+          </ChartCard>,
+        ]}
+      >
+        {(tab) =>
+          tab === "campaigns" ? (
+            <DataTable
+              columns={CAMPAIGN_COLUMNS}
+              rows={CAMPAIGNS}
+              getRowId={(r) => r.id}
+              searchable
+              searchPlaceholder="Search campaigns"
+              unit="campaigns"
+              maxHeight={280}
+            />
+          ) : null
+        }
+      </DashboardPage>
+    </ShellChrome>
+  );
+}
+
 const PL_PERIODS = [
   { key: "jan", label: "Jan" },
   { key: "feb", label: "Feb" },

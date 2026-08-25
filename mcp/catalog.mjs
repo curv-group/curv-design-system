@@ -6,7 +6,7 @@ export const SHELLS = [
   {
     name: "ListPage",
     intent: ["list", "table", "queue", "catalog", "customers", "deals", "orders", "sku list"],
-    summary: "Header + optional SummaryStrip + one DataTable. Full bleed. No KPI wall.",
+    summary: "Header + optional SummaryStrip + one DataTable. Full bleed. No KPI wall, no chart. A chart + performance table is ReportPage.",
     import: "import { ListPage, PageHeader, DataTable } from \"@curvgroup/design-system\"",
     example: "examples/list-page.tsx",
     slots: ["header", "summary?", "table"],
@@ -15,7 +15,7 @@ export const SHELLS = [
   {
     name: "DetailPage",
     intent: ["detail", "product", "sku", "deal", "customer", "record", "entity"],
-    summary: "Verdict + max 4 vitals + tabs. Extra data in a tab, drawer, or hover.",
+    summary: "One record (SKU, deal, customer) — not a section home. Verdict + max 4 vitals on the strip. Extra data in a tab, drawer, or hover.",
     import: "import { DetailPage, PageHeader, Banner, StatCard } from \"@curvgroup/design-system\"",
     example: "examples/detail-page.tsx",
     slots: ["tabs", "header", "verdict?", "vitals? (max 4)", "children", "drawer?"],
@@ -23,21 +23,23 @@ export const SHELLS = [
   },
   {
     name: "DashboardPage",
-    intent: ["dashboard", "overview", "home", "marketing overview", "kpis"],
-    summary: "Centered. Max 5 KPIs, max 2 charts, optional table. Extra metrics → tabs.",
+    intent: ["dashboard", "overview", "home", "marketing overview", "kpis", "analytics"],
+    summary: "Centered glance. Max 5 KPIs, max 2 charts, optional table. Tabs only when there is more than one job — never a default of three. Extra metrics → a tab, not card 6–17.",
     import: "import { DashboardPage, PageHeader, StatCard, ChartCard } from \"@curvgroup/design-system\"",
     example: "examples/dashboard-page.tsx",
+    examples: ["examples/dashboard-page.tsx", "examples/dashboard-page-tabs.tsx"],
     slots: ["header", "tabs?", "kpis? (max 5)", "charts? (max 2)", "table?"],
     props: ["header", "tabs", "value", "defaultTab", "onTabChange", "kpis", "charts", "table", "children", "className"],
   },
   {
     name: "ReportPage",
-    intent: ["pnl", "p&l", "report", "statement", "finance", "matrix"],
-    summary: "Header (period control) + one chart + ReportTable. No KPI strip.",
+    intent: ["pnl", "p&l", "report", "statement", "finance", "matrix", "landing pages", "workbook", "performance"],
+    summary: "Header + one chart + one table. Optional drawer for a row peek. Optional tabs when there is more than one report job. No KPI strip.",
     import: "import { ReportPage, PageHeader, ChartCard, ReportTable } from \"@curvgroup/design-system\"",
     example: "examples/report-page.tsx",
-    slots: ["header", "chart", "table"],
-    props: ["header", "chart", "table", "className"],
+    examples: ["examples/report-page.tsx", "examples/report-page-performance.tsx"],
+    slots: ["header", "tabs?", "chart", "table", "children?", "drawer?"],
+    props: ["header", "tabs", "value", "defaultTab", "onTabChange", "chart", "table", "children", "drawer", "className"],
   },
   {
     name: "SettingsPage",
@@ -109,8 +111,9 @@ export function composePage(intent) {
     reason: best.summary,
     import: best.import,
     example: best.example,
+    examples: best.examples || [best.example],
     slots: best.slots,
-    rule: "Copy the example. Wire real data. Extra fields go in a tab, drawer, or hover.",
+    rule: "Count jobs. Copy the matching example. One fitting job → no page tabs (examples/dashboard-page.tsx). N named jobs → N tabs (examples/dashboard-page-tabs.tsx). Never invent Overview / Reporting / Marketing. Chart + long table + row peek → ReportPage (examples/report-page-performance.tsx). Extra fields go in a tab, drawer, or hover — never a new card.",
   };
 }
 

@@ -17,8 +17,9 @@ export interface ListPageProps {
 
 /**
  * ListPage — catalogs, queues, deals, customers. Full-bleed: a table/board
- * does not degrade when stretched. No chart grid, no KPI wall. Row click
- * opens the detail route or a Drawer.
+ * does not degrade when stretched. No chart grid, no KPI wall (five StatCards
+ * fail this shell — use SummaryStrip, or a Dashboard). A chart + performance
+ * table is ReportPage. Row click opens the detail route or a Drawer.
  *
  * Swap the demo rows for real data. Do not add sections.
  */

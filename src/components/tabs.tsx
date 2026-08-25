@@ -5,15 +5,18 @@ import { Tabs as T } from "@base-ui/react/tabs";
 import { cn } from "../lib/cn";
 
 /**
- * View-navigation tabs — switching between distinct **views of a page**
- * (Overview / All deals). Chrome, the Clerk/GitHub pattern: a full-width
+ * View-navigation tabs — switching between distinct **jobs of a page**
+ * (Inventory / Sales on a SKU; Overview / Campaigns when those two jobs were
+ * named). Not a default of three, and not Overview / Reporting / Marketing
+ * unless those jobs were named. Prefer the page-shell `tabs` prop over using
+ * this primitive by hand. Chrome, the Clerk/GitHub pattern: a full-width
  * `bg-card` bar with `border-b border-border` directly under the top bar, the
  * active view marked by an underline. This bar is ALWAYS the top-most element of
  * the content area; the page/entity header sits BELOW it, inside the active
  * panel — never above. Not for filtering data in the current view — that's
  * <SegmentedControl>; and a table's status/row filter (Active / Cut / All) is
- * the DataTable `tabs` prop in the toolbar, NOT a page Tabs bar. (design-system.md
- * → Page tabs — always at the top, full-width.)
+ * the DataTable `tabs` prop in the toolbar, NOT a page Tabs bar.
+ * (design-system.md → Page tabs — when they exist, always at the top.)
  *
  * The bar's border is full-width; labels sit on the same column as
  * `PageContainer` (centered `max-w-[1200px]`, `px-6` gutter). Each tab already

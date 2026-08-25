@@ -10,8 +10,10 @@ import { capSlot } from "./slot-limit";
 export interface DashboardPageProps {
   header: React.ReactNode;
   /**
-   * Optional section tabs when the overview has more than one view. Extra
-   * metrics go here — not as more KPI cards.
+   * Optional page tabs. Omit when this is one job that fits (≤5 KPIs, ≤2
+   * charts). Pass one tab per extra job — never a default of three, and never
+   * invent Overview / Reporting / Marketing unless the prompt named them.
+   * Extra metrics become a tab, not card 6.
    */
   tabs?: TabItem[];
   value?: string;
@@ -30,7 +32,8 @@ export interface DashboardPageProps {
 
 /**
  * DashboardPage — mixed overview. Centered. A few KPIs, at most two charts,
- * optional table. More numbers → tabs, never more cards.
+ * optional table. More numbers → another tab, never more cards. Tabs are
+ * optional: one fitting job has none.
  */
 export function DashboardPage({
   header,

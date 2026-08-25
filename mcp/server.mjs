@@ -109,7 +109,14 @@ function callTool(name, args = {}) {
           hint: `No example for ${args.name}. Shells: ${SHELLS.map((s) => s.name).join(", ")}`,
         });
       }
-      return textResult({ name: info.name, path: info.example, source: exampleText(info.example) });
+      const paths = info.examples?.length ? info.examples : [info.example];
+      return textResult({
+        name: info.name,
+        path: info.example,
+        source: exampleText(info.example),
+        extra: paths.slice(1).map((p) => ({ path: p, source: exampleText(p) })),
+        rule: "One fitting job → the primary example (no tabs). Two named jobs → extra examples. Never invent Overview / Reporting / Marketing.",
+      });
     }
     case "validate_usage":
       return textResult(validateUsage(args));

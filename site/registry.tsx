@@ -817,10 +817,8 @@ function PageHeaderDemo() {
   return (
     <div className="w-full rounded-lg border border-border bg-card p-5">
       <PageHeader
-        eyebrow="Finance / Refunds"
-        title="Refund dashboard"
+        title="Refunds"
         badge={<Badge variant="green">Live</Badge>}
-        description="Activity counted by refund date. Refund rate uses deals closed in the same period."
         actions={
           <>
             {/* Real composed controls — the shell hosts, it doesn't hardcode. */}
@@ -1184,7 +1182,7 @@ export const COMPONENTS: Entry[] = [
       "A form or account surface. Narrow. Field around every control. No dashboard chrome.",
     usage: `import { SettingsPage, PageHeader, Field, Input, Switch, Button } from "@curvgroup/design-system";
 
-<SettingsPage header={<PageHeader title="Notifications" description="How this workspace emails you." />}>
+<SettingsPage header={<PageHeader title="Notifications" />}>
   <Field label="Reply-to email" htmlFor="reply">
     <Input id="reply" defaultValue="ops@curvgroup.com" />
   </Field>
@@ -1605,14 +1603,12 @@ const [range, setRange] = React.useState();
     group: "Layout and structure",
     isNew: true,
     summary:
-      "The top of every OS page: eyebrow, title with an optional count + status badge, description, and right-aligned controls. Like ChartCard, it's a layout shell — `actions` hosts REAL composed controls (Select · DateRangePicker · Button), never hardcoded ones. Stacks on narrow screens.",
+      "The top of every OS page: title, optional count or status badge, right-aligned controls. No eyebrow, no subtitle — the sidebar already locates you. Like ChartCard, it's a layout shell — `actions` hosts REAL composed controls (Select · DateRangePicker · Button), never hardcoded ones. Stacks on narrow screens.",
     usage: `import { PageHeader, Badge, Button, Select, DateRangePicker } from "@curvgroup/design-system";
 
 <PageHeader
-  eyebrow="Finance / Refunds"
-  title="Refund dashboard"
+  title="Refunds"
   badge={<Badge variant="green">Live</Badge>}
-  description="Activity counted by refund date."
   actions={
     <>
       <Select items={brands} value={brand} onValueChange={setBrand} className="h-9 w-[150px]" />
@@ -1624,7 +1620,7 @@ const [range, setRange] = React.useState();
     demos: [
       {
         title: "Page header",
-        description: "Eyebrow + title + badge + description on the left; the actions slot holds the REAL brand Select, DateRangePicker, and the primary action — open them, they work. Everything but the title is optional. Best practice: scope controls first, one filled primary action rightmost.",
+        description: "Title + optional badge on the left; the actions slot holds the REAL brand Select, DateRangePicker, and the primary action — open them, they work. Count and badge are allowed. Eyebrow and description are not the page-shell pattern — omit them.",
         canvas: "plain",
         render: () => <PageHeaderDemo />,
       },

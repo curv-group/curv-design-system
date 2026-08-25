@@ -32,6 +32,10 @@ Copy examples/list-page.tsx (and siblings). One fitting job: examples/dashboard-
 
 AppFrame + TopBar + Sidebar. Tokens only (bg-card, text-muted-foreground, verdict-*). No hex, no bg-neutral-100.
 
+## Page titles
+
+PageHeader: title + optional count/badge + actions. No eyebrow. No description. If the title is unclear, rename it.
+
 ## Tools
 
 - Cheatsheet: docs/cheatsheet.md

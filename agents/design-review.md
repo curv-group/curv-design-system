@@ -37,7 +37,9 @@ ask the author to reach "perfection" before they can merge.
   three) when the prompt named one job. Page tabs that are not one-per-named-job.
 - **Hand-rolled instead of shared.** Bespoke app shell, table, tabs, or date
   control when the package has one.
-- **Clutter / weak hierarchy.** Extra cards that drive no decision.
+- **Page-title clutter.** `PageHeader` with an eyebrow or a description on a
+  page shell. Title + optional count/badge + actions. If the title is unclear,
+  rename it.
 
 ## How to report
 

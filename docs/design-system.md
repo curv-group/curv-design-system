@@ -736,6 +736,25 @@ stuff Analytics into DetailPage.
 
 Copy `examples/<shell>.tsx`. Wire real data. Do not add sections.
 
+### Page titles — headline only
+
+Every page shell uses the same `PageHeader`: **title**, optional **count** or
+**badge**, optional **actions**. No eyebrow above the title. No paragraph under
+it.
+
+The sidebar already says which area you are in. "Finance" over "Profit and
+loss" and "Catalog" over a SKU name repeat that. A muted subtitle ("Glance,
+then the campaign table") is teaching copy leaking into the product.
+
+Linear Issues and Shopify Products are the reference: a headline, maybe a
+count, actions on the right. Shopify Polaris *allows* a subtitle; the admin
+almost never uses one on list and home pages, and when it does it is period
+context — which we already put in `DateRangePicker`. Linear's marketing site
+uses eyebrow + claim + subtitle; the *product* does not.
+
+`PageHeader` still accepts `eyebrow` and `description` as an escape hatch. Do
+not copy them onto a page shell. If the title is unclear, rename the title.
+
 ### Tabs — count jobs, do not default to three
 
 Page tabs are **optional**. They are not a default of three, and they are not
@@ -946,7 +965,8 @@ system and add it below — the second copy is the signal to extract, never to f
 
 - **Pages (pick one per screen)**: `ListPage` (table, no KPI wall), `DetailPage` (one record — max 4 vitals on the strip + tabs; not Analytics), `DashboardPage` (max 5 KPIs, max 2 charts; tabs only when >1 job), `ReportPage` (one chart + one table, optional drawer), `SettingsPage`. Extra data goes in a tab, drawer, or hover — never a new card on the canvas. Never invent Overview / Reporting / Marketing unless those jobs were named.
 - **Shell / layout**: `AppFrame` (the whole cradle — never rebuild it), `TopBar`,
-  `Sidebar` / `SidebarSection` / `SidebarItem`, `PageContainer`, `PageHeader`.
+  `Sidebar` / `SidebarSection` / `SidebarItem`, `PageContainer`, `PageHeader`
+  (title + optional count/badge/actions — no eyebrow, no subtitle).
 - **Primitives**: `Button`, `Badge`, `Avatar` / `AvatarGroup`, `Card`, `Kbd`,
   `Skeleton`, `CopyButton`, `cn`.
 - **Forms**: `Input`, `Textarea`, `Select`, `MultiSelect`, `Checkbox`,

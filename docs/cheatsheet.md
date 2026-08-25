@@ -21,7 +21,7 @@ component's TSDoc for the full surface. **Style through tokens, never raw hex.**
 | Settings / a form | `SettingsPage` | `header`, `children` |
 | You need the whole app shell (dark cradle, sticky top bar, sidebar + content) | `AppFrame` | `topBar`, `sidebar`, `children` |
 | Wrapping a page's content at the right width | `PageContainer` | `size`, `bleed` (prefer a page shell) |
-| A page's title block (eyebrow, count, badge, actions) | `PageHeader` | `title`, `eyebrow`, `count`, `badge`, `actions` |
+| A page's title block (title, optional count/badge, actions) | `PageHeader` | `title`, `count?`, `badge?`, `actions?` (omit `eyebrow` / `description`) |
 | A row of cards/chips scrolls sideways with edge-fades | `HScroll` | `children`, `containerClassName`, `fade` |
 
 Page tabs (`tabs` on Detail / Dashboard / Report) are optional. One job that

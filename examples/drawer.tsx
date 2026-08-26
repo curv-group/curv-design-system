@@ -53,6 +53,58 @@ function MoreIcon() {
   );
 }
 
+const ICON = {
+  width: 14,
+  height: 14,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  "aria-hidden": true,
+};
+
+function DollarIcon() {
+  return (
+    <svg {...ICON}>
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    </svg>
+  );
+}
+function CalendarIcon() {
+  return (
+    <svg {...ICON}>
+      <rect width="18" height="18" x="3" y="4" rx="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
+    </svg>
+  );
+}
+function UserIcon() {
+  return (
+    <svg {...ICON}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" />
+    </svg>
+  );
+}
+function TagIcon() {
+  return (
+    <svg {...ICON}>
+      <path d="M12 2H2v10l9.3 9.3a2 2 0 0 0 2.8 0L22 14.8a2 2 0 0 0 0-2.8Z" />
+      <circle cx="7" cy="7" r="1" />
+    </svg>
+  );
+}
+function EyeIcon() {
+  return (
+    <svg {...ICON}>
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export function DealDrawer() {
   const [owner, setOwner] = React.useState("alex");
   const [watching, setWatching] = React.useState(true);
@@ -103,31 +155,49 @@ export function DealDrawer() {
             ]}
             className="border-b border-border px-1.5"
           >
-            <TabPanel value="details" className="flex flex-col gap-3 px-4 pt-2.5">
-              <DrawerSection title="Properties">
-                <DrawerRow label="Revenue">
+            <TabPanel value="details" className="flex flex-col px-4">
+              <DrawerSection title="Properties" className="py-3">
+                <DrawerRow label="Revenue" icon={<DollarIcon />}>
                   <span className="tabular-nums">$48,200</span>
                 </DrawerRow>
-                <DrawerRow label="GP">
+                <DrawerRow label="GP" icon={<DollarIcon />}>
                   <span className="tabular-nums">$15,100</span>
                 </DrawerRow>
-                <DrawerRow label="Close date">24 Apr 2026</DrawerRow>
-                <DrawerRow label="AE">
+                <DrawerRow label="Close date" icon={<CalendarIcon />}>
+                  24 Apr 2026
+                </DrawerRow>
+                <DrawerRow label="Stage" icon={<TagIcon />}>
+                  <Badge variant="green">Confirmed</Badge>
+                </DrawerRow>
+                <DrawerRow label="AE" icon={<UserIcon />}>
                   <Person name="Alex Morgan" />
                 </DrawerRow>
-                <DrawerRow label="Engineer">
+                <DrawerRow label="Engineer" icon={<UserIcon />}>
                   <Person name="Quinn Patel" />
                 </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Assignment">
-                <DrawerRow label="Owner">
-                  <Select id="deal-owner" aria-label="Owner" items={OWNERS} value={owner} onValueChange={setOwner} className="h-8" />
+                <DrawerRow label="Labels" icon={<TagIcon />}>
+                  <span className="inline-flex flex-wrap gap-1">
+                    <Badge variant="neutral">Trail</Badge>
+                    <Badge variant="neutral">Wholesale</Badge>
+                  </span>
                 </DrawerRow>
-                <DrawerRow label="Watch">
+              </DrawerSection>
+              <DrawerSection title="Assignment" className="border-t border-border py-3">
+                <DrawerRow label="Owner" icon={<UserIcon />}>
+                  <Select
+                    id="deal-owner"
+                    aria-label="Owner"
+                    items={OWNERS}
+                    value={owner}
+                    onValueChange={setOwner}
+                    className="h-7 border-0 bg-transparent px-0"
+                  />
+                </DrawerRow>
+                <DrawerRow label="Watch" icon={<EyeIcon />}>
                   <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
                 </DrawerRow>
               </DrawerSection>
-              <DrawerSection title="Notes">
+              <DrawerSection title="Notes" className="border-t border-border py-3">
                 <Textarea
                   id="deal-notes"
                   aria-label="Internal notes"
@@ -136,7 +206,7 @@ export function DealDrawer() {
                 />
               </DrawerSection>
             </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 pt-2.5">
+            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 py-3">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },

@@ -45,7 +45,7 @@ export interface DrawerProps {
   /** Extra header controls — CopyButton, a ⋯ Menu. Keep to 1–2. */
   headerActions?: React.ReactNode;
   children?: React.ReactNode;
-  /** Pinned footer (secondary Close, then the primary action). */
+  /** Pinned footer. Full surface: secondary Close on the left, primary on the right (Shopify sheet). */
   footer?: React.ReactNode;
   /** Extra classes on the panel (escape hatch — prefer `size`). */
   className?: string;
@@ -136,7 +136,7 @@ export function Drawer({
           </header>
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 text-[13px] text-foreground">{children}</div>
           {footer ? (
-            <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card px-4 py-2.5">
+            <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-border bg-card px-4 py-2.5 [&:has(>:only-child)]:justify-end">
               {footer}
             </footer>
           ) : null}
@@ -160,7 +160,7 @@ export function DrawerSection({
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-1", className)}>
+    <section className={cn("flex flex-col gap-0.5", className)}>
       <h3 className="text-[12px] font-medium leading-4 text-muted-foreground">{title}</h3>
       {children}
     </section>
@@ -168,19 +168,28 @@ export function DrawerSection({
 }
 
 /**
- * Linear-style property row: a fixed label column, then the value or control
- * immediately after (left-aligned). Do not justify-between — that opens a void
- * across the middle of the sheet.
+ * Linear / Attio property row: optional 16px icon, a short muted label, then
+ * the value or control immediately after (left-aligned). Do not justify-between
+ * — that opens a void across the middle of the sheet.
  */
 export function DrawerRow({
   label,
+  icon,
   children,
 }: {
   label: string;
+  /** 16px glyph — Linear/Attio scan rhythm. Omit on a subset. */
+  icon?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-7 grid-cols-[6.75rem_minmax(0,1fr)] items-center gap-x-3 py-0.5">
+    <div
+      className={cn(
+        "grid min-h-8 items-center gap-x-2 py-0.5",
+        icon ? "grid-cols-[1rem_5.75rem_minmax(0,1fr)]" : "grid-cols-[6.75rem_minmax(0,1fr)]",
+      )}
+    >
+      {icon ? <span className="grid size-4 place-items-center text-muted-foreground">{icon}</span> : null}
       <span className="truncate text-[13px] font-normal text-muted-foreground">{label}</span>
       <div className="min-w-0 text-[13px] font-medium text-foreground">{children}</div>
     </div>

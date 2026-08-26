@@ -2,8 +2,11 @@ import * as React from "react";
 import {
   Bell,
   BookOpen,
+  Calendar,
   ChevronDown,
   Copy,
+  DollarSign,
+  Eye,
   Gauge,
   House,
   Inbox,
@@ -15,7 +18,9 @@ import {
   Radar,
   Search,
   Sparkles,
+  Tag,
   Trash2,
+  User,
   Users,
 } from "lucide-react";
 import {
@@ -814,31 +819,49 @@ function DrawerDemo() {
             ]}
             className="border-b border-border px-1.5"
           >
-            <TabPanel value="details" className="flex flex-col gap-3 px-4 pt-2.5">
-              <DrawerSection title="Properties">
-                <DrawerRow label="Revenue">
+            <TabPanel value="details" className="flex flex-col px-4">
+              <DrawerSection title="Properties" className="py-3">
+                <DrawerRow label="Revenue" icon={<DollarSign className="size-3.5" />}>
                   <span className="tabular-nums">$48,200</span>
                 </DrawerRow>
-                <DrawerRow label="GP">
+                <DrawerRow label="GP" icon={<DollarSign className="size-3.5" />}>
                   <span className="tabular-nums">$15,100</span>
                 </DrawerRow>
-                <DrawerRow label="Close date">24 Apr 2026</DrawerRow>
-                <DrawerRow label="AE">
+                <DrawerRow label="Close date" icon={<Calendar className="size-3.5" />}>
+                  24 Apr 2026
+                </DrawerRow>
+                <DrawerRow label="Stage" icon={<Tag className="size-3.5" />}>
+                  <Badge variant="green">Confirmed</Badge>
+                </DrawerRow>
+                <DrawerRow label="AE" icon={<User className="size-3.5" />}>
                   <DrawerPerson name="Alex Morgan" />
                 </DrawerRow>
-                <DrawerRow label="Engineer">
+                <DrawerRow label="Engineer" icon={<User className="size-3.5" />}>
                   <DrawerPerson name="Quinn Patel" />
                 </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Assignment">
-                <DrawerRow label="Owner">
-                  <Select id="showcase-deal-owner" aria-label="Owner" items={DRAWER_OWNERS} value={owner} onValueChange={setOwner} className="h-8" />
+                <DrawerRow label="Labels" icon={<Tag className="size-3.5" />}>
+                  <span className="inline-flex flex-wrap gap-1">
+                    <Badge variant="neutral">Trail</Badge>
+                    <Badge variant="neutral">Wholesale</Badge>
+                  </span>
                 </DrawerRow>
-                <DrawerRow label="Watch">
+              </DrawerSection>
+              <DrawerSection title="Assignment" className="border-t border-border py-3">
+                <DrawerRow label="Owner" icon={<User className="size-3.5" />}>
+                  <Select
+                    id="showcase-deal-owner"
+                    aria-label="Owner"
+                    items={DRAWER_OWNERS}
+                    value={owner}
+                    onValueChange={setOwner}
+                    className="h-7 border-0 bg-transparent px-0"
+                  />
+                </DrawerRow>
+                <DrawerRow label="Watch" icon={<Eye className="size-3.5" />}>
                   <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
                 </DrawerRow>
               </DrawerSection>
-              <DrawerSection title="Notes">
+              <DrawerSection title="Notes" className="border-t border-border py-3">
                 <Textarea
                   id="showcase-deal-notes"
                   aria-label="Internal notes"
@@ -847,7 +870,7 @@ function DrawerDemo() {
                 />
               </DrawerSection>
             </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 pt-2.5">
+            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 py-3">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },

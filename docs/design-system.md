@@ -917,9 +917,11 @@ Per component:
   `examples/drawer.tsx` are the **full surface**; an OS copies that and drops
   unused slots — it does not invent a thinner private drawer. `DrawerSection`
   is a sentence-case block label (never CSS `uppercase`). `DrawerRow` is the
-  property row: a ~108px muted label column, then the value or control
-  immediately after (left-aligned). Do not `justify-between` — that opens a void
-  across the middle of the sheet. One sheet at a time.
+  property row: optional 16px icon, a short muted label, then the value or
+  control immediately after (left-aligned) — Linear issue properties / Attio
+  details. Do not `justify-between`. Hairline between sections, not a gap.
+  Full-surface footer: secondary Close on the left, primary on the right
+  (Shopify sheet). One sheet at a time.
   A peek is not a new route and not a page tab. Drawer motion uses
   `--ease-drawer` (~200ms enter, faster exit); reduced-motion keeps the fade
   and drops the slide.

@@ -56,7 +56,15 @@ export {
 export { Banner, type BannerProps, type BannerVariant } from "./components/banner";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Popover, PopoverClose, type PopoverProps } from "./components/popover";
-export { Drawer, DrawerClose, type DrawerProps } from "./components/drawer";
+export {
+  Drawer,
+  DrawerClose,
+  DrawerSection,
+  DrawerRow,
+  type DrawerProps,
+  type DrawerSide,
+  type DrawerSize,
+} from "./components/drawer";
 export { CommandPalette, type CommandPaletteProps, type CommandItem } from "./components/command-palette";
 export { Input, Textarea, type InputProps, type TextareaProps } from "./components/input";
 export { Select, type SelectProps, type SelectOption } from "./components/select";

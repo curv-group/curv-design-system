@@ -8,7 +8,9 @@ import { Button, DataTable, LineChart /* … */ } from "@curvgroup/design-system
 ```
 
 Grouped by the same categories as the showcase. Key props only — read the
-component's TSDoc for the full surface. **Style through tokens, never raw hex.**
+component's TSDoc for the full surface. Showcase demos and `examples/` show
+**every slot**; an OS copies that and deletes what the job does not need.
+**Style through tokens, never raw hex.**
 
 ## Layout and structure
 
@@ -114,7 +116,7 @@ decided per column:
 | --- | --- | --- |
 | A modal (title, body, footer actions) | `Dialog`, `DialogClose` | `title`, `description`, `trigger`, `footer`, `open`/`onOpenChange` |
 | A confirm-before-acting modal (destructive default) | `ConfirmDialog` | `title`, `onConfirm`, `variant`, `confirmLabel` |
-| A side panel (details, forms) | `Drawer`, `DrawerClose` | `trigger`, `side`, `title`, `footer`, `open`/`onOpenChange` |
+| A side panel (details, forms) | `Drawer`, `DrawerClose`, `DrawerSection`, `DrawerRow` | `trigger`, `side`, `size`, `title`, `description`, `badge`, `headerActions`, `footer`, `open`/`onOpenChange`. Copy `examples/drawer.tsx` (full surface) |
 | A small anchored floating panel | `Popover`, `PopoverClose` | `trigger` (or `anchor`), `side`, `align`, `open`/`onOpenChange` |
 | A right-click / actions dropdown menu | `Menu`, `MenuItem`, `MenuSeparator`, `MenuLabel` | Menu: `trigger`, `align` · Item: `onClick`, `destructive`, `icon`, `shortcut` |
 | A hover hint on an element | `Tooltip`, `TooltipProvider` | `content`, `children`, `side`, `delay` |

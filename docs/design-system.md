@@ -905,6 +905,22 @@ Per component:
   right-aligned footer, Cancel (secondary) before the primary action. Modals
   scale from **center** (the one popover exception to origin-aware motion).
   If a "dialog" is becoming a multi-step form, it wants to be a page.
+- **`Drawer` / `DrawerClose` / `DrawerSection` / `DrawerRow`** — a right-edge
+  record peek (Linear issue panel, Shopify sheet) so the list stays visible
+  behind the `--overlay` scrim. Always a header with close; optional `badge`,
+  identifier (`description`), `headerActions` (CopyButton, a ⋯ menu); sticky
+  footer with secondary Close then the primary action. Default size `md`
+  (32rem); `sm` for filters, `lg` for denser forms. Hairline on the inner edge
+  (`border-l` / `border-r`) plus `shadow-card` — not a floating card. Compose
+  the body from the rest of the system (`Banner`, in-drawer `Tabs`, `Field`,
+  `Select`, `Switch`, `Avatar`, `Textarea`). The showcase and
+  `examples/drawer.tsx` are the **full surface**; an OS copies that and drops
+  unused slots — it does not invent a thinner private drawer. `DrawerSection`
+  is a sentence-case block label (never CSS `uppercase`). `DrawerRow` is the
+  property row: muted label left, value or control right. One sheet at a time.
+  A peek is not a new route and not a page tab. Drawer motion uses
+  `--ease-drawer` (~200ms enter, faster exit); reduced-motion keeps the fade
+  and drops the slide.
 - **`ToastProvider` + `toast.success/error/message`** — outcome feedback for
   async operations ("Deal confirmed", "Couldn't save"). Mount the provider
   **once at the app root**; call the imperative helpers from anywhere. Stacks
@@ -975,9 +991,10 @@ system and add it below — the second copy is the signal to extract, never to f
   `CommandPalette` (⌘K).
 - **Overlays & feedback**: `Tooltip` / `TooltipProvider`, `Menu` / `MenuItem` /
   `MenuSeparator` / `MenuLabel`, `Dialog` / `DialogClose`, `ConfirmDialog` (the
-  destructive-action gate), `Drawer` / `DrawerClose`, `Popover` / `PopoverClose`,
-  `ToastProvider` + `toast`, `Banner` (page-level), `EmptyState` — see *Overlays
-  & feedback* above.
+  destructive-action gate), `Drawer` / `DrawerClose` / `DrawerSection` /
+  `DrawerRow`, `Popover` / `PopoverClose`, `ToastProvider` + `toast`, `Banner`
+  (page-level), `EmptyState` — see *Overlays & feedback* above. Showcase demos
+  show the **full surface**; OS apps may use a subset.
 - **Data & reporting**: `DataTable` (+ `TableLink`, `FilterButton` /
   `ActiveFilterBar`, CSV/PDF export), `SummaryStrip` (full-width breakdown above a
   table), `StatCard` / `StatGroup` / `BreakdownRow`, `Sparkline`, `LineChart`,

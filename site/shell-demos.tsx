@@ -17,6 +17,7 @@ import {
   DetailPage,
   DashboardPage,
   Drawer,
+  DrawerSection,
   Field,
   Input,
   LineChart,
@@ -234,9 +235,11 @@ export function DetailPageDemo() {
         ]}
         drawer={
           <Drawer open={open} onOpenChange={setOpen} title="Create purchase order" footer={<Button onClick={() => setOpen(false)}>Submit</Button>}>
-            <p className="text-[13px] text-muted-foreground">
-              Suggested 600 units to Elk Grove — enough for 8 weeks at current velocity.
-            </p>
+            <DrawerSection title="Suggestion">
+              <p className="text-[13px] text-muted-foreground">
+                Suggested 600 units to Elk Grove — enough for 8 weeks at current velocity.
+              </p>
+            </DrawerSection>
           </Drawer>
         }
       >

@@ -21,6 +21,10 @@ export interface AppFrameProps {
  * sticky, zero-height concave mask pinned under the bar — `main` scrolls, so its
  * own corner wouldn't stay pinned, but the mask does. `main` itself is NOT
  * rounded.
+ *
+ * When a Drawer is open it sets `--curv-drawer-gutter-right` (or `-left`) on
+ * `:root`. Main yields that space so the list narrows and the peek sits on the
+ * same canvas — Linear / Shopify inline, not an overlay slab.
  */
 export function AppFrame({ topBar, sidebar, children }: AppFrameProps) {
   return (
@@ -41,7 +45,7 @@ export function AppFrame({ topBar, sidebar, children }: AppFrameProps) {
               }}
             />
           </div>
-          <main className="min-w-0 flex-1 overflow-x-clip bg-background">
+          <main className="min-w-0 flex-1 overflow-x-clip bg-background pr-[var(--curv-drawer-gutter-right,0px)] pl-[var(--curv-drawer-gutter-left,0px)] transition-[padding] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]">
             {children}
           </main>
         </div>

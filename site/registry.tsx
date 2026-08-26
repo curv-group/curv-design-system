@@ -2,8 +2,11 @@ import * as React from "react";
 import {
   Bell,
   BookOpen,
+  Calendar,
   ChevronDown,
   Copy,
+  DollarSign,
+  Eye,
   Gauge,
   House,
   Inbox,
@@ -15,7 +18,9 @@ import {
   Radar,
   Search,
   Sparkles,
+  Tag,
   Trash2,
+  User,
   Users,
 } from "lucide-react";
 import {
@@ -799,62 +804,80 @@ function DrawerDemo() {
           </>
         }
       >
-        <div className="-mx-4 -mt-3">
-          <Banner variant="warning" title="Needs Ops pricing" className="rounded-none border-x-0 border-t-0 px-4 py-2.5">
-            Confirm freight before sending the quote.
-          </Banner>
-          <Tabs
-            size="sm"
-            bar={false}
-            defaultValue="details"
-            aria-label="Deal views"
-            items={[
-              { value: "details", label: "Details" },
-              { value: "activity", label: "Activity" },
-            ]}
-            className="border-b border-border px-1.5"
-          >
-            <TabPanel value="details" className="flex flex-col gap-3 px-4 pt-2.5">
-              <DrawerSection title="Properties">
-                <DrawerRow label="Revenue">
-                  <span className="tabular-nums">$48,200</span>
-                </DrawerRow>
-                <DrawerRow label="GP">
-                  <span className="tabular-nums">$15,100</span>
-                </DrawerRow>
-                <DrawerRow label="Close date">24 Apr 2026</DrawerRow>
-                <DrawerRow label="AE">
-                  <DrawerPerson name="Alex Morgan" />
-                </DrawerRow>
-                <DrawerRow label="Engineer">
-                  <DrawerPerson name="Quinn Patel" />
-                </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Assignment">
-                <DrawerRow label="Owner">
-                  <Select id="showcase-deal-owner" aria-label="Owner" items={DRAWER_OWNERS} value={owner} onValueChange={setOwner} className="h-8" />
-                </DrawerRow>
-                <DrawerRow label="Watch">
-                  <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
-                </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Notes">
-                <Textarea
-                  id="showcase-deal-notes"
-                  aria-label="Internal notes"
-                  rows={3}
-                  defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+        <Banner variant="warning" title="Needs Ops pricing">
+          Confirm freight before sending the quote.
+        </Banner>
+        <Tabs
+          size="sm"
+          bar={false}
+          defaultValue="details"
+          aria-label="Deal views"
+          items={[
+            { value: "details", label: "Details" },
+            { value: "activity", label: "Activity" },
+          ]}
+          className="flex min-h-0 flex-col gap-3"
+        >
+          <TabPanel value="details" className="flex flex-col gap-3">
+            <DrawerSection title="Properties">
+              <DrawerRow label="Revenue" icon={<DollarSign className="size-3.5" />}>
+                <span className="tabular-nums">$48,200</span>
+              </DrawerRow>
+              <DrawerRow label="GP" icon={<DollarSign className="size-3.5" />}>
+                <span className="tabular-nums">$15,100</span>
+              </DrawerRow>
+              <DrawerRow label="Close date" icon={<Calendar className="size-3.5" />}>
+                24 Apr 2026
+              </DrawerRow>
+              <DrawerRow label="Stage" icon={<Tag className="size-3.5" />}>
+                <Badge variant="green">Confirmed</Badge>
+              </DrawerRow>
+              <DrawerRow label="AE" icon={<User className="size-3.5" />}>
+                <DrawerPerson name="Alex Morgan" />
+              </DrawerRow>
+              <DrawerRow label="Engineer" icon={<User className="size-3.5" />}>
+                <DrawerPerson name="Quinn Patel" />
+              </DrawerRow>
+              <DrawerRow label="Labels" icon={<Tag className="size-3.5" />}>
+                <span className="inline-flex flex-wrap gap-1">
+                  <Badge variant="neutral">Trail</Badge>
+                  <Badge variant="neutral">Wholesale</Badge>
+                </span>
+              </DrawerRow>
+            </DrawerSection>
+            <DrawerSection title="Assignment">
+              <DrawerRow label="Owner" icon={<User className="size-3.5" />}>
+                <Select
+                  id="showcase-deal-owner"
+                  aria-label="Owner"
+                  items={DRAWER_OWNERS}
+                  value={owner}
+                  onValueChange={setOwner}
+                  className="h-7 border-0 bg-transparent px-0"
                 />
-              </DrawerSection>
-            </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 pt-2.5">
+              </DrawerRow>
+              <DrawerRow label="Watch" icon={<Eye className="size-3.5" />}>
+                <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
+              </DrawerRow>
+            </DrawerSection>
+            <DrawerSection title="Notes">
+              <Textarea
+                id="showcase-deal-notes"
+                aria-label="Internal notes"
+                rows={3}
+                defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+              />
+            </DrawerSection>
+          </TabPanel>
+          <TabPanel value="activity">
+            <DrawerSection title="Activity">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },
                 { name: "Sam Rivera", action: "added a note on freight", time: "3 days ago" },
                 { name: "System", action: "quote SO-1042 created", time: "Last week" },
               ].map((event) => (
-                <div key={event.time} className="flex gap-2.5">
+                <div key={event.time} className="flex gap-2.5 py-1">
                   <Avatar name={event.name} size="sm" />
                   <div className="min-w-0">
                     <p className="text-[13px] leading-5 text-foreground">
@@ -865,9 +888,9 @@ function DrawerDemo() {
                   </div>
                 </div>
               ))}
-            </TabPanel>
-          </Tabs>
-        </div>
+            </DrawerSection>
+          </TabPanel>
+        </Tabs>
       </Drawer>
     </TooltipProvider>
   );
@@ -1805,7 +1828,7 @@ const [open, setOpen] = useState(false);
     group: "Overlays & feedback",
     isNew: true,
     summary:
-      "A right-edge record peek — Linear issue panel, Shopify sheet. The list stays visible. This page shows the full surface (badge, copy, ⋯ menu, Banner, tabs, property rows, fields, footer). An OS drops what the job does not need.",
+      "A floating inline record peek — Linear inspector, Shopify sheet. The page narrows; the peek sits on the same canvas as a column of cards. This page shows the full surface (badge, copy, ⋯ menu, Banner, tabs, property rows, fields, footer). An OS drops what the job does not need.",
     usage: `import {
   Drawer, DrawerClose, DrawerSection, DrawerRow, Button, Badge,
 } from "@curvgroup/design-system";
@@ -1830,7 +1853,7 @@ const [open, setOpen] = useState(false);
       {
         title: "Full surface",
         description:
-          "Opens on this page so you can see every slot. Close it, then Open deal. Hairline edge, sticky footer, in-drawer Details / Activity tabs. Copy examples/drawer.tsx and delete unused slots.",
+          "Opens on this page so you can see every slot. Close it, then Open deal. The list narrows; header, sections, and footer are separate cards on the canvas. Copy examples/drawer.tsx and delete unused slots.",
         canvas: "center",
         render: () => <DrawerDemo />,
       },

@@ -8,9 +8,14 @@ export type DrawerSide = "right" | "left";
 export type DrawerSize = "sm" | "md" | "lg";
 
 /**
- * Drawer — a side sheet that peeks at a record without leaving the list
- * (Linear issue panel, Shopify sheet). Built on base-ui Dialog: focus is
- * trapped, Escape / backdrop close it, focus returns to the trigger.
+ * Drawer — a floating inline record peek (Linear inspector, Shopify sheet).
+ * Built on base-ui Dialog: focus is trapped, Escape / backdrop close it,
+ * focus returns to the trigger.
+ *
+ * Not a full-bleed overlay slab. The panel sits in the content well under the
+ * TopBar; `AppFrame` narrows the page so the list and the peek share the canvas.
+ * Hierarchy is canvas (`bg-background`) → white cards (`DrawerSection`), with
+ * air between them — not one hairlined sheet.
  *
  * The showcase and `examples/drawer.tsx` show the **full surface** — badge,
  * identifier, header actions, Banner, in-drawer Tabs, property rows, fields,
@@ -45,7 +50,7 @@ export interface DrawerProps {
   /** Extra header controls — CopyButton, a ⋯ Menu. Keep to 1–2. */
   headerActions?: React.ReactNode;
   children?: React.ReactNode;
-  /** Pinned footer (secondary Close, then the primary action). */
+  /** Pinned footer. Full surface: secondary Close on the left, primary on the right (Shopify sheet). */
   footer?: React.ReactNode;
   /** Extra classes on the panel (escape hatch — prefer `size`). */
   className?: string;
@@ -58,6 +63,13 @@ const SIZE_CLASS: Record<DrawerSize, string> = {
 };
 
 const PANEL_EASE = "ease-[cubic-bezier(0.32,0.72,0,1)]";
+
+/** Panel + trailing inset + the gap between the narrowed page and the peek. */
+const GUTTER_FOR: Record<DrawerSize, string> = {
+  sm: "calc(26rem + 1.5rem)",
+  md: "calc(32rem + 1.5rem)",
+  lg: "calc(40rem + 1.5rem)",
+};
 
 export function Drawer({
   trigger,
@@ -75,13 +87,38 @@ export function Drawer({
   className,
 }: DrawerProps) {
   const labelled = Boolean(title);
+  const controlled = open !== undefined;
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(Boolean(defaultOpen));
+  const isOpen = controlled ? Boolean(open) : uncontrolledOpen;
+
+  const handleOpenChange = React.useCallback(
+    (next: boolean) => {
+      if (!controlled) setUncontrolledOpen(next);
+      onOpenChange?.(next);
+    },
+    [controlled, onOpenChange],
+  );
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const prop = side === "right" ? "--curv-drawer-gutter-right" : "--curv-drawer-gutter-left";
+    document.documentElement.style.setProperty(prop, GUTTER_FOR[size]);
+    return () => {
+      document.documentElement.style.removeProperty(prop);
+    };
+  }, [isOpen, side, size]);
+
   return (
-    <D.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+    <D.Root open={open} defaultOpen={defaultOpen} onOpenChange={handleOpenChange}>
       {trigger ? <D.Trigger render={trigger} /> : null}
       <D.Portal>
+        {/* Transparent on purpose: the peek lives on the same canvas as the
+            narrowed page (Linear / Shopify). Click-outside still dismisses. */}
         <D.Backdrop
           className={cn(
-            "fixed inset-0 z-50 bg-overlay",
+            // Under the TopBar so chrome stays clickable; no dim — the peek
+            // shares the canvas with the narrowed page.
+            "fixed inset-x-0 bottom-0 top-14 z-50 bg-transparent",
             "transition-opacity duration-200",
             PANEL_EASE,
             "data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
@@ -90,9 +127,12 @@ export function Drawer({
         />
         <D.Popup
           className={cn(
-            "fixed inset-y-0 z-50 flex h-dvh max-w-[calc(100vw-3rem)] flex-col overflow-hidden bg-card shadow-card outline-none",
+            "fixed z-50 flex max-w-[calc(100vw-1.5rem)] flex-col gap-3 outline-none",
+            // Sit in the content well: below the h-14 TopBar, inset on the
+            // trailing edge and the bottom — not a viewport-flush slab.
+            "top-[calc(3.5rem+0.75rem)] bottom-3",
             SIZE_CLASS[size],
-            side === "right" ? "right-0 border-l border-border" : "left-0 border-r border-border",
+            side === "right" ? "right-3" : "left-3",
             "transition-[transform,opacity] duration-200",
             PANEL_EASE,
             "data-[ending-style]:duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
@@ -102,7 +142,7 @@ export function Drawer({
             className,
           )}
         >
-          <header className="flex shrink-0 items-start gap-3 border-b border-border px-4 py-2.5">
+          <header className="flex shrink-0 items-start gap-3 rounded-lg bg-card px-4 py-3 shadow-card">
             <div className="min-w-0 flex-1">
               <div className="flex min-w-0 items-center gap-2">
                 {labelled ? (
@@ -134,9 +174,11 @@ export function Drawer({
               </D.Close>
             </div>
           </header>
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 text-[13px] text-foreground">{children}</div>
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto text-[13px] text-foreground">
+            {children}
+          </div>
           {footer ? (
-            <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card px-4 py-2.5">
+            <footer className="flex shrink-0 items-center justify-between gap-2 rounded-lg bg-card px-4 py-3 shadow-card [&:has(>:only-child)]:justify-end">
               {footer}
             </footer>
           ) : null}
@@ -149,7 +191,11 @@ export function Drawer({
 /** Close the drawer from inside (e.g. a Cancel button). */
 export const DrawerClose = D.Close;
 
-/** Labeled block inside a drawer body. Sentence-case title, not uppercase. */
+/**
+ * A raised section card inside the drawer column (Linear Properties /
+ * Shopify form card). Sentence-case title, not uppercase. Rows stay tight
+ * inside; air lives *between* cards, not inside them.
+ */
 export function DrawerSection({
   title,
   children,
@@ -160,27 +206,36 @@ export function DrawerSection({
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-1", className)}>
-      <h3 className="text-[12px] font-medium leading-4 text-muted-foreground">{title}</h3>
-      {children}
+    <section className={cn("flex flex-col gap-2 rounded-lg bg-card p-4 shadow-card", className)}>
+      <h3 className="text-[13px] font-medium leading-4 text-foreground">{title}</h3>
+      <div className="flex flex-col">{children}</div>
     </section>
   );
 }
 
 /**
- * Linear-style property row: a fixed label column, then the value or control
- * immediately after (left-aligned). Do not justify-between — that opens a void
- * across the middle of the sheet.
+ * Linear / Attio property row: optional 16px icon, a short muted label, then
+ * the value or control immediately after (left-aligned). Do not justify-between
+ * — that opens a void across the middle of the sheet.
  */
 export function DrawerRow({
   label,
+  icon,
   children,
 }: {
   label: string;
+  /** 16px glyph — Linear/Attio scan rhythm. Omit on a subset. */
+  icon?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-7 grid-cols-[6.75rem_minmax(0,1fr)] items-center gap-x-3 py-0.5">
+    <div
+      className={cn(
+        "grid min-h-8 items-center gap-x-2 py-0.5",
+        icon ? "grid-cols-[1rem_5.75rem_minmax(0,1fr)]" : "grid-cols-[6.75rem_minmax(0,1fr)]",
+      )}
+    >
+      {icon ? <span className="grid size-4 place-items-center text-muted-foreground">{icon}</span> : null}
       <span className="truncate text-[13px] font-normal text-muted-foreground">{label}</span>
       <div className="min-w-0 text-[13px] font-medium text-foreground">{children}</div>
     </div>

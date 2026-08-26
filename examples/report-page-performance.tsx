@@ -10,6 +10,7 @@ import {
   DataTable,
   type DataTableColumn,
   Drawer,
+  DrawerSection,
   LineChart,
   PageHeader,
   ReportPage,
@@ -64,11 +65,13 @@ export function LandingPagesReport() {
           onOpenChange={setOpen}
           title={selected?.path ?? "Landing page"}
         >
-          <p className="text-[13px] text-muted-foreground">
-            {selected
-              ? `${selected.sessions.toLocaleString()} sessions · ${selected.conv} conversion. Stay on the report — this is a peek, not a new page.`
-              : null}
-          </p>
+          <DrawerSection title="Performance">
+            <p className="text-[13px] text-muted-foreground">
+              {selected
+                ? `${selected.sessions.toLocaleString()} sessions · ${selected.conv} conversion. Stay on the report — this is a peek, not a new page.`
+                : null}
+            </p>
+          </DrawerSection>
         </Drawer>
       }
     />

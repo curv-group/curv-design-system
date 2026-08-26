@@ -905,21 +905,25 @@ Per component:
   right-aligned footer, Cancel (secondary) before the primary action. Modals
   scale from **center** (the one popover exception to origin-aware motion).
   If a "dialog" is becoming a multi-step form, it wants to be a page.
-- **`Drawer` / `DrawerClose` / `DrawerSection` / `DrawerRow`** — a right-edge
-  record peek (Linear issue panel, Shopify sheet) so the list stays visible
-  behind the `--overlay` scrim. Always a header with close; optional `badge`,
-  identifier (`description`), `headerActions` (CopyButton, a ⋯ menu); sticky
-  footer with secondary Close then the primary action. Default size `md`
-  (32rem); `sm` for filters, `lg` for denser forms. Hairline on the inner edge
-  (`border-l` / `border-r`) plus `shadow-card` — not a floating card. Compose
-  the body from the rest of the system (`Banner`, in-drawer `Tabs`, `Field`,
-  `Select`, `Switch`, `Avatar`, `Textarea`). The showcase and
-  `examples/drawer.tsx` are the **full surface**; an OS copies that and drops
-  unused slots — it does not invent a thinner private drawer. `DrawerSection`
-  is a sentence-case block label (never CSS `uppercase`). `DrawerRow` is the
-  property row: optional 16px icon, a short muted label, then the value or
-  control immediately after (left-aligned) — Linear issue properties / Attio
-  details. Do not `justify-between`. Hairline between sections, not a gap.
+- **`Drawer` / `DrawerClose` / `DrawerSection` / `DrawerRow`** — a floating
+  inline record peek (Linear inspector, Shopify sheet). Not a full-bleed overlay
+  slab and not a dimmed modal: the panel sits in the content well under the
+  TopBar, and `AppFrame` narrows the page (`--curv-drawer-gutter-right` /
+  `-left`) so the list and the peek share the canvas. Hierarchy is the small
+  background shift Linear and Shopify use — canvas (`bg-background`) → raised
+  white cards (`rounded-lg bg-card shadow-card`) with air between them. Always
+  a header card with close; optional `badge`, identifier (`description`),
+  `headerActions` (CopyButton, a ⋯ menu); sticky footer card with secondary
+  Close then the primary action. Default size `md` (32rem); `sm` for filters,
+  `lg` for denser forms. Compose the body from the rest of the system
+  (`Banner`, in-drawer `Tabs`, `Field`, `Select`, `Switch`, `Avatar`,
+  `Textarea`). The showcase and `examples/drawer.tsx` are the **full surface**;
+  an OS copies that and drops unused slots — it does not invent a thinner
+  private drawer. `DrawerSection` is a sentence-case **card** (never CSS
+  `uppercase`): title on the card, rows tight inside, gap *between* cards — not
+  a hairline stack. `DrawerRow` is the property row: optional 16px icon, a
+  short muted label, then the value or control immediately after (left-aligned)
+  — Linear issue properties / Attio details. Do not `justify-between`.
   Full-surface footer: secondary Close on the left, primary on the right
   (Shopify sheet). One sheet at a time.
   A peek is not a new route and not a page tab. Drawer motion uses

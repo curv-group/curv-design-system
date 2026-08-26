@@ -140,80 +140,80 @@ export function DealDrawer() {
           </>
         }
       >
-        <div className="-mx-4 -mt-3">
-          <Banner variant="warning" title="Needs Ops pricing" className="rounded-none border-x-0 border-t-0 px-4 py-2.5">
-            Confirm freight before sending the quote.
-          </Banner>
-          <Tabs
-            size="sm"
-            bar={false}
-            defaultValue="details"
-            aria-label="Deal views"
-            items={[
-              { value: "details", label: "Details" },
-              { value: "activity", label: "Activity" },
-            ]}
-            className="border-b border-border px-1.5"
-          >
-            <TabPanel value="details" className="flex flex-col px-4">
-              <DrawerSection title="Properties" className="py-3">
-                <DrawerRow label="Revenue" icon={<DollarIcon />}>
-                  <span className="tabular-nums">$48,200</span>
-                </DrawerRow>
-                <DrawerRow label="GP" icon={<DollarIcon />}>
-                  <span className="tabular-nums">$15,100</span>
-                </DrawerRow>
-                <DrawerRow label="Close date" icon={<CalendarIcon />}>
-                  24 Apr 2026
-                </DrawerRow>
-                <DrawerRow label="Stage" icon={<TagIcon />}>
-                  <Badge variant="green">Confirmed</Badge>
-                </DrawerRow>
-                <DrawerRow label="AE" icon={<UserIcon />}>
-                  <Person name="Alex Morgan" />
-                </DrawerRow>
-                <DrawerRow label="Engineer" icon={<UserIcon />}>
-                  <Person name="Quinn Patel" />
-                </DrawerRow>
-                <DrawerRow label="Labels" icon={<TagIcon />}>
-                  <span className="inline-flex flex-wrap gap-1">
-                    <Badge variant="neutral">Trail</Badge>
-                    <Badge variant="neutral">Wholesale</Badge>
-                  </span>
-                </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Assignment" className="border-t border-border py-3">
-                <DrawerRow label="Owner" icon={<UserIcon />}>
-                  <Select
-                    id="deal-owner"
-                    aria-label="Owner"
-                    items={OWNERS}
-                    value={owner}
-                    onValueChange={setOwner}
-                    className="h-7 border-0 bg-transparent px-0"
-                  />
-                </DrawerRow>
-                <DrawerRow label="Watch" icon={<EyeIcon />}>
-                  <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
-                </DrawerRow>
-              </DrawerSection>
-              <DrawerSection title="Notes" className="border-t border-border py-3">
-                <Textarea
-                  id="deal-notes"
-                  aria-label="Internal notes"
-                  rows={3}
-                  defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+        <Banner variant="warning" title="Needs Ops pricing">
+          Confirm freight before sending the quote.
+        </Banner>
+        <Tabs
+          size="sm"
+          bar={false}
+          defaultValue="details"
+          aria-label="Deal views"
+          items={[
+            { value: "details", label: "Details" },
+            { value: "activity", label: "Activity" },
+          ]}
+          className="flex min-h-0 flex-col gap-3"
+        >
+          <TabPanel value="details" className="flex flex-col gap-3">
+            <DrawerSection title="Properties">
+              <DrawerRow label="Revenue" icon={<DollarIcon />}>
+                <span className="tabular-nums">$48,200</span>
+              </DrawerRow>
+              <DrawerRow label="GP" icon={<DollarIcon />}>
+                <span className="tabular-nums">$15,100</span>
+              </DrawerRow>
+              <DrawerRow label="Close date" icon={<CalendarIcon />}>
+                24 Apr 2026
+              </DrawerRow>
+              <DrawerRow label="Stage" icon={<TagIcon />}>
+                <Badge variant="green">Confirmed</Badge>
+              </DrawerRow>
+              <DrawerRow label="AE" icon={<UserIcon />}>
+                <Person name="Alex Morgan" />
+              </DrawerRow>
+              <DrawerRow label="Engineer" icon={<UserIcon />}>
+                <Person name="Quinn Patel" />
+              </DrawerRow>
+              <DrawerRow label="Labels" icon={<TagIcon />}>
+                <span className="inline-flex flex-wrap gap-1">
+                  <Badge variant="neutral">Trail</Badge>
+                  <Badge variant="neutral">Wholesale</Badge>
+                </span>
+              </DrawerRow>
+            </DrawerSection>
+            <DrawerSection title="Assignment">
+              <DrawerRow label="Owner" icon={<UserIcon />}>
+                <Select
+                  id="deal-owner"
+                  aria-label="Owner"
+                  items={OWNERS}
+                  value={owner}
+                  onValueChange={setOwner}
+                  className="h-7 border-0 bg-transparent px-0"
                 />
-              </DrawerSection>
-            </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 py-3">
+              </DrawerRow>
+              <DrawerRow label="Watch" icon={<EyeIcon />}>
+                <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
+              </DrawerRow>
+            </DrawerSection>
+            <DrawerSection title="Notes">
+              <Textarea
+                id="deal-notes"
+                aria-label="Internal notes"
+                rows={3}
+                defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+              />
+            </DrawerSection>
+          </TabPanel>
+          <TabPanel value="activity">
+            <DrawerSection title="Activity">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },
                 { name: "Sam Rivera", action: "added a note on freight", time: "3 days ago" },
                 { name: "System", action: "quote SO-1042 created", time: "Last week" },
               ].map((event) => (
-                <div key={event.time} className="flex gap-2.5">
+                <div key={event.time} className="flex gap-2.5 py-1">
                   <Avatar name={event.name} size="sm" />
                   <div className="min-w-0">
                     <p className="text-[13px] leading-5 text-foreground">
@@ -224,9 +224,9 @@ export function DealDrawer() {
                   </div>
                 </div>
               ))}
-            </TabPanel>
-          </Tabs>
-        </div>
+            </DrawerSection>
+          </TabPanel>
+        </Tabs>
       </Drawer>
     </TooltipProvider>
   );

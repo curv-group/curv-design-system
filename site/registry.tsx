@@ -1828,7 +1828,7 @@ const [open, setOpen] = useState(false);
     group: "Overlays & feedback",
     isNew: true,
     summary:
-      "A floating inline record peek — Linear inspector, Shopify sheet. The page narrows; the peek sits on the same canvas as a column of cards. This page shows the full surface (badge, copy, ⋯ menu, Banner, tabs, property rows, fields, footer). An OS drops what the job does not need.",
+      "A floating inline record peek — Linear inspector, Shopify sheet. The page narrows; the sheet is a muted well with white section cards. This page shows the full surface (badge, copy, ⋯ menu, Banner, tabs, property rows, fields, footer). An OS drops what the job does not need.",
     usage: `import {
   Drawer, DrawerClose, DrawerSection, DrawerRow, Button, Badge,
 } from "@curvgroup/design-system";
@@ -1853,7 +1853,7 @@ const [open, setOpen] = useState(false);
       {
         title: "Full surface",
         description:
-          "Opens on this page so you can see every slot. Close it, then Open deal. The list narrows; header, sections, and footer are separate cards on the canvas. Copy examples/drawer.tsx and delete unused slots.",
+          "Opens on this page so you can see every slot. Close it, then Open deal. The list narrows; a muted floating sheet holds white section cards. Copy examples/drawer.tsx and delete unused slots.",
         canvas: "center",
         render: () => <DrawerDemo />,
       },

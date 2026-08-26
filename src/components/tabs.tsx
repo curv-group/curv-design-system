@@ -82,7 +82,7 @@ export function Tabs({
           // can span the content well. Match that column: list px-3 + tab px-3
           // = PageContainer px-6. `-ml-3` is only for bar={false} (card header).
           // Compact in-drawer tabs skip the negative inset — the parent pads.
-          bar ? "mx-auto w-full max-w-[1200px] px-3" : compact ? null : "-ml-3",
+          bar ? "mx-auto w-full max-w-[1200px] px-3" : compact ? "border-b border-border" : "-ml-3",
         )}
       >
         {items.map((it) => (
@@ -98,7 +98,7 @@ export function Tabs({
               // Hover chip: a rounded gray container behind the label, inset
               // vertically so it never touches the bar's top/bottom.
               compact
-                ? "before:absolute before:inset-x-1 before:inset-y-1 before:rounded-md before:bg-muted before:opacity-0 before:transition-opacity hover:before:opacity-100"
+                ? "before:absolute before:inset-x-1 before:inset-y-1 before:rounded-md before:bg-accent before:opacity-0 before:transition-opacity hover:before:opacity-100"
                 : "before:absolute before:inset-x-1 before:inset-y-2 before:rounded-md before:bg-muted before:opacity-0 before:transition-opacity hover:before:opacity-100",
               // Underline marker, aligned under the label (inset by the tab padding).
               compact

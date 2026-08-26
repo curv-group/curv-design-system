@@ -909,13 +909,13 @@ Per component:
   inline record peek (Linear inspector, Shopify sheet). Not a full-bleed overlay
   slab and not a dimmed modal: the panel sits in the content well under the
   TopBar, and `AppFrame` narrows the page (`--curv-drawer-gutter-right` /
-  `-left`) so the list and the peek share the canvas. Hierarchy is the small
-  background shift Linear and Shopify use — canvas (`bg-background`) → raised
-  white cards (`rounded-lg bg-card shadow-card`) with air between them. Always
-  a header card with close; optional `badge`, identifier (`description`),
-  `headerActions` (CopyButton, a ⋯ menu); sticky footer card with secondary
-  Close then the primary action. Default size `md` (32rem); `sm` for filters,
-  `lg` for denser forms. Compose the body from the rest of the system
+  `-left`) so the list and the peek share the canvas. The sheet is a recessed
+  well (`rounded-xl bg-muted shadow-card`) so it reads as a panel against the
+  page — then white section cards sit on that well, the Shopify setup-guide
+  move. Always a header with close; optional `badge`, identifier
+  (`description`), `headerActions` (CopyButton, a ⋯ menu); sticky footer with
+  secondary Close then the primary action. Default size `md` (32rem); `sm` for
+  filters, `lg` for denser forms. Compose the body from the rest of the system
   (`Banner`, in-drawer `Tabs`, `Field`, `Select`, `Switch`, `Avatar`,
   `Textarea`). The showcase and `examples/drawer.tsx` are the **full surface**;
   an OS copies that and drops unused slots — it does not invent a thinner

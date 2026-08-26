@@ -71,8 +71,8 @@ export const COMPONENTS = [
   { name: "Banner", group: "feedback", summary: "Rare page-level callout. Max one per view.", props: ["variant", "title", "children", "actions", "onDismiss"] },
   { name: "Drawer", group: "feedback", summary: "Right-edge record peek (Linear / Shopify sheet). Showcase is the full surface — OS apps may use a subset. Copy examples/drawer.tsx.", example: "examples/drawer.tsx", props: ["trigger", "open", "defaultOpen", "onOpenChange", "side", "size", "title", "description", "badge", "headerActions", "children", "footer"] },
   { name: "DrawerSection", group: "feedback", summary: "Sentence-case block label inside a drawer.", props: ["title", "children", "className"] },
-  { name: "DrawerRow", group: "feedback", summary: "Property row: muted label left, value or control right.", props: ["label", "children"] },
-  { name: "Tabs", group: "nav", summary: "Page-level view bar. Prefer DetailPage which owns this.", props: ["items", "value", "defaultValue", "onValueChange", "bar"] },
+  { name: "DrawerRow", group: "feedback", summary: "Property row: fixed label column, left-aligned value or control. Not justify-between.", props: ["label", "children"] },
+  { name: "Tabs", group: "nav", summary: "Page-level view bar. Prefer DetailPage which owns this. size=sm inside a Drawer.", props: ["items", "value", "defaultValue", "onValueChange", "bar", "size"] },
 ];
 
 export function search(query) {

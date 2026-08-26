@@ -43,6 +43,11 @@ export interface TabsProps {
   onValueChange?: (value: string) => void;
   /** Render the full-width `bg-card` + `border-b` bar (default). */
   bar?: boolean;
+  /**
+   * `md` is the page bar (h-11). `sm` is the in-drawer / in-card bar (h-8) —
+   * same underline, less air.
+   */
+  size?: "sm" | "md";
   /** Accessible name for the tablist. */
   "aria-label"?: string;
   className?: string;
@@ -56,10 +61,12 @@ export function Tabs({
   defaultValue,
   onValueChange,
   bar = true,
+  size = "md",
   className,
   children,
   "aria-label": ariaLabel,
 }: TabsProps) {
+  const compact = size === "sm";
   return (
     <T.Root
       value={value}
@@ -74,7 +81,8 @@ export function Tabs({
           // Page shells render this bar *outside* PageContainer so the hairline
           // can span the content well. Match that column: list px-3 + tab px-3
           // = PageContainer px-6. `-ml-3` is only for bar={false} (card header).
-          bar ? "mx-auto w-full max-w-[1200px] px-3" : "-ml-3",
+          // Compact in-drawer tabs skip the negative inset — the parent pads.
+          bar ? "mx-auto w-full max-w-[1200px] px-3" : compact ? null : "-ml-3",
         )}
       >
         {items.map((it) => (
@@ -82,15 +90,20 @@ export function Tabs({
             key={it.value}
             value={it.value}
             className={cn(
-              "relative inline-flex h-11 items-center rounded-t-md px-3 text-[13px] font-medium outline-none transition-colors",
+              "relative inline-flex items-center rounded-t-md font-medium outline-none transition-colors",
+              compact ? "h-8 px-2.5 text-[13px]" : "h-11 px-3 text-[13px]",
               // NB: base-ui Tabs.Tab marks the active tab with `data-active`
               // (Select/Menu items use `data-selected` — the attribute differs).
               "text-muted-foreground hover:text-foreground data-[active]:text-foreground",
               // Hover chip: a rounded gray container behind the label, inset
-              // vertically (inset-y-2) so it never touches the bar's top/bottom.
-              "before:absolute before:inset-x-1 before:inset-y-2 before:rounded-md before:bg-muted before:opacity-0 before:transition-opacity hover:before:opacity-100",
+              // vertically so it never touches the bar's top/bottom.
+              compact
+                ? "before:absolute before:inset-x-1 before:inset-y-1 before:rounded-md before:bg-muted before:opacity-0 before:transition-opacity hover:before:opacity-100"
+                : "before:absolute before:inset-x-1 before:inset-y-2 before:rounded-md before:bg-muted before:opacity-0 before:transition-opacity hover:before:opacity-100",
               // Underline marker, aligned under the label (inset by the tab padding).
-              "after:absolute after:inset-x-3 after:-bottom-px after:h-0.5 after:rounded-full after:bg-foreground after:opacity-0 data-[active]:after:opacity-100",
+              compact
+                ? "after:absolute after:inset-x-2.5 after:-bottom-px after:h-0.5 after:rounded-full after:bg-foreground after:opacity-0 data-[active]:after:opacity-100"
+                : "after:absolute after:inset-x-3 after:-bottom-px after:h-0.5 after:rounded-full after:bg-foreground after:opacity-0 data-[active]:after:opacity-100",
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
             )}
           >

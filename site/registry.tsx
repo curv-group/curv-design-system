@@ -757,7 +757,7 @@ const DRAWER_OWNERS = [
 
 function DrawerPerson({ name }: { name: string }) {
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="inline-flex items-center gap-1.5">
       <Avatar name={name} size="sm" />
       {name}
     </span>
@@ -799,11 +799,12 @@ function DrawerDemo() {
           </>
         }
       >
-        <div className="flex flex-col gap-4">
-          <Banner variant="warning" title="Needs Ops pricing">
+        <div className="-mx-4 -mt-3">
+          <Banner variant="warning" title="Needs Ops pricing" className="rounded-none border-x-0 border-t-0 px-4 py-2.5">
             Confirm freight before sending the quote.
           </Banner>
           <Tabs
+            size="sm"
             bar={false}
             defaultValue="details"
             aria-label="Deal views"
@@ -811,9 +812,9 @@ function DrawerDemo() {
               { value: "details", label: "Details" },
               { value: "activity", label: "Activity" },
             ]}
-            className="-mx-1 border-b border-border"
+            className="border-b border-border px-1.5"
           >
-            <TabPanel value="details" className="flex flex-col gap-6 pt-4">
+            <TabPanel value="details" className="flex flex-col gap-3 px-4 pt-2.5">
               <DrawerSection title="Properties">
                 <DrawerRow label="Revenue">
                   <span className="tabular-nums">$48,200</span>
@@ -830,42 +831,37 @@ function DrawerDemo() {
                 </DrawerRow>
               </DrawerSection>
               <DrawerSection title="Assignment">
-                <Field label="Owner" htmlFor="showcase-deal-owner">
-                  <Select id="showcase-deal-owner" items={DRAWER_OWNERS} value={owner} onValueChange={setOwner} />
-                </Field>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-foreground">Watch this deal</p>
-                    <p className="text-[12px] text-muted-foreground">Ping on status changes</p>
-                  </div>
+                <DrawerRow label="Owner">
+                  <Select id="showcase-deal-owner" aria-label="Owner" items={DRAWER_OWNERS} value={owner} onValueChange={setOwner} className="h-8" />
+                </DrawerRow>
+                <DrawerRow label="Watch">
                   <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
-                </div>
+                </DrawerRow>
               </DrawerSection>
               <DrawerSection title="Notes">
-                <Field label="Internal notes" htmlFor="showcase-deal-notes">
-                  <Textarea
-                    id="showcase-deal-notes"
-                    rows={4}
-                    defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
-                  />
-                </Field>
+                <Textarea
+                  id="showcase-deal-notes"
+                  aria-label="Internal notes"
+                  rows={3}
+                  defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+                />
               </DrawerSection>
             </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-4 pt-4">
+            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 pt-2.5">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },
                 { name: "Sam Rivera", action: "added a note on freight", time: "3 days ago" },
                 { name: "System", action: "quote SO-1042 created", time: "Last week" },
               ].map((event) => (
-                <div key={event.time} className="flex gap-3">
+                <div key={event.time} className="flex gap-2.5">
                   <Avatar name={event.name} size="sm" />
                   <div className="min-w-0">
                     <p className="text-[13px] leading-5 text-foreground">
                       <span className="font-medium">{event.name}</span>{" "}
                       <span className="text-muted-foreground">{event.action}</span>
                     </p>
-                    <p className="text-[12px] text-muted-foreground">{event.time}</p>
+                    <p className="text-[12px] leading-4 text-muted-foreground">{event.time}</p>
                   </div>
                 </div>
               ))}

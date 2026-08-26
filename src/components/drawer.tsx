@@ -175,11 +175,15 @@ export function Drawer({
               </D.Close>
             </div>
           </header>
-          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 text-[13px] text-foreground">
-            {children}
+          <div className="min-h-0 flex-1 overflow-y-auto px-3">
+            {/* Padding lives on the inner wrap — overflow+flex eats padding-bottom
+                on the scroller, which is why the last card sat on the footer. */}
+            <div className="flex flex-col gap-3 py-3 pb-6 text-[13px] text-foreground">
+              {children}
+            </div>
           </div>
           {footer ? (
-            <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-border px-4 py-3 [&:has(>:only-child)]:justify-end">
+            <footer className="flex shrink-0 items-center justify-between gap-2 px-4 pb-3 pt-0 [&:has(>:only-child)]:justify-end">
               {footer}
             </footer>
           ) : null}

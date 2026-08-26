@@ -116,7 +116,7 @@ decided per column:
 | --- | --- | --- |
 | A modal (title, body, footer actions) | `Dialog`, `DialogClose` | `title`, `description`, `trigger`, `footer`, `open`/`onOpenChange` |
 | A confirm-before-acting modal (destructive default) | `ConfirmDialog` | `title`, `onConfirm`, `variant`, `confirmLabel` |
-| A side panel (details, forms) | `Drawer`, `DrawerClose`, `DrawerSection`, `DrawerRow` | `trigger`, `side`, `size`, `title`, `description`, `badge`, `headerActions`, `footer`, `open`/`onOpenChange`. Floating inline: page narrows, peek is a column of cards on the canvas. `DrawerSection` is a raised card. `DrawerRow`: optional `icon`, label, left-aligned value. Footer: Close left, primary right. Copy `examples/drawer.tsx` |
+| A side panel (details, forms) | `Drawer`, `DrawerClose`, `DrawerSection`, `DrawerRow` | `trigger`, `side`, `size`, `title`, `description`, `badge`, `headerActions`, `footer`, `open`/`onOpenChange`. Floating inline: page narrows; the sheet is a muted well (`bg-muted`) with white `DrawerSection` cards inside. `DrawerRow`: optional `icon`, label, left-aligned value. Footer: Close left, primary right. Copy `examples/drawer.tsx` |
 | A small anchored floating panel | `Popover`, `PopoverClose` | `trigger` (or `anchor`), `side`, `align`, `open`/`onOpenChange` |
 | A right-click / actions dropdown menu | `Menu`, `MenuItem`, `MenuSeparator`, `MenuLabel` | Menu: `trigger`, `align` · Item: `onClick`, `destructive`, `icon`, `shortcut` |
 | A hover hint on an element | `Tooltip`, `TooltipProvider` | `content`, `children`, `side`, `delay` |

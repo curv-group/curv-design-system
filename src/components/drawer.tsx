@@ -14,8 +14,9 @@ export type DrawerSize = "sm" | "md" | "lg";
  *
  * Not a full-bleed overlay slab. The panel sits in the content well under the
  * TopBar; `AppFrame` narrows the page so the list and the peek share the canvas.
- * Hierarchy is canvas (`bg-background`) → white cards (`DrawerSection`), with
- * air between them — not one hairlined sheet.
+ * The sheet itself is a recessed well (`bg-muted`, `rounded-xl`) so it reads as
+ * a panel, not loose cards on the page. Hierarchy inside: muted well → white
+ * `DrawerSection` cards, with air between them.
  *
  * The showcase and `examples/drawer.tsx` show the **full surface** — badge,
  * identifier, header actions, Banner, in-drawer Tabs, property rows, fields,
@@ -127,7 +128,7 @@ export function Drawer({
         />
         <D.Popup
           className={cn(
-            "fixed z-50 flex max-w-[calc(100vw-1.5rem)] flex-col gap-3 outline-none",
+            "fixed z-50 flex max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-xl bg-muted shadow-card outline-none",
             // Sit in the content well: below the h-14 TopBar, inset on the
             // trailing edge and the bottom — not a viewport-flush slab.
             "top-[calc(3.5rem+0.75rem)] bottom-3",
@@ -142,7 +143,7 @@ export function Drawer({
             className,
           )}
         >
-          <header className="flex shrink-0 items-start gap-3 rounded-lg bg-card px-4 py-3 shadow-card">
+          <header className="flex shrink-0 items-start gap-3 px-4 py-3">
             <div className="min-w-0 flex-1">
               <div className="flex min-w-0 items-center gap-2">
                 {labelled ? (
@@ -174,11 +175,11 @@ export function Drawer({
               </D.Close>
             </div>
           </header>
-          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto text-[13px] text-foreground">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 text-[13px] text-foreground">
             {children}
           </div>
           {footer ? (
-            <footer className="flex shrink-0 items-center justify-between gap-2 rounded-lg bg-card px-4 py-3 shadow-card [&:has(>:only-child)]:justify-end">
+            <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-border px-4 py-3 [&:has(>:only-child)]:justify-end">
               {footer}
             </footer>
           ) : null}
@@ -192,8 +193,8 @@ export function Drawer({
 export const DrawerClose = D.Close;
 
 /**
- * A raised section card inside the drawer column (Linear Properties /
- * Shopify form card). Sentence-case title, not uppercase. Rows stay tight
+ * A raised white card on the drawer’s muted well (Shopify form card /
+ * setup-guide block). Sentence-case title, not uppercase. Rows stay tight
  * inside; air lives *between* cards, not inside them.
  */
 export function DrawerSection({

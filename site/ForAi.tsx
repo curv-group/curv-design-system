@@ -40,7 +40,7 @@ const BAD_TABS = `Build the analytics home. Make it complete.`;
 const GOOD = `Build the product screen. The first question is reorder or not. Warehouses and POs can live in tabs.`;
 
 export function ForAiPage({ version }: { version: string }) {
-  const install = INSTALL.replace("this OS", `this OS (pin github:jillesworks/curv-design-system#v${version})`);
+  const install = INSTALL.replace("this OS", `this OS (pin github:curv-group/curv-design-system#v${version})`);
   return (
     <PageContainer>
       <div className="mb-10 max-w-2xl">

@@ -17,7 +17,7 @@ every one of those is a missed step below.
 ## 1. Install & pin
 
 ```bash
-npm install github:jillesworks/curv-design-system#v0.3.0
+npm install github:curv-group/curv-design-system#v0.3.0
 ```
 
 It is **git-installed, not auto-updating** — npm locks the resolved commit in
@@ -113,7 +113,7 @@ Cheatsheet: `@curvgroup/design-system/docs/cheatsheet.md`.
 ## Updating an already-wired OS
 
 ```bash
-npm install github:jillesworks/curv-design-system#vX.Y.Z   # bump the tag
+npm install github:curv-group/curv-design-system#vX.Y.Z   # bump the tag
 git add package.json package-lock.json
 git commit -m "chore: bump design-system to vX.Y.Z"
 ```

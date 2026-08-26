@@ -102,7 +102,7 @@ export function Drawer({
             className,
           )}
         >
-          <header className="flex shrink-0 items-start gap-3 border-b border-border px-4 py-3">
+          <header className="flex shrink-0 items-start gap-3 border-b border-border px-4 py-2.5">
             <div className="min-w-0 flex-1">
               <div className="flex min-w-0 items-center gap-2">
                 {labelled ? (
@@ -134,9 +134,9 @@ export function Drawer({
               </D.Close>
             </div>
           </header>
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 text-[13px] text-foreground">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 text-[13px] text-foreground">{children}</div>
           {footer ? (
-            <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card px-4 py-3">
+            <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card px-4 py-2.5">
               {footer}
             </footer>
           ) : null}
@@ -160,14 +160,18 @@ export function DrawerSection({
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-3", className)}>
-      <h3 className="text-xs font-medium leading-4 text-muted-foreground">{title}</h3>
+    <section className={cn("flex flex-col gap-1", className)}>
+      <h3 className="text-[12px] font-medium leading-4 text-muted-foreground">{title}</h3>
       {children}
     </section>
   );
 }
 
-/** Linear-style property row: muted label left, value (or control) right. */
+/**
+ * Linear-style property row: a fixed label column, then the value or control
+ * immediately after (left-aligned). Do not justify-between — that opens a void
+ * across the middle of the sheet.
+ */
 export function DrawerRow({
   label,
   children,
@@ -176,9 +180,9 @@ export function DrawerRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-8 items-center justify-between gap-4 py-1">
-      <span className="shrink-0 text-[13px] font-normal text-muted-foreground">{label}</span>
-      <span className="min-w-0 text-right text-[13px] font-medium text-foreground">{children}</span>
+    <div className="grid min-h-7 grid-cols-[6.75rem_minmax(0,1fr)] items-center gap-x-3 py-0.5">
+      <span className="truncate text-[13px] font-normal text-muted-foreground">{label}</span>
+      <div className="min-w-0 text-[13px] font-medium text-foreground">{children}</div>
     </div>
   );
 }

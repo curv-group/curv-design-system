@@ -116,7 +116,7 @@ decided per column:
 | --- | --- | --- |
 | A modal (title, body, footer actions) | `Dialog`, `DialogClose` | `title`, `description`, `trigger`, `footer`, `open`/`onOpenChange` |
 | A confirm-before-acting modal (destructive default) | `ConfirmDialog` | `title`, `onConfirm`, `variant`, `confirmLabel` |
-| A side panel (details, forms) | `Drawer`, `DrawerClose`, `DrawerSection`, `DrawerRow` | `trigger`, `side`, `size`, `title`, `description`, `badge`, `headerActions`, `footer`, `open`/`onOpenChange`. Copy `examples/drawer.tsx` (full surface) |
+| A side panel (details, forms) | `Drawer`, `DrawerClose`, `DrawerSection`, `DrawerRow` | `trigger`, `side`, `size`, `title`, `description`, `badge`, `headerActions`, `footer`, `open`/`onOpenChange`. `DrawerRow` is a label column + left-aligned value. Copy `examples/drawer.tsx` (full surface) |
 | A small anchored floating panel | `Popover`, `PopoverClose` | `trigger` (or `anchor`), `side`, `align`, `open`/`onOpenChange` |
 | A right-click / actions dropdown menu | `Menu`, `MenuItem`, `MenuSeparator`, `MenuLabel` | Menu: `trigger`, `align` · Item: `onClick`, `destructive`, `icon`, `shortcut` |
 | A hover hint on an element | `Tooltip`, `TooltipProvider` | `content`, `children`, `side`, `delay` |

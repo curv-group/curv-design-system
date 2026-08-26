@@ -12,7 +12,7 @@ Humans describe the job in plain language. Map:
 - P&L / statement / landing-page performance / workbook → ReportPage (header, one ChartCard, one table, optional Drawer for a row peek)
 - settings / form → SettingsPage (narrow Field stack)
 
-Copy examples/list-page.tsx (and siblings). One fitting job: examples/dashboard-page.tsx (no tabs). Two named jobs: examples/dashboard-page-tabs.tsx. Chart + long table + row peek: examples/report-page-performance.tsx. Wire real data. Do not add sections.
+Copy examples/list-page.tsx (and siblings). One fitting job: examples/dashboard-page.tsx (no tabs). Two named jobs: examples/dashboard-page-tabs.tsx. Chart + long table + row peek: examples/report-page-performance.tsx. Record peek: examples/drawer.tsx (full surface — drop unused slots). Wire real data. Do not add sections.
 
 ## Tabs — count jobs
 

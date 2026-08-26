@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   ListChecks,
   MessageSquarePlus,
+  MoreHorizontal,
   Pencil,
   Radar,
   Search,
@@ -61,6 +62,8 @@ import {
   type CommandItem,
   Drawer,
   DrawerClose,
+  DrawerRow,
+  DrawerSection,
   EmptyState,
   PageHeader,
   Popover,
@@ -75,6 +78,7 @@ import {
   Sidebar,
   SidebarItem,
   SidebarSection,
+  TabPanel,
   Tabs,
   Switch,
   Textarea,
@@ -745,31 +749,131 @@ function PopoverDemo() {
   );
 }
 
-function DrawerDemo() {
+const DRAWER_OWNERS = [
+  { value: "alex", label: "Alex Morgan" },
+  { value: "sam", label: "Sam Rivera" },
+  { value: "jordan", label: "Jordan Lee" },
+];
+
+function DrawerPerson({ name }: { name: string }) {
   return (
-    <Drawer
-      trigger={<Button variant="outline" size="sm">Open deal</Button>}
-      title="Adventure Works"
-      description="SO-1042 · Confirmed"
-      footer={
-        <>
-          <DrawerClose render={<Button variant="secondary" size="sm">Close</Button>} />
-          <Button size="sm">Edit deal</Button>
-        </>
-      }
-    >
-      <div className="space-y-4">
-        <p className="text-muted-foreground">A right-side sheet for record detail, filters, or a peek — without leaving the list. Focus is trapped; Escape or the backdrop closes it.</p>
-        <div className="space-y-2">
-          {[["Revenue", "$48,200"], ["GP", "$15,100"], ["AE", "Alex Morgan"], ["Engineer", "Quinn Patel"]].map(([k, v]) => (
-            <div key={k} className="flex items-center justify-between border-b border-border py-2">
-              <span className="text-muted-foreground">{k}</span>
-              <span className="tabular-nums text-foreground">{v}</span>
-            </div>
-          ))}
+    <span className="inline-flex items-center gap-2">
+      <Avatar name={name} size="sm" />
+      {name}
+    </span>
+  );
+}
+
+function DrawerDemo() {
+  const [owner, setOwner] = React.useState("alex");
+  const [watching, setWatching] = React.useState(true);
+  return (
+    <TooltipProvider>
+      <Drawer
+        defaultOpen
+        trigger={<Button variant="outline" size="sm">Open deal</Button>}
+        title="Adventure Works"
+        description="SO-1042"
+        badge={<Badge variant="green">Confirmed</Badge>}
+        headerActions={
+          <>
+            <CopyButton value="SO-1042" label="Copy order number" />
+            <Menu
+              align="end"
+              trigger={
+                <Button variant="ghost" size="icon" className="size-8" aria-label="Deal actions">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              }
+            >
+              <MenuItem>Duplicate</MenuItem>
+              <MenuSeparator />
+              <MenuItem destructive>Archive</MenuItem>
+            </Menu>
+          </>
+        }
+        footer={
+          <>
+            <DrawerClose render={<Button variant="secondary" size="sm">Close</Button>} />
+            <Button size="sm">Save</Button>
+          </>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <Banner variant="warning" title="Needs Ops pricing">
+            Confirm freight before sending the quote.
+          </Banner>
+          <Tabs
+            bar={false}
+            defaultValue="details"
+            aria-label="Deal views"
+            items={[
+              { value: "details", label: "Details" },
+              { value: "activity", label: "Activity" },
+            ]}
+            className="-mx-1 border-b border-border"
+          >
+            <TabPanel value="details" className="flex flex-col gap-6 pt-4">
+              <DrawerSection title="Properties">
+                <DrawerRow label="Revenue">
+                  <span className="tabular-nums">$48,200</span>
+                </DrawerRow>
+                <DrawerRow label="GP">
+                  <span className="tabular-nums">$15,100</span>
+                </DrawerRow>
+                <DrawerRow label="Close date">24 Apr 2026</DrawerRow>
+                <DrawerRow label="AE">
+                  <DrawerPerson name="Alex Morgan" />
+                </DrawerRow>
+                <DrawerRow label="Engineer">
+                  <DrawerPerson name="Quinn Patel" />
+                </DrawerRow>
+              </DrawerSection>
+              <DrawerSection title="Assignment">
+                <Field label="Owner" htmlFor="showcase-deal-owner">
+                  <Select id="showcase-deal-owner" items={DRAWER_OWNERS} value={owner} onValueChange={setOwner} />
+                </Field>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-medium text-foreground">Watch this deal</p>
+                    <p className="text-[12px] text-muted-foreground">Ping on status changes</p>
+                  </div>
+                  <Switch checked={watching} onCheckedChange={setWatching} aria-label="Watch this deal" />
+                </div>
+              </DrawerSection>
+              <DrawerSection title="Notes">
+                <Field label="Internal notes" htmlFor="showcase-deal-notes">
+                  <Textarea
+                    id="showcase-deal-notes"
+                    rows={4}
+                    defaultValue="Customer wants trail packs in two drops. Flag Ops if freight lands above 8%."
+                  />
+                </Field>
+              </DrawerSection>
+            </TabPanel>
+            <TabPanel value="activity" className="flex flex-col gap-4 pt-4">
+              {[
+                { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
+                { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },
+                { name: "Sam Rivera", action: "added a note on freight", time: "3 days ago" },
+                { name: "System", action: "quote SO-1042 created", time: "Last week" },
+              ].map((event) => (
+                <div key={event.time} className="flex gap-3">
+                  <Avatar name={event.name} size="sm" />
+                  <div className="min-w-0">
+                    <p className="text-[13px] leading-5 text-foreground">
+                      <span className="font-medium">{event.name}</span>{" "}
+                      <span className="text-muted-foreground">{event.action}</span>
+                    </p>
+                    <p className="text-[12px] text-muted-foreground">{event.time}</p>
+                  </div>
+                </div>
+              ))}
+            </TabPanel>
+          </Tabs>
         </div>
-      </div>
-    </Drawer>
+      </Drawer>
+    </TooltipProvider>
   );
 }
 
@@ -1705,20 +1809,32 @@ const [open, setOpen] = useState(false);
     group: "Overlays & feedback",
     isNew: true,
     summary:
-      "A side sheet that slides in from the edge — record detail, filters, a peek without leaving the list. Built on base-ui Dialog: focus trapped, closes on Escape/outside click, restores focus.",
-    usage: `import { Drawer, DrawerClose, Button } from "@curvgroup/design-system";
+      "A right-edge record peek — Linear issue panel, Shopify sheet. The list stays visible. This page shows the full surface (badge, copy, ⋯ menu, Banner, tabs, property rows, fields, footer). An OS drops what the job does not need.",
+    usage: `import {
+  Drawer, DrawerClose, DrawerSection, DrawerRow, Button, Badge,
+} from "@curvgroup/design-system";
 
 <Drawer
   trigger={<Button variant="outline">Open deal</Button>}
-  title="Adventure Works" description="SO-1042 · Confirmed"
-  footer={<DrawerClose render={<Button>Close</Button>} />}
+  title="Adventure Works"
+  description="SO-1042"
+  badge={<Badge variant="green">Confirmed</Badge>}
+  footer={
+    <>
+      <DrawerClose render={<Button variant="secondary">Close</Button>} />
+      <Button>Save</Button>
+    </>
+  }
 >
-  {/* detail content */}
+  <DrawerSection title="Properties">
+    <DrawerRow label="Revenue">$48,200</DrawerRow>
+  </DrawerSection>
 </Drawer>`,
     demos: [
       {
-        title: "Right-side sheet",
-        description: "Slides in from the right (set side=\"left\" to anchor left). Header with title/description + close, scrollable body, pinned footer for actions.",
+        title: "Full surface",
+        description:
+          "Opens on this page so you can see every slot. Close it, then Open deal. Hairline edge, sticky footer, in-drawer Details / Activity tabs. Copy examples/drawer.tsx and delete unused slots.",
         canvas: "center",
         render: () => <DrawerDemo />,
       },

@@ -70,7 +70,9 @@ Copyable examples live in `examples/`. How to prompt (plain language, no shell n
 Tabs are optional. One job that fits → no page tabs. N named jobs → N tabs.
 Never invent Overview / Reporting / Marketing unless they named those jobs.
 Copy `examples/dashboard-page.tsx` (one job) or `examples/dashboard-page-tabs.tsx`
-(two jobs). A row peek is a Drawer (`examples/report-page-performance.tsx`).
+(two jobs). A row peek is a Drawer (`examples/drawer.tsx` for the full surface;
+`examples/report-page-performance.tsx` for a peek on a report). Showcase demos
+show every slot; OS apps drop what they do not need.
 
 ---
 

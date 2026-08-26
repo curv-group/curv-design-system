@@ -60,6 +60,9 @@ A peek at one row is a `Drawer`, not a new tab.
 3. If a field does not fit a slot, it goes in a **tab**, **drawer**, or
    **StatCard breakdown** — never a new card on the canvas.
 4. Do not invent props. Read the component TSDoc or `docs/cheatsheet.md`.
+   Showcase demos and `examples/` show the **full surface** (every slot,
+   composed primitives). Copy that and delete what the job does not need —
+   do not invent a thinner private variant.
 5. Style through tokens (`bg-card`, `text-muted-foreground`, `verdict-*`).
    Sentence case. Never raw hex, `bg-neutral-100`, or CSS `uppercase`.
 6. Run `npm run lint` and fix token errors (they name the substitute). Taste

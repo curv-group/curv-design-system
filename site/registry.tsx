@@ -814,7 +814,7 @@ function DrawerDemo() {
             ]}
             className="border-b border-border px-1.5"
           >
-            <TabPanel value="details" className="flex flex-col gap-4 px-4 pt-3">
+            <TabPanel value="details" className="flex flex-col gap-3 px-4 pt-2.5">
               <DrawerSection title="Properties">
                 <DrawerRow label="Revenue">
                   <span className="tabular-nums">$48,200</span>
@@ -847,7 +847,7 @@ function DrawerDemo() {
                 />
               </DrawerSection>
             </TabPanel>
-            <TabPanel value="activity" className="flex flex-col gap-3 px-4 pt-3">
+            <TabPanel value="activity" className="flex flex-col gap-2.5 px-4 pt-2.5">
               {[
                 { name: "Alex Morgan", action: "moved status to Confirmed", time: "2 hours ago" },
                 { name: "Quinn Patel", action: "joined as engineer", time: "Yesterday" },

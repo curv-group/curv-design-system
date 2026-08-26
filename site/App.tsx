@@ -365,7 +365,7 @@ function InstallDialog({
   onOpenChange: (o: boolean) => void;
   version: string;
 }) {
-  const setupPrompt = `Install or update the Curv design system to github:jillesworks/curv-design-system#v${version}. Follow docs/consuming-in-an-os.md (theme, Tailwind, ESLint, AppFrame). Run: npx @curvgroup/design-system init-agent. Confirm the app builds.`;
+  const setupPrompt = `Install or update the Curv design system to github:curv-group/curv-design-system#v${version}. Follow docs/consuming-in-an-os.md (theme, Tailwind, ESLint, AppFrame). Run: npx @curvgroup/design-system init-agent. Confirm the app builds.`;
   const usePrompt = `Build the product screen. I need to know if we should reorder. Show stock, suppliers, and sales — but not all on one canvas.`;
   return (
     <Dialog
@@ -376,7 +376,7 @@ function InstallDialog({
       footer={
         <>
           <a
-            href="https://github.com/jillesworks/curv-design-system/blob/main/docs/consuming-in-an-os.md"
+            href="https://github.com/curv-group/curv-design-system/blob/main/docs/consuming-in-an-os.md"
             target="_blank"
             rel="noreferrer"
             className="text-[13px] font-medium text-muted-foreground underline underline-offset-2 transition hover:text-foreground"

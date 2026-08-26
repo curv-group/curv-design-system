@@ -18,7 +18,7 @@ It ships four layers:
 **1. Install** (git pin until GitHub Packages publish is live):
 
 ```bash
-npm install github:jillesworks/curv-design-system#v0.3.0
+npm install github:curv-group/curv-design-system#v0.3.0
 ```
 
 **2. Import the theme** after Tailwind:

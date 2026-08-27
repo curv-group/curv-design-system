@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Menu as M } from "@base-ui/react/menu";
 import { cn } from "../lib/cn";
+import { overlayPopupMotion } from "../lib/overlay";
 
 /**
  * Dropdown menu (base-ui) — a trigger + a portalled, origin-aware popup of
@@ -42,10 +43,8 @@ export function Menu({
         <M.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
           <M.Popup
             className={cn(
-              "min-w-[10rem] max-h-[min(24rem,var(--available-height))] origin-[var(--transform-origin)] overflow-y-auto rounded-lg border border-border bg-popover p-1 text-[13px] text-popover-foreground shadow-lg outline-none",
-              "transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]",
-              "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-100",
-              "motion-safe:data-[starting-style]:scale-95 motion-safe:data-[ending-style]:scale-95",
+              "min-w-[10rem] max-h-[min(24rem,var(--available-height))] overflow-y-auto rounded-lg border border-border bg-popover p-1 text-[13px] text-popover-foreground shadow-lg outline-none",
+              overlayPopupMotion,
             )}
           >
             {children}

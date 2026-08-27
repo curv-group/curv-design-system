@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Select as S } from "@base-ui/react/select";
 import { cn } from "../lib/cn";
+import { overlayPopupMotion } from "../lib/overlay";
 
 /**
  * Select — a styled dropdown (base-ui), matching our menus, not the native OS
@@ -58,7 +59,12 @@ export function Select({
       </S.Trigger>
       <S.Portal>
         <S.Positioner side="bottom" align="start" sideOffset={6} alignItemWithTrigger={false} className="z-50">
-          <S.Popup className="max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-lg border border-border bg-popover p-1 text-[13px] text-popover-foreground shadow-lg outline-none">
+          <S.Popup
+            className={cn(
+              "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-lg border border-border bg-popover p-1 text-[13px] text-popover-foreground shadow-lg outline-none",
+              overlayPopupMotion,
+            )}
+          >
             {items.map((it) => (
               <S.Item
                 key={it.value}

@@ -964,7 +964,7 @@ Per component:
   palette, menus, and tooltips; never ad-hoc styled keys.
 
 Motion (from the `motion-system` skill, encoded in the components): popovers/
-menus/tooltips are origin-aware and ~150ms; the modal is ~200ms from center;
+menus/selects/tooltips are origin-aware and ~150ms; the modal is ~200ms from center;
 exits are faster than entries; `motion-safe:` gates every transform so
 reduced-motion keeps the fade and drops the movement. Hunt for missing motion
 with `find-animation-opportunities` (read-only). Review a motion diff with

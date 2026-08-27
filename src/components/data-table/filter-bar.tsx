@@ -9,6 +9,7 @@
 import * as React from "react";
 import { Menu } from "@base-ui/react/menu";
 import { cn } from "../../lib/cn";
+import { overlayPopupMotion } from "../../lib/overlay";
 import { Popover } from "../popover";
 
 /* ---------- inline icons ---------- */
@@ -50,8 +51,10 @@ function IconX({ className }: { className?: string }) {
 
 /* ---------- types ---------- */
 
-const MENU_POPUP =
-  "z-50 min-w-[190px] rounded-lg border border-border bg-popover p-1 text-[13px] text-foreground shadow-lg outline-none";
+const MENU_POPUP = cn(
+  "z-50 min-w-[190px] rounded-lg border border-border bg-popover p-1 text-[13px] text-foreground shadow-lg outline-none",
+  overlayPopupMotion,
+);
 const MENU_ROW =
   "flex cursor-default select-none items-center gap-2 rounded px-2 py-1.5 outline-none transition-colors data-[highlighted]:bg-accent data-[popup-open]:bg-accent";
 

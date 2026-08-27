@@ -182,6 +182,14 @@ custom dropdown, drawer):
 4. Match motion personality to the product: Customs OS is a professional financial/ops tool — motion should read as crisp and fast, never bouncy or playful. Reserve spring bounce for genuinely decorative, non-data contexts only.
 5. Review animations the next day with fresh eyes, and in slow motion / frame-by-frame (Chrome DevTools Animation panel) — timing issues are often invisible at full speed.
 
+## Related skills (keep separate)
+
+Do not merge these into this file. Load the one that matches the job:
+
+- `find-animation-opportunities` — sweep for missing motion; also lists what
+  not to animate. Read-only.
+- `review-animations` — review motion that already exists in a diff or component.
+
 ## Review Checklist
 
 | Issue | Fix |

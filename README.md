@@ -98,7 +98,10 @@ examples/               copyable TSX agents clone
 agent-kit/              AGENTS.md, CLAUDE.md, Cursor rule
 bin/cli.mjs             init-agent + mcp
 mcp/                    search, compose_page, get_component, validate_usage
-skills/curv-ui/         short always-on skill
+skills/curv-ui/         short always-on skill (OS apps)
+skills/motion-system/   how to apply the motion scale
+skills/find-animation-opportunities/  hunt for missing motion (read-only)
+skills/review-animations/             review existing motion
 site/                   showcase (For AI + live shells) — npm run dev → :6006
 docs/                   design-system.md (human spec), cheatsheet.md, llms.txt
 ```

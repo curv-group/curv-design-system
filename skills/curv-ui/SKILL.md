@@ -65,6 +65,9 @@ A peek at one row is a `Drawer`, not a new tab.
    do not invent a thinner private variant.
 5. Style through tokens (`bg-card`, `text-muted-foreground`, `verdict-*`).
    Sentence case. Never raw hex, `bg-neutral-100`, or CSS `uppercase`.
+   When a row is an entity (a channel, vendor, person, file), pass a 16px
+   leading mark — favicon, logo, or `Avatar`. Do not invent rainbow dots or
+   illustration.
 6. Run `npm run lint` and fix token errors (they name the substitute). Taste
    review comments on the PR; it does not block merge.
 

@@ -71,6 +71,20 @@ Nothing ships at 90%. The last 10% — the part that's invisible line-by-line �
 is the entire difference between "fine" and the product people can't articulate
 why they love.
 
+## Identity, not mood
+
+Clean is the product. The thing a quiet OS still needs — the thing Linear,
+Intercom, and Shopify have that a wall of type does not — is **the row showing
+the thing it is.** A favicon next to YouTube, a product thumb next to a SKU, an
+avatar next to a person, a channel mark next to an inbox row. That is scan, not
+decoration.
+
+Do not add 3D blobs, illustration cards, glow, flags on every row, or a rainbow
+of category dots. Those are a different product. A refund *cause* is not a brand
+— it stays text. Colour on a bar still marks meaning (an exception), never a
+category. The OS passes the 16px mark (`BarBreakdown` `leading`, `Avatar`, a
+favicon); the package does not detect YouTube.
+
 ## Color palette (neutral, navy-free)
 
 A **true neutral gray scale** — hue-agnostic, no blue tint (the app was rebased
@@ -1008,7 +1022,8 @@ system and add it below — the second copy is the signal to extract, never to f
 - **Data & reporting**: `DataTable` (+ `TableLink`, `FilterButton` /
   `ActiveFilterBar`, CSV/PDF export), `SummaryStrip` (full-width breakdown above a
   table), `StatCard` / `StatGroup` / `BreakdownRow`, `Sparkline`, `LineChart`,
-  `BarChart`, `BarBreakdown`, `ChartCard`, `ReportTable` (P&L / matrix grid),
+  `BarChart`, `BarBreakdown` (optional 16px `leading` favicon/logo/avatar on
+  entity rows — not on named causes), `ChartCard`, `ReportTable` (P&L / matrix grid),
   `KanbanBoard` / `KanbanColumn` / `KanbanCard`, `HScroll`.
 
 **Already extracted (use the package — don't fork the old app-local copies):**

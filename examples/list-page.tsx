@@ -4,6 +4,7 @@
  * DashboardPage). A chart + performance table is ReportPage, not a list.
  */
 import {
+  Avatar,
   Button,
   DataTable,
   type DataTableColumn,
@@ -20,6 +21,7 @@ const columns: DataTableColumn<Row>[] = [
     key: "name",
     header: "Customer",
     minWidth: 240,
+    leading: (r) => <Avatar name={r.name} size="sm" className="rounded-[4px]" />,
     render: (r) => <TableLink href={`/customers/${r.id}`}>{r.name}</TableLink>,
     value: (r) => r.name,
   },

@@ -29,9 +29,9 @@ import {
 } from "@curvgroup/design-system";
 
 const OWNERS = [
-  { value: "alex", label: "Alex Morgan" },
-  { value: "sam", label: "Sam Rivera" },
-  { value: "jordan", label: "Jordan Lee" },
+  { value: "alex", label: "Alex Morgan", icon: <Avatar name="Alex Morgan" size="sm" /> },
+  { value: "sam", label: "Sam Rivera", icon: <Avatar name="Sam Rivera" size="sm" /> },
+  { value: "jordan", label: "Jordan Lee", icon: <Avatar name="Jordan Lee" size="sm" /> },
 ];
 
 function Person({ name }: { name: string }) {

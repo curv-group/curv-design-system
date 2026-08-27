@@ -8,6 +8,7 @@ import {
   DollarSign,
   Eye,
   Gauge,
+  Globe,
   House,
   Inbox,
   LayoutGrid,
@@ -70,6 +71,7 @@ import {
   DrawerRow,
   DrawerSection,
   EmptyState,
+  Favicon,
   PageHeader,
   Popover,
   PopoverClose,
@@ -307,19 +309,24 @@ const DEAL_ROWS: DealRow[] = [
   { id: "10", status: "To collect", customer: "Margie's Travel", order: "SO-1051", brand: "CT", ae: "Alex Morgan", cs: "Morgan Diaz", engineer: null, revenue: 8200, gp: 2300, balance: 4100 },
 ];
 
-/** People render identically everywhere — Avatar + name. */
-function PersonCell({ name }: { name: string | null }) {
-  if (!name) return <span className="text-muted-foreground/50">—</span>;
-  return (
-    <span className="flex min-w-0 items-center gap-2">
-      <Avatar name={name} size="sm" />
-      <span className="truncate">{name}</span>
-    </span>
-  );
+/** People render identically everywhere — Avatar in `leading`, name as text. */
+function personMark(name: string | null) {
+  return name ? <Avatar name={name} size="sm" /> : null;
+}
+function personLabel(name: string | null) {
+  return name ?? <span className="text-muted-foreground/50">—</span>;
 }
 
 const DEAL_COLUMNS: DataTableColumn<DealRow>[] = [
-  { key: "customer", header: "Customer", width: 220, sticky: true, render: (r) => <TableLink href={`#/customer-${r.id}`}>{r.customer}</TableLink>, value: (r) => r.customer },
+  {
+    key: "customer",
+    header: "Customer",
+    width: 252,
+    sticky: true,
+    leading: (r) => <Avatar name={r.customer} size="sm" className="rounded-[4px]" />,
+    render: (r) => <TableLink href={`#/customer-${r.id}`}>{r.customer}</TableLink>,
+    value: (r) => r.customer,
+  },
   { key: "status", header: "Status", width: 132, render: (r) => <Badge variant={r.status === "Confirmed" ? "green" : "neutral"}>{r.status}</Badge>, value: (r) => r.status },
   {
     key: "order",
@@ -334,9 +341,9 @@ const DEAL_COLUMNS: DataTableColumn<DealRow>[] = [
     value: (r) => r.order,
   },
   { key: "brand", header: "Brand", width: 84, className: "text-muted-foreground" },
-  { key: "ae", header: "AE", width: 168, render: (r) => <PersonCell name={r.ae} />, value: (r) => r.ae },
-  { key: "cs", header: "CS", width: 176, render: (r) => <PersonCell name={r.cs} />, value: (r) => r.cs },
-  { key: "engineer", header: "Engineer", width: 176, render: (r) => <PersonCell name={r.engineer} />, value: (r) => r.engineer },
+  { key: "ae", header: "AE", width: 168, leading: (r) => personMark(r.ae), render: (r) => personLabel(r.ae), value: (r) => r.ae },
+  { key: "cs", header: "CS", width: 176, leading: (r) => personMark(r.cs), render: (r) => personLabel(r.cs), value: (r) => r.cs },
+  { key: "engineer", header: "Engineer", width: 176, leading: (r) => personMark(r.engineer), render: (r) => personLabel(r.engineer), value: (r) => r.engineer },
   { key: "revenue", header: "Revenue", width: 120, align: "right", render: (r) => usd.format(r.revenue), value: (r) => r.revenue },
   {
     key: "gp",
@@ -379,9 +386,9 @@ const DEAL_FILTERS: FilterDef<DealRow>[] = [
     key: "ae",
     label: "AE",
     options: [
-      { value: "Alex Morgan", label: "Alex Morgan" },
-      { value: "Sam Rivera", label: "Sam Rivera" },
-      { value: "Jordan Lee", label: "Jordan Lee" },
+      { value: "Alex Morgan", label: "Alex Morgan", icon: <Avatar name="Alex Morgan" size="sm" /> },
+      { value: "Sam Rivera", label: "Sam Rivera", icon: <Avatar name="Sam Rivera" size="sm" /> },
+      { value: "Jordan Lee", label: "Jordan Lee", icon: <Avatar name="Jordan Lee" size="sm" /> },
     ],
     get: (r) => r.ae,
   },
@@ -559,25 +566,25 @@ function LineBaselineDemo() {
 }
 
 const KANBAN_COLS = [
-  { key: "lead", label: "Lead Received", dot: "border-chart-5", value: "", cards: [] as { id: string; name: string; brand: string; accent: string; value: string; age: string; tone: string; warn?: boolean }[] },
+  { key: "lead", label: "Lead Received", dot: "border-chart-5", value: "", cards: [] as { id: string; name: string; brand: string; person?: boolean; value: string; age: string; tone: string; warn?: boolean }[] },
   { key: "contacted", label: "Contacted", dot: "border-chart-4", value: "$5.0k", cards: [
-    { id: "c1", name: "Graphic Design Institute", brand: "CT", accent: "bg-chart-1", value: "$1.0k", age: "1d", tone: "text-muted-foreground" },
-    { id: "c2", name: "Wingtip Toys", brand: "CT", accent: "bg-chart-1", value: "$1.0k", age: "1d", tone: "text-muted-foreground" },
-    { id: "c3", name: "Adventure Works", brand: "CT", accent: "bg-chart-1", value: "$3.0k", age: "1d", tone: "text-muted-foreground" },
+    { id: "c1", name: "Graphic Design Institute", brand: "CT", value: "$1.0k", age: "1d", tone: "text-muted-foreground" },
+    { id: "c2", name: "Wingtip Toys", brand: "CT", value: "$1.0k", age: "1d", tone: "text-muted-foreground" },
+    { id: "c3", name: "Adventure Works", brand: "CT", value: "$3.0k", age: "1d", tone: "text-muted-foreground" },
   ] },
   { key: "quote", label: "Quote Sent", dot: "border-chart-3", value: "$16k", cards: [
-    { id: "q1", name: "Springfield High", brand: "CT", accent: "bg-chart-1", value: "$4.3k", age: "today", tone: "text-muted-foreground" },
-    { id: "q2", name: "Trey Research", brand: "CT", accent: "bg-chart-1", value: "$2.0k", age: "today", tone: "text-muted-foreground" },
-    { id: "q3", name: "Margie's Travel", brand: "CT", accent: "bg-chart-1", value: "$1.1k", age: "today", tone: "text-muted-foreground" },
+    { id: "q1", name: "Springfield High", brand: "CT", value: "$4.3k", age: "today", tone: "text-muted-foreground" },
+    { id: "q2", name: "Trey Research", brand: "CT", value: "$2.0k", age: "today", tone: "text-muted-foreground" },
+    { id: "q3", name: "Margie's Travel", brand: "CT", value: "$1.1k", age: "today", tone: "text-muted-foreground" },
   ] },
   { key: "nego", label: "Negotiation", dot: "border-chart-2", value: "$34k", cards: [
-    { id: "n1", name: "Jordan Lee", brand: "CT", accent: "bg-chart-1", value: "$750", age: "today", tone: "text-muted-foreground" },
-    { id: "n2", name: "Litware", brand: "CT", accent: "bg-chart-1", value: "$1.4k", age: "1d", tone: "text-muted-foreground" },
-    { id: "n3", name: "Fourth Coffee", brand: "CT", accent: "bg-chart-1", value: "$810", age: "1d", tone: "text-muted-foreground" },
+    { id: "n1", name: "Jordan Lee", brand: "CT", person: true, value: "$750", age: "today", tone: "text-muted-foreground" },
+    { id: "n2", name: "Litware", brand: "CT", value: "$1.4k", age: "1d", tone: "text-muted-foreground" },
+    { id: "n3", name: "Fourth Coffee", brand: "CT", value: "$810", age: "1d", tone: "text-muted-foreground" },
   ] },
   { key: "closing", label: "Closing", dot: "border-chart-1", value: "$9.9k", cards: [
-    { id: "x1", name: "Duff Brewing", brand: "CT", accent: "bg-chart-1", value: "$2.7k", age: "1d", tone: "text-muted-foreground" },
-    { id: "x2", name: "Lucerne Publishing", brand: "TS", accent: "bg-chart-2", value: "$2.3k", age: "17d", tone: "text-verdict-red", warn: true },
+    { id: "x1", name: "Duff Brewing", brand: "CT", value: "$2.7k", age: "1d", tone: "text-muted-foreground" },
+    { id: "x2", name: "Lucerne Publishing", brand: "TS", value: "$2.3k", age: "17d", tone: "text-verdict-red", warn: true },
   ] },
   { key: "won", label: "Won", dot: "bg-verdict-green", filled: true, value: "", cards: [] as never[] },
 ] as const;
@@ -598,12 +605,10 @@ function KanbanDemo() {
           >
             {col.cards.map((c) => (
               <KanbanCard key={c.id} href="#">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2">
+                  <Avatar name={c.name} size="sm" className={"person" in c && c.person ? undefined : "rounded-[4px]"} />
                   <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">{c.name}</span>
-                  <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-[10px] font-medium text-muted-foreground">
-                    <span className={cn("size-1.5 rounded-full", c.accent)} />
-                    {c.brand}
-                  </span>
+                  <span className="mt-0.5 shrink-0 text-[10px] font-medium text-muted-foreground">{c.brand}</span>
                 </div>
                 <div className="mt-1.5 flex items-baseline justify-between gap-2">
                   <span className="text-[13px] font-semibold tabular-nums text-foreground">{c.value}</span>
@@ -645,23 +650,19 @@ function BarChartDemo() {
   );
 }
 
-/** 16px channel favicon for the BarBreakdown showcase. Brand colour lives on
- *  the mark (identity), not in the bar fill. Direct / Others stay muted. */
-function ChannelMark({
+/** Muted 16px glyph for a non-brand bucket (Direct, Others). Real brands use Favicon. */
+function ChannelGlyph({
   label,
-  tile,
   children,
 }: {
   label: string;
-  tile?: string;
   children: React.ReactNode;
 }) {
   return (
     <span
       aria-hidden
       title={label}
-      className="grid size-4 place-items-center overflow-hidden rounded-[4px] ring-1 ring-border/50"
-      style={tile ? { backgroundColor: tile } : undefined}
+      className="grid size-4 place-items-center overflow-hidden rounded-[4px] bg-muted text-muted-foreground"
     >
       {children}
     </span>
@@ -669,76 +670,18 @@ function ChannelMark({
 }
 
 const CHANNEL_ITEMS: React.ComponentProps<typeof BarBreakdown>["items"] = [
-  {
-    label: "YouTube",
-    value: 128,
-    meta: "$18K",
-    leading: (
-      <ChannelMark label="YouTube" tile="#FF0033">
-        <svg viewBox="0 0 16 16" className="size-4" aria-hidden>
-          <path fill="#fff" d="M6.2 5v6l5.2-3-5.2-3z" />
-        </svg>
-      </ChannelMark>
-    ),
-  },
-  {
-    label: "Meta",
-    value: 96,
-    meta: "$22K",
-    leading: (
-      <ChannelMark label="Meta" tile="#0668E1">
-        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
-          <path
-            fill="none"
-            stroke="#fff"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            d="M2.2 8.2c.8-2 2-3.4 3.4-3.4 1.6 0 2.5 1.4 3.4 3.2.8 1.6 1.5 2.4 2.6 2.4 1.2 0 2.2-1 2.8-1.8M13.8 7.8c-.8 2-2 3.4-3.4 3.4-1.6 0-2.5-1.4-3.4-3.2C6.2 6.4 5.5 5.6 4.4 5.6 3.2 5.6 2.2 6.6 1.6 7.4"
-          />
-        </svg>
-      </ChannelMark>
-    ),
-  },
-  {
-    label: "Google",
-    value: 72,
-    meta: "$14K",
-    leading: (
-      <ChannelMark label="Google" tile="#fff">
-        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
-          <path fill="#4285F4" d="M14.4 8.2c0-.5-.04-.9-.12-1.3H8.2v2.5h3.5c-.15.8-.6 1.5-1.3 2v1.6h2.1c1.2-1.1 1.9-2.8 1.9-4.8z" />
-          <path fill="#34A853" d="M8.2 14.4c1.8 0 3.3-.6 4.4-1.6l-2.1-1.6c-.6.4-1.4.7-2.3.7-1.8 0-3.3-1.2-3.8-2.8H2.2v1.7c1.1 2.2 3.4 3.6 6 3.6z" />
-          <path fill="#FBBC05" d="M4.4 9.1c-.14-.4-.22-.9-.22-1.3 0-.5.08-.9.22-1.3V4.8H2.2C1.7 5.8 1.4 7 1.4 8.2c0 1.2.3 2.4.8 3.4l2.2-1.7z" />
-          <path fill="#EA4335" d="M8.2 3.7c1 0 1.8.3 2.5 1l1.9-1.9C11.5 1.7 10 1.1 8.2 1.1 5.6 1.1 3.3 2.5 2.2 4.8l2.2 1.7c.5-1.6 2-2.8 3.8-2.8z" />
-        </svg>
-      </ChannelMark>
-    ),
-  },
-  {
-    label: "TikTok",
-    value: 48,
-    meta: "$9K",
-    leading: (
-      <ChannelMark label="TikTok" tile="#111">
-        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
-          <path fill="#fff" d="M10.2 2v7.1a2.7 2.7 0 1 1-2.3-2.7V8a1.2 1.2 0 1 0 .8 1.1V2h1.5zm1.3 0c.4 1.6 1.5 2.8 3.1 3.1V6.6c-1.1-.1-2.1-.5-3.1-1.2V2z" />
-        </svg>
-      </ChannelMark>
-    ),
-  },
+  { label: "YouTube", value: 128, meta: "$18K", leading: <Favicon src="/favicons/youtube.png" title="YouTube" /> },
+  { label: "Meta", value: 96, meta: "$22K", leading: <Favicon src="/favicons/meta.png" title="Meta" /> },
+  { label: "Google", value: 72, meta: "$14K", leading: <Favicon src="/favicons/google.png" title="Google" /> },
+  { label: "TikTok", value: 48, meta: "$9K", leading: <Favicon src="/favicons/tiktok.png" title="TikTok" /> },
   {
     label: "Direct",
     value: 36,
     meta: "—",
     leading: (
-      <ChannelMark label="Direct">
-        <span className="grid size-4 place-items-center bg-muted text-muted-foreground">
-          <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-            <circle cx="8" cy="8" r="5.2" />
-            <path d="M2.8 8h10.4M8 2.8c1.6 1.8 2.4 3.4 2.4 5.2S9.6 11.4 8 13.2C6.4 11.4 5.6 9.8 5.6 8S6.4 4.6 8 2.8z" />
-          </svg>
-        </span>
-      </ChannelMark>
+      <ChannelGlyph label="Direct">
+        <Globe className="size-3" />
+      </ChannelGlyph>
     ),
   },
   {
@@ -746,11 +689,9 @@ const CHANNEL_ITEMS: React.ComponentProps<typeof BarBreakdown>["items"] = [
     value: 20,
     meta: "$2K",
     leading: (
-      <ChannelMark label="Others">
-        <span className="grid size-4 place-items-center bg-muted text-[9px] font-medium leading-none text-muted-foreground">
-          ···
-        </span>
-      </ChannelMark>
+      <ChannelGlyph label="Others">
+        <MoreHorizontal className="size-3" />
+      </ChannelGlyph>
     ),
   },
 ];
@@ -855,9 +796,9 @@ function PopoverDemo() {
 }
 
 const DRAWER_OWNERS = [
-  { value: "alex", label: "Alex Morgan" },
-  { value: "sam", label: "Sam Rivera" },
-  { value: "jordan", label: "Jordan Lee" },
+  { value: "alex", label: "Alex Morgan", icon: <Avatar name="Alex Morgan" size="sm" /> },
+  { value: "sam", label: "Sam Rivera", icon: <Avatar name="Sam Rivera" size="sm" /> },
+  { value: "jordan", label: "Jordan Lee", icon: <Avatar name="Jordan Lee" size="sm" /> },
 ];
 
 function DrawerPerson({ name }: { name: string }) {
@@ -997,21 +938,21 @@ function DrawerDemo() {
 }
 
 const CMD_ITEMS: CommandItem[] = [
-  { id: "leads", label: "Leads intelligence", group: "Leads", hint: "Leads", onSelect: () => {} },
-  { id: "alloc", label: "Lead allocation", group: "Leads", hint: "Leads", onSelect: () => {} },
-  { id: "review", label: "Manual review", group: "Leads", hint: "Leads", onSelect: () => {} },
-  { id: "deals", label: "Deals", group: "Pipeline", hint: "Pipeline", keywords: "orders", onSelect: () => {} },
-  { id: "customers", label: "Customers", group: "Pipeline", hint: "Pipeline", onSelect: () => {} },
-  { id: "quote", label: "Quotation", group: "Tools", hint: "Tools", keywords: "rfq quote", onSelect: () => {} },
-  { id: "ship", label: "Shipping calculator", group: "Tools", hint: "Tools", onSelect: () => {} },
-  { id: "refunds", label: "Refunds", group: "Finance", hint: "Finance", onSelect: () => {} },
-  { id: "leaderboard", label: "Leaderboard", group: "Reports", hint: "Reports", onSelect: () => {} },
+  { id: "leads", label: "Leads intelligence", group: "Leads", hint: "Leads", icon: <Radar className="size-4" />, onSelect: () => {} },
+  { id: "alloc", label: "Lead allocation", group: "Leads", hint: "Leads", icon: <Users className="size-4" />, onSelect: () => {} },
+  { id: "review", label: "Manual review", group: "Leads", hint: "Leads", icon: <ListChecks className="size-4" />, onSelect: () => {} },
+  { id: "deals", label: "Deals", group: "Pipeline", hint: "Pipeline", keywords: "orders", icon: <Inbox className="size-4" />, onSelect: () => {} },
+  { id: "customers", label: "Customers", group: "Pipeline", hint: "Pipeline", icon: <Users className="size-4" />, onSelect: () => {} },
+  { id: "quote", label: "Quotation", group: "Tools", hint: "Tools", keywords: "rfq quote", icon: <BookOpen className="size-4" />, onSelect: () => {} },
+  { id: "ship", label: "Shipping calculator", group: "Tools", hint: "Tools", icon: <Gauge className="size-4" />, onSelect: () => {} },
+  { id: "refunds", label: "Refunds", group: "Finance", hint: "Finance", icon: <DollarSign className="size-4" />, onSelect: () => {} },
+  { id: "leaderboard", label: "Leaderboard", group: "Reports", hint: "Reports", icon: <LayoutGrid className="size-4" />, onSelect: () => {} },
 ];
 
 const CMD_RECENTS: CommandItem[] = [
-  { id: "r-so1042", label: "SO-1042 · Adventure Works", hint: "Deal", onSelect: () => {} },
-  { id: "r-deals", label: "Deals", hint: "Pipeline", onSelect: () => {} },
-  { id: "r-refunds", label: "Refunds", hint: "Finance", onSelect: () => {} },
+  { id: "r-so1042", label: "SO-1042 · Adventure Works", hint: "Deal", icon: <Avatar name="Adventure Works" size="sm" className="rounded-[4px]" />, onSelect: () => {} },
+  { id: "r-deals", label: "Deals", hint: "Pipeline", icon: <Inbox className="size-4" />, onSelect: () => {} },
+  { id: "r-refunds", label: "Refunds", hint: "Finance", icon: <DollarSign className="size-4" />, onSelect: () => {} },
 ];
 
 function CommandPaletteDemo() {
@@ -1266,7 +1207,7 @@ const notifSquare = (bg: string, node: React.ReactNode) => (
 function ShellChromeDemo() {
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const [items, setItems] = React.useState<NotificationItem[]>([
-    { id: "1", title: "Deal assigned to you", body: "Contoso — $42k custom order", time: "2m ago", unread: true, href: "#", icon: notifSquare("bg-chart/12 text-chart", <Inbox size={16} />) },
+    { id: "1", title: "Deal assigned to you", body: "Contoso — $42k custom order", time: "2m ago", unread: true, href: "#", icon: <Avatar name="Contoso" size="sm" className="rounded-[4px]" /> },
     { id: "2", title: "Feedback resolved", body: "“Export to CSV” shipped in v0.2.8", time: "1h ago", unread: true, href: "#", icon: notifSquare("bg-verdict-green/12 text-verdict-green", <ListChecks size={16} />) },
     { id: "3", title: "Whale spotted", body: "New high-value lead in Manual Review", time: "3h ago", href: "#", icon: notifSquare("bg-muted text-muted-foreground", <Bell size={16} />) },
   ]);
@@ -1573,13 +1514,16 @@ export const COMPONENTS: Entry[] = [
     group: "Data display",
     isNew: true,
     summary:
-      "The one table every OS uses. Search, Linear-style filters, view tabs, a summary slot, and CSV/PDF export — each optional. Virtualized rows; column-config driven.",
-    usage: `import { DataTable } from "@curvgroup/design-system";
+      "The one table every OS uses. Search, Linear-style filters, view tabs, a summary slot, and CSV/PDF export — each optional. Virtualized rows; column-config driven. Identity columns take a `leading` mark (favicon, product thumb, avatar).",
+    usage: `import { DataTable, Avatar, TableLink } from "@curvgroup/design-system";
 
 const columns = [
-  // Primary text column: a comfortable min-width so typical names fit; longer
-  // values truncate with an ellipsis. Numeric columns can stay at the default.
-  { key: "customer", header: "Customer", minWidth: 240 },
+  // Identity column: a 16–20px mark, then the name. Comfortable min-width
+  // so typical names fit; longer values truncate with an ellipsis.
+  { key: "customer", header: "Customer", minWidth: 240, sticky: true,
+    leading: (r) => <Avatar name={r.customer} size="sm" className="rounded-[4px]" />,
+    render: (r) => <TableLink href={\`#/customer-\${r.id}\`}>{r.customer}</TableLink>,
+    value: (r) => r.customer },
   { key: "revenue", header: "Revenue", align: "right",
     render: (r) => usd.format(r.revenue), value: (r) => r.revenue },
 ];
@@ -1595,7 +1539,7 @@ const columns = [
       {
         title: "Deals",
         description:
-          "Everything on: search + Filter (Linear-style chips) + view tabs + summary + Export. Sort by header; scroll is virtualized. Any of these is optional per table.",
+          "Everything on: search + Filter (Linear-style chips) + view tabs + summary + Export. Customer and people columns carry a leading mark — company squircle, round avatar. Sort by header; scroll is virtualized.",
         canvas: "surface",
         render: () => <DealsTableDemo />,
       },
@@ -1668,7 +1612,7 @@ const [range, setRange] = React.useState();
     demos: [
       {
         title: "Deal pipeline",
-        description: "Six fixed-width columns in one horizontal scroll track (drag the board sideways). Ring dot per stage, filled green for Won; cards link out; the rotting-deal age turns red. Edge-fades appear only when there's more to scroll.",
+        description: "Six fixed-width columns in one horizontal scroll track (drag the board sideways). Each card opens with the company (or person) mark — no rainbow brand dots. Ring dot per stage, filled green for Won; rotting-deal age turns red.",
         canvas: "plain",
         render: () => <KanbanDemo />,
       },
@@ -1773,12 +1717,12 @@ const [range, setRange] = React.useState();
     isNew: true,
     summary:
       "A ranked distribution (spend by channel, refunds by cause). Proportion is a subtle fill BEHIND each row so length, label, and value read as one line. Entity rows take a 16px `leading` mark (favicon, logo, avatar); named causes stay text. One neutral fill by default — colour on the bar marks an exception, not a category.",
-    usage: `import { BarBreakdown } from "@curvgroup/design-system";
+    usage: `import { BarBreakdown, Favicon } from "@curvgroup/design-system";
 
 <BarBreakdown
   items={[
-    { label: "YouTube", value: 128, meta: "$18K", leading: youtubeFavicon },
-    { label: "Meta", value: 96, meta: "$22K", leading: metaFavicon },
+    { label: "YouTube", value: 128, meta: "$18K", leading: <Favicon src={youtubeSrc} /> },
+    { label: "Meta", value: 96, meta: "$22K", leading: <Favicon src={metaSrc} /> },
     { label: "Direct", value: 36, meta: "—" },
   ]}
   formatValue={(n) => String(n)}
@@ -1787,7 +1731,7 @@ const [range, setRange] = React.useState();
       {
         title: "Sessions by channel",
         description:
-          "When the row is a channel or brand, a 16px favicon sits in front of the name — YouTube, Meta, Google, TikTok. Direct and Others stay a muted mark. The fill behind the row stays neutral; ranking is still length.",
+          "When the row is a channel or brand, the official 16px favicon sits in front of the name — YouTube, Meta, Google, TikTok. Direct and Others stay a muted system glyph. Never a drawn stand-in. The fill behind the row stays neutral; ranking is still length.",
         canvas: "plain",
         render: () => <BarBreakdownDemo />,
       },
@@ -1912,13 +1856,14 @@ const [open, setOpen] = useState(false);
   open={open} onOpenChange={setOpen}
   items={[
     { id: "deals", label: "Deals", group: "Pipeline", hint: "Pipeline",
+      icon: <Inbox className="size-4" />,
       onSelect: () => router.push("/deals") },
   ]}
 /> // registers ⌘K itself`,
     demos: [
       {
         title: "⌘K search",
-        description: "Press ⌘K / Ctrl-K (or the button) to open. Type to filter across label + keywords; ↑↓ to move, Enter to select, Esc to close. Results group by section with a right-aligned hint.",
+        description: "Press ⌘K / Ctrl-K (or the button) to open. Type to filter across label + keywords; ↑↓ to move, Enter to select, Esc to close. Every row has a leading mark — page glyph, or the company avatar on a recent deal.",
         canvas: "center",
         render: () => <CommandPaletteDemo />,
       },

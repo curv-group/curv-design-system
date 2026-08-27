@@ -82,8 +82,9 @@ decoration.
 Do not add 3D blobs, illustration cards, glow, flags on every row, or a rainbow
 of category dots. Those are a different product. A refund *cause* is not a brand
 — it stays text. Colour on a bar still marks meaning (an exception), never a
-category. The OS passes the 16px mark (`BarBreakdown` `leading`, `Avatar`, a
-favicon); the package does not detect YouTube.
+category. The OS passes the mark (`Favicon` for a brand, `Avatar` for a person,
+`DataTable` / `BarBreakdown` `leading`, `CommandItem.icon`, `FilterOption.icon`);
+the package does not detect YouTube. Never draw a stand-in logo.
 
 ## Color palette (neutral, navy-free)
 
@@ -536,7 +537,10 @@ meaning is "progress".
 - Numeric columns right-aligned with `tabular-nums`. Empty = `—` tertiary.
 - Identity columns use the **two-line cell**: primary in foreground medium,
   meta line below in caption muted. Never cram badges next to the primary
-  text; never let a cell wrap accidentally.
+  text; never let a cell wrap accidentally. The identity column also takes a
+  **`leading` mark** — `Favicon` for a brand/domain, a product thumb, `Avatar`
+  for a person, `Avatar` + `rounded-[4px]` for a company without a logo. Status,
+  money, and named causes stay text.
 - **Filtering** for a table with 3+ facets uses the **Linear filter pattern**
   (see `app/(app)/deals/deals-filter.tsx`): a single dashed **"Filter"**
   button opening a menu of properties; **hovering a property opens a submenu**
@@ -1007,7 +1011,7 @@ system and add it below — the second copy is the signal to extract, never to f
 - **Shell / layout**: `AppFrame` (the whole cradle — never rebuild it), `TopBar`,
   `Sidebar` / `SidebarSection` / `SidebarItem`, `PageContainer`, `PageHeader`
   (title + optional count/badge/actions — no eyebrow, no subtitle).
-- **Primitives**: `Button`, `Badge`, `Avatar` / `AvatarGroup`, `Card`, `Kbd`,
+- **Primitives**: `Button`, `Badge`, `Avatar` / `AvatarGroup`, `Favicon`, `Card`, `Kbd`,
   `Skeleton`, `CopyButton`, `cn`.
 - **Forms**: `Input`, `Textarea`, `Select`, `MultiSelect`, `Checkbox`,
   `Radio` / `RadioGroup`, `Switch`, `SegmentedControl`, `Field`, `DateRangePicker`.
@@ -1022,8 +1026,8 @@ system and add it below — the second copy is the signal to extract, never to f
 - **Data & reporting**: `DataTable` (+ `TableLink`, `FilterButton` /
   `ActiveFilterBar`, CSV/PDF export), `SummaryStrip` (full-width breakdown above a
   table), `StatCard` / `StatGroup` / `BreakdownRow`, `Sparkline`, `LineChart`,
-  `BarChart`, `BarBreakdown` (optional 16px `leading` favicon/logo/avatar on
-  entity rows — not on named causes), `ChartCard`, `ReportTable` (P&L / matrix grid),
+  `BarChart`, `BarBreakdown` (optional 16px `leading` — real `Favicon` / logo /
+  avatar on entity rows, never a drawn stand-in; omit on named causes), `ChartCard`, `ReportTable` (P&L / matrix grid),
   `KanbanBoard` / `KanbanColumn` / `KanbanCard`, `HScroll`.
 
 **Already extracted (use the package — don't fork the old app-local copies):**

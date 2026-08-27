@@ -6,6 +6,10 @@ import { cn } from "../lib/cn";
  * deterministically from the name (so the same person is always the same
  * colour), or an image when `src` is given. Use it in table cells, menus,
  * comments — anywhere a person appears — so people never look hand-rolled.
+ *
+ * People stay `rounded-full`. A company without a logo can pass
+ * `className="rounded-[4px]"` (squircle). A brand with a real mark is
+ * `Favicon`, not a drawn stand-in inside this chip.
  */
 const SIZES = {
   sm: "size-5 text-[10px]",

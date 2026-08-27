@@ -49,7 +49,7 @@ A peek at one row is `drawer`, not a new route.
 | Any button / CTA | `Button` | `variant`, `size`, `loading` (+ native button attrs) |
 | A single-line text input | `Input` | native `<input>` attrs (`value`, `onChange`, `placeholder`) |
 | A multi-line input | `Textarea` | native `<textarea>` attrs (`rows`, `value`, `onChange`) |
-| A single-choice dropdown | `Select` | `items`, `value`, `onValueChange`, `placeholder` |
+| A single-choice dropdown | `Select` | `items` (`value`, `label`, optional `icon`), `value`, `onValueChange`, `placeholder` |
 | A multi-choice dropdown with search | `MultiSelect` | `items`, `value`, `onValueChange`, `searchPlaceholder` |
 | A checkbox | `Checkbox` | `checked`, `onCheckedChange`, `aria-label` |
 | A radio group | `RadioGroup`, `Radio` | Group: `value`, `onValueChange` · Radio: `value` |
@@ -62,17 +62,18 @@ A peek at one row is `drawer`, not a new route.
 
 | Use when | Component | Key props |
 | --- | --- | --- |
-| A sortable, searchable, filterable table (virtualized) | `DataTable` (+ `TableLink`, `downloadCsv`/`downloadPdf`) | `columns`, `rows`, `searchable`, `filters`, `tabs`, `getRowHref`, `exportFilename` |
+| A sortable, searchable, filterable table (virtualized) | `DataTable` (+ `TableLink`, `downloadCsv`/`downloadPdf`) | `columns` (optional `leading` mark), `rows`, `searchable`, `filters`, `tabs`, `getRowHref`, `exportFilename` |
+| A 16px brand / domain mark | `Favicon` | `src` (the real asset — never a drawn stand-in) |
 | A P&L / period matrix with drill-down | `ReportTable` | `sections`, `periods`, `summaryColumns`, `view`, `formatValue` |
 | A single KPI (label + value + delta + sparkline) | `StatCard` (+ `StatGroup`, `BreakdownRow`) | `label`, `value`, `delta`, `sparkline`, `href`, `breakdown` |
 | A headline total broken into shares with a bar | `SummaryStrip` | `label`, `total`, `caption`, `items`, `hideBar` |
 | A ranked list of values as horizontal bars | `BarBreakdown` | `items` (`label`, `value`, optional `leading` / `meta` / `fillClassName`), `formatValue`, `showPercent`, `max` |
+| An avatar / stacked avatars | `Avatar`, `AvatarGroup` | Avatar: `name`, `src`, `size` (`className="rounded-[4px]"` for a company without a logo) |
 | A trend line (comparison / projected / gaps) | `LineChart` | `series`, `xLabels`, `area`, `yBaseline`, `tooltipTitle`, `formatY` |
 | Stacked / grouped vertical bars | `BarChart` | `series`, `xLabels`, `stacked`, `formatY` |
 | A chart wrapped in a titled card with legend + loading | `ChartCard` | `title`, `value`, `delta`, `controls`, `legend`, `children` |
 | A tiny inline trend (no axes) | `Sparkline` | `data`, `variant`, `className` |
 | A drag-free column board | `KanbanBoard`, `KanbanColumn`, `KanbanCard` | Column: `label`, `count`, `value`, `dotClassName` · Card: `href`, `onClick` |
-| An avatar / stacked avatars | `Avatar`, `AvatarGroup` | Avatar: `name`, `src`, `size` |
 | A status / category pill | `Badge` | `variant` (+ native span attrs) |
 | A loading placeholder | `Skeleton` | `width`, `height`, `circle` |
 | A copy-to-clipboard affordance (e.g. in a cell) | `CopyButton` | `value`, `label`, `revealOnHover` |
@@ -94,6 +95,8 @@ decided per column:
   A numeric column auto-aligns right + sizes tight; a column with a custom
   `render` keeps left alignment (set `align` to override).
 - **Set `minWidth` on the filler** if 120px is too tight before it truncates.
+- **Identity columns take a `leading` mark** (`Favicon`, product thumb, `Avatar`).
+  The mark is not exported; set `value` for search/CSV.
 - **When the table is wider than its container**, the filler sits at its
   `minWidth` and truncates; horizontal scroll is driven by the fixed columns —
   the filler never blows out to its full content.
@@ -121,7 +124,7 @@ decided per column:
 | A right-click / actions dropdown menu | `Menu`, `MenuItem`, `MenuSeparator`, `MenuLabel` | Menu: `trigger`, `align` · Item: `onClick`, `destructive`, `icon`, `shortcut` |
 | A hover hint on an element | `Tooltip`, `TooltipProvider` | `content`, `children`, `side`, `delay` |
 | A transient success/error notice | `ToastProvider` + `toast()` | `toast(message, opts)`; mount `ToastProvider` once |
-| A ⌘K command palette | `CommandPalette` | `open`, `onOpenChange`, `items`, `recents`, `shortcut` |
+| A ⌘K command palette | `CommandPalette` | `open`, `onOpenChange`, `items` (`icon` for the leading mark), `recents`, `shortcut` |
 | An inline informational / warning strip | `Banner` | `variant`, `title`, `children`, `actions`, `onDismiss` |
 | A "nothing here yet" placeholder | `EmptyState` | `icon`, `title`, `description`, `actions` |
 | A keyboard-key hint | `Kbd` | `children` (+ native attrs) |

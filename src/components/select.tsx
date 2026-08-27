@@ -7,7 +7,8 @@ import { overlayPopupMotion } from "../lib/overlay";
 
 /**
  * Select — a styled dropdown (base-ui), matching our menus, not the native OS
- * picker. Pass `items` for the option list; the trigger shows the selected label.
+ * picker. Pass `items` for the option list; the trigger shows the selected
+ * label and, when present, the item's `icon` (Linear assignee).
  */
 export interface SelectOption {
   value: string;
@@ -37,12 +38,22 @@ export function Select({
   id,
   className,
 }: SelectProps) {
+  const isControlled = value !== undefined;
+  const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
+  const current = isControlled ? value : uncontrolled;
+  const selected = items.find((it) => it.value === current);
+
+  const handleChange = (v: string) => {
+    if (!isControlled) setUncontrolled(v);
+    onValueChange?.(v);
+  };
+
   return (
     <S.Root
       items={items}
       value={value}
       defaultValue={defaultValue}
-      onValueChange={onValueChange ? (v) => onValueChange(v ?? "") : undefined}
+      onValueChange={(v) => handleChange(v ?? "")}
       disabled={disabled}
     >
       <S.Trigger
@@ -52,7 +63,10 @@ export function Select({
           className,
         )}
       >
-        <S.Value placeholder={placeholder} />
+        <span className="flex min-w-0 items-center gap-2">
+          {selected?.icon ? <span className="shrink-0">{selected.icon}</span> : null}
+          <S.Value placeholder={placeholder} />
+        </span>
         <S.Icon className="text-muted-foreground">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="m6 9 6 6 6-6" />

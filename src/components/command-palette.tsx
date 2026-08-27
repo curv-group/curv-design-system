@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Dialog as D } from "@base-ui/react/dialog";
 import { cn } from "../lib/cn";
+import { Kbd } from "./kbd";
 
 /**
  * CommandPalette (⌘K) — the global search/jump modal every OS mounts once. A
@@ -174,6 +175,21 @@ export function CommandPalette({
                 );
               })
             )}
+          </div>
+          <div className="flex shrink-0 items-center gap-3 border-t border-border px-3 py-2 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Kbd>↑</Kbd>
+              <Kbd>↓</Kbd>
+              to navigate
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Kbd>↵</Kbd>
+              to select
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Kbd>Esc</Kbd>
+              to close
+            </span>
           </div>
         </D.Popup>
       </D.Portal>

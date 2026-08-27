@@ -39,19 +39,31 @@ function IconChevronDown({ className }: { className?: string }) {
 /** Identity mark + truncating label — Shopify product thumb / Linear assignee. */
 function CellInner({
   leading,
+  description,
   children,
   truncate,
 }: {
   leading?: React.ReactNode;
+  description?: React.ReactNode;
   children: React.ReactNode;
   truncate: boolean;
 }) {
-  const text = truncate ? <span className="min-w-0 truncate">{children}</span> : children;
-  if (leading == null) return text;
+  const hasMeta = description != null && description !== false;
+  const label = hasMeta ? (
+    <span className="min-w-0">
+      <span className={cn("block", truncate && "truncate")}>{children}</span>
+      <span className="block truncate text-[12px] font-normal text-muted-foreground">{description}</span>
+    </span>
+  ) : truncate ? (
+    <span className="min-w-0 truncate">{children}</span>
+  ) : (
+    children
+  );
+  if (leading == null) return label;
   return (
     <span className="flex min-w-0 items-center gap-2">
       <span className="shrink-0">{leading}</span>
-      {text}
+      {label}
     </span>
   );
 }
@@ -78,12 +90,18 @@ export interface DataTableColumn<Row> {
   header: string;
   render?: (row: Row) => React.ReactNode;
   /**
-   * 16–20px identity to the left of the cell text — `Favicon` for a brand /
-   * domain, product thumb, `Avatar` for a person, `Avatar` + `rounded-[4px]`
-   * for a company without a logo. Omit on status, money, and named causes.
-   * Not exported (CSV/PDF use `value()`).
+   * 16–20px identity to the left of the cell text — `Favicon` / product thumb
+   * for a square asset, `Avatar` (always round) for a person or a company
+   * without a logo. Omit on status, money, and named causes. Not exported
+   * (CSV/PDF use `value()`).
    */
   leading?: (row: Row) => React.ReactNode;
+  /**
+   * Second line under the cell text (Shopify title+variant, Vercel name+url).
+   * Muted caption; truncates independently. Bump `rowHeight` if many columns
+   * use it — default 44px fits one extra 12px line.
+   */
+  description?: (row: Row) => React.ReactNode;
   /** Sort + export + search value. Defaults to `row[key]`. */
   value?: (row: Row) => CellValue;
   align?: "left" | "right";
@@ -566,8 +584,9 @@ export function DataTable<Row>({
                     {columns.map((c, i) => {
                       const content = c.render ? c.render(row) : (accessor(c, row) as React.ReactNode);
                       const mark = c.leading?.(row);
+                      const desc = c.description?.(row);
                       const inner = (
-                        <CellInner leading={mark} truncate={aligns[i] !== "right"}>
+                        <CellInner leading={mark} description={desc} truncate={aligns[i] !== "right"}>
                           {content}
                         </CellInner>
                       );
@@ -611,7 +630,7 @@ export function DataTable<Row>({
                             // flex so the label, not the image, is what truncates.
                             aligns[i] === "right"
                               ? "whitespace-nowrap text-right tabular-nums"
-                              : mark != null
+                              : mark != null || desc != null
                                 ? "flex items-center"
                                 : "min-w-0 truncate",
                             c.className,

@@ -66,7 +66,7 @@ A peek at one row is `drawer`, not a new route.
 | A P&L / period matrix with drill-down | `ReportTable` | `sections`, `periods`, `summaryColumns`, `view`, `formatValue` |
 | A single KPI (label + value + delta + sparkline) | `StatCard` (+ `StatGroup`, `BreakdownRow`) | `label`, `value`, `delta`, `sparkline`, `href`, `breakdown` |
 | A headline total broken into shares with a bar | `SummaryStrip` | `label`, `total`, `caption`, `items`, `hideBar` |
-| A ranked list of values as horizontal bars | `BarBreakdown` | `items`, `formatValue`, `showPercent`, `max` |
+| A ranked list of values as horizontal bars | `BarBreakdown` | `items` (`label`, `value`, optional `leading` / `meta` / `fillClassName`), `formatValue`, `showPercent`, `max` |
 | A trend line (comparison / projected / gaps) | `LineChart` | `series`, `xLabels`, `area`, `yBaseline`, `tooltipTitle`, `formatY` |
 | Stacked / grouped vertical bars | `BarChart` | `series`, `xLabels`, `stacked`, `formatY` |
 | A chart wrapped in a titled card with legend + loading | `ChartCard` | `title`, `value`, `delta`, `controls`, `legend`, `children` |

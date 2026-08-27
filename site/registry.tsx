@@ -645,22 +645,122 @@ function BarChartDemo() {
   );
 }
 
-const REFUND_CAUSES = [
-  { label: "Others", value: 46, meta: "$15K" },
-  { label: "Shipping & customs", value: 45, meta: "$4K" },
-  { label: "Customer decisions", value: 27, meta: "$20K" },
-  { label: "Artwork & design", value: 19, meta: "$6K" },
-  { label: "Quality issues", value: 19, meta: "$3K" },
-  { label: "Invoicing mistake", value: 16, meta: "$2K" },
-  { label: "Production delays", value: 8, meta: "$6K" },
+/** 16px channel favicon for the BarBreakdown showcase. Brand colour lives on
+ *  the mark (identity), not in the bar fill. Direct / Others stay muted. */
+function ChannelMark({
+  label,
+  tile,
+  children,
+}: {
+  label: string;
+  tile?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      aria-hidden
+      title={label}
+      className="grid size-4 place-items-center overflow-hidden rounded-[4px] ring-1 ring-border/50"
+      style={tile ? { backgroundColor: tile } : undefined}
+    >
+      {children}
+    </span>
+  );
+}
+
+const CHANNEL_ITEMS: React.ComponentProps<typeof BarBreakdown>["items"] = [
+  {
+    label: "YouTube",
+    value: 128,
+    meta: "$18K",
+    leading: (
+      <ChannelMark label="YouTube" tile="#FF0033">
+        <svg viewBox="0 0 16 16" className="size-4" aria-hidden>
+          <path fill="#fff" d="M6.2 5v6l5.2-3-5.2-3z" />
+        </svg>
+      </ChannelMark>
+    ),
+  },
+  {
+    label: "Meta",
+    value: 96,
+    meta: "$22K",
+    leading: (
+      <ChannelMark label="Meta" tile="#0668E1">
+        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
+          <path
+            fill="none"
+            stroke="#fff"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            d="M2.2 8.2c.8-2 2-3.4 3.4-3.4 1.6 0 2.5 1.4 3.4 3.2.8 1.6 1.5 2.4 2.6 2.4 1.2 0 2.2-1 2.8-1.8M13.8 7.8c-.8 2-2 3.4-3.4 3.4-1.6 0-2.5-1.4-3.4-3.2C6.2 6.4 5.5 5.6 4.4 5.6 3.2 5.6 2.2 6.6 1.6 7.4"
+          />
+        </svg>
+      </ChannelMark>
+    ),
+  },
+  {
+    label: "Google",
+    value: 72,
+    meta: "$14K",
+    leading: (
+      <ChannelMark label="Google" tile="#fff">
+        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
+          <path fill="#4285F4" d="M14.4 8.2c0-.5-.04-.9-.12-1.3H8.2v2.5h3.5c-.15.8-.6 1.5-1.3 2v1.6h2.1c1.2-1.1 1.9-2.8 1.9-4.8z" />
+          <path fill="#34A853" d="M8.2 14.4c1.8 0 3.3-.6 4.4-1.6l-2.1-1.6c-.6.4-1.4.7-2.3.7-1.8 0-3.3-1.2-3.8-2.8H2.2v1.7c1.1 2.2 3.4 3.6 6 3.6z" />
+          <path fill="#FBBC05" d="M4.4 9.1c-.14-.4-.22-.9-.22-1.3 0-.5.08-.9.22-1.3V4.8H2.2C1.7 5.8 1.4 7 1.4 8.2c0 1.2.3 2.4.8 3.4l2.2-1.7z" />
+          <path fill="#EA4335" d="M8.2 3.7c1 0 1.8.3 2.5 1l1.9-1.9C11.5 1.7 10 1.1 8.2 1.1 5.6 1.1 3.3 2.5 2.2 4.8l2.2 1.7c.5-1.6 2-2.8 3.8-2.8z" />
+        </svg>
+      </ChannelMark>
+    ),
+  },
+  {
+    label: "TikTok",
+    value: 48,
+    meta: "$9K",
+    leading: (
+      <ChannelMark label="TikTok" tile="#111">
+        <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
+          <path fill="#fff" d="M10.2 2v7.1a2.7 2.7 0 1 1-2.3-2.7V8a1.2 1.2 0 1 0 .8 1.1V2h1.5zm1.3 0c.4 1.6 1.5 2.8 3.1 3.1V6.6c-1.1-.1-2.1-.5-3.1-1.2V2z" />
+        </svg>
+      </ChannelMark>
+    ),
+  },
+  {
+    label: "Direct",
+    value: 36,
+    meta: "—",
+    leading: (
+      <ChannelMark label="Direct">
+        <span className="grid size-4 place-items-center bg-muted text-muted-foreground">
+          <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+            <circle cx="8" cy="8" r="5.2" />
+            <path d="M2.8 8h10.4M8 2.8c1.6 1.8 2.4 3.4 2.4 5.2S9.6 11.4 8 13.2C6.4 11.4 5.6 9.8 5.6 8S6.4 4.6 8 2.8z" />
+          </svg>
+        </span>
+      </ChannelMark>
+    ),
+  },
+  {
+    label: "Others",
+    value: 20,
+    meta: "$2K",
+    leading: (
+      <ChannelMark label="Others">
+        <span className="grid size-4 place-items-center bg-muted text-[9px] font-medium leading-none text-muted-foreground">
+          ···
+        </span>
+      </ChannelMark>
+    ),
+  },
 ];
 
 function BarBreakdownDemo() {
   return (
     <div className="w-full rounded-lg border border-border bg-card p-5">
-      <div className="mb-1 text-[13px] font-medium text-foreground">Refunds by root cause</div>
-      <div className="mb-3 text-[12px] text-muted-foreground">Count of refunds filed · trailing 12 months</div>
-      <BarBreakdown items={REFUND_CAUSES} formatValue={(n) => String(n)} valueLabel="Refunds" metaLabel="$" />
+      <div className="mb-1 text-[13px] font-medium text-foreground">Sessions by channel</div>
+      <div className="mb-3 text-[12px] text-muted-foreground">Paid + organic · last 30 days</div>
+      <BarBreakdown items={CHANNEL_ITEMS} formatValue={(n) => String(n)} valueLabel="Sessions" metaLabel="$" />
     </div>
   );
 }
@@ -1672,20 +1772,22 @@ const [range, setRange] = React.useState();
     group: "Data display",
     isNew: true,
     summary:
-      "A ranked distribution (refunds by cause, spend by vendor). Proportion is a subtle fill BEHIND each row (the Vercel/Plausible top-list pattern) so length, label, and value read as one line. One neutral fill by default — override a single row's fill to flag a real exception (colour marks meaning, not category).",
+      "A ranked distribution (spend by channel, refunds by cause). Proportion is a subtle fill BEHIND each row so length, label, and value read as one line. Entity rows take a 16px `leading` mark (favicon, logo, avatar); named causes stay text. One neutral fill by default — colour on the bar marks an exception, not a category.",
     usage: `import { BarBreakdown } from "@curvgroup/design-system";
 
 <BarBreakdown
   items={[
-    { label: "Shipping & customs", value: 45, meta: "$4K" },
-    { label: "Quality issues", value: 19, meta: "$3K" },
+    { label: "YouTube", value: 128, meta: "$18K", leading: youtubeFavicon },
+    { label: "Meta", value: 96, meta: "$22K", leading: metaFavicon },
+    { label: "Direct", value: 36, meta: "—" },
   ]}
   formatValue={(n) => String(n)}
 />`,
     demos: [
       {
-        title: "Refunds by root cause",
-        description: "Proportion reads as a fill behind each row — ranking is obvious at a glance and each label sits with its value. One neutral fill; \"Quality issues\" flagged with a faint red. Value + share-of-total % + optional $ meta.",
+        title: "Sessions by channel",
+        description:
+          "When the row is a channel or brand, a 16px favicon sits in front of the name — YouTube, Meta, Google, TikTok. Direct and Others stay a muted mark. The fill behind the row stays neutral; ranking is still length.",
         canvas: "plain",
         render: () => <BarBreakdownDemo />,
       },
@@ -2751,9 +2853,10 @@ export const PREVIEWS: Record<string, () => React.ReactNode> = {
   ),
   "bar-breakdown": () => (
     <div className="flex w-52 flex-col gap-1.5">
-      {[["72%", "42%"], ["50%", "30%"], ["32%", "20%"]].map(([fill, lbl], i) => (
-        <div key={i} className="relative flex items-center overflow-hidden rounded-md bg-muted/60 px-2 py-1.5">
+      {([["72%", "42%"], ["50%", "30%"], ["32%", "20%"]] as const).map(([fill, lbl], i) => (
+        <div key={i} className="relative flex items-center gap-1.5 overflow-hidden rounded-md bg-muted/60 px-2 py-1.5">
           <div className="absolute inset-y-0 left-0 bg-foreground/[0.06]" style={{ width: fill }} />
+          <span className="relative size-2.5 shrink-0 rounded-[3px] bg-foreground/25" />
           <Bar w={lbl} className="relative bg-foreground/25" />
         </div>
       ))}

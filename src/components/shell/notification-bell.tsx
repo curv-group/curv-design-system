@@ -32,7 +32,8 @@ export interface NotificationItem {
   body?: string;
   /** Preformatted relative time (e.g. "2h ago") — the app owns time formatting. */
   time?: string;
-  /** Leading visual — usually a small tinted icon square the app supplies. */
+  /** Leading visual — `Avatar` / `Favicon` when the row is a person or record;
+   *  a small tinted glyph square only for system events. */
   icon?: React.ReactNode;
   unread?: boolean;
   /** Navigate on click; otherwise pass `onClick`. */

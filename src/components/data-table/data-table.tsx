@@ -36,6 +36,26 @@ function IconChevronDown({ className }: { className?: string }) {
     </svg>
   );
 }
+/** Identity mark + truncating label — Shopify product thumb / Linear assignee. */
+function CellInner({
+  leading,
+  children,
+  truncate,
+}: {
+  leading?: React.ReactNode;
+  children: React.ReactNode;
+  truncate: boolean;
+}) {
+  const text = truncate ? <span className="min-w-0 truncate">{children}</span> : children;
+  if (leading == null) return text;
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      <span className="shrink-0">{leading}</span>
+      {text}
+    </span>
+  );
+}
+
 function IconSort({ dir }: { dir: "asc" | "desc" | null }) {
   if (dir === null) {
     return (
@@ -57,6 +77,13 @@ export interface DataTableColumn<Row> {
   key: string;
   header: string;
   render?: (row: Row) => React.ReactNode;
+  /**
+   * 16–20px identity to the left of the cell text — `Favicon` for a brand /
+   * domain, product thumb, `Avatar` for a person, `Avatar` + `rounded-[4px]`
+   * for a company without a logo. Omit on status, money, and named causes.
+   * Not exported (CSV/PDF use `value()`).
+   */
+  leading?: (row: Row) => React.ReactNode;
   /** Sort + export + search value. Defaults to `row[key]`. */
   value?: (row: Row) => CellValue;
   align?: "left" | "right";
@@ -538,6 +565,12 @@ export function DataTable<Row>({
                     )}
                     {columns.map((c, i) => {
                       const content = c.render ? c.render(row) : (accessor(c, row) as React.ReactNode);
+                      const mark = c.leading?.(row);
+                      const inner = (
+                        <CellInner leading={mark} truncate={aligns[i] !== "right"}>
+                          {content}
+                        </CellInner>
+                      );
                       if (c.sticky) {
                         // Sticky cell must fill the FULL row height (self-stretch)
                         // — the row centres cells to content height, so an opaque
@@ -558,7 +591,7 @@ export function DataTable<Row>({
                               aria-hidden
                               className="pointer-events-none absolute inset-0 -z-10 bg-accent/30 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                             />
-                            <span className="min-w-0 truncate">{content}</span>
+                            {inner}
                           </div>
                         );
                       }
@@ -574,12 +607,17 @@ export function DataTable<Row>({
                             // grid — it truncates/clips inside its own cell, whatever it is.
                             "min-w-0 overflow-hidden px-3",
                             // Numbers never truncate — nowrap + a max-content track keep every
-                            // digit; text ellipsizes past its track.
-                            aligns[i] === "right" ? "whitespace-nowrap text-right tabular-nums" : "min-w-0 truncate",
+                            // digit; text ellipsizes past its track. A `leading` mark needs
+                            // flex so the label, not the image, is what truncates.
+                            aligns[i] === "right"
+                              ? "whitespace-nowrap text-right tabular-nums"
+                              : mark != null
+                                ? "flex items-center"
+                                : "min-w-0 truncate",
                             c.className,
                           )}
                         >
-                          {content}
+                          {inner}
                         </div>
                       );
                     })}

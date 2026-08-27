@@ -12,6 +12,8 @@ import { overlayPopupMotion } from "../lib/overlay";
 export interface SelectOption {
   value: string;
   label: string;
+  /** 16–20px identity — `Avatar` for a person, `Favicon` for a brand. */
+  icon?: React.ReactNode;
 }
 
 export interface SelectProps {
@@ -69,8 +71,9 @@ export function Select({
               <S.Item
                 key={it.value}
                 value={it.value}
-                className="relative flex cursor-default select-none items-center rounded py-1.5 pl-2 pr-8 outline-none transition-colors data-[highlighted]:bg-accent data-[selected]:font-medium"
+                className="relative flex cursor-default select-none items-center gap-2 rounded py-1.5 pl-2 pr-8 outline-none transition-colors data-[highlighted]:bg-accent data-[selected]:font-medium"
               >
+                {it.icon ? <span className="shrink-0">{it.icon}</span> : null}
                 <S.ItemText>{it.label}</S.ItemText>
                 <S.ItemIndicator className="absolute right-2 inline-flex text-foreground">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

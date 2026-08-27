@@ -17,7 +17,7 @@ export interface CommandItem {
   group?: string;
   /** Extra search terms (not shown). */
   keywords?: string;
-  /** Leading icon. */
+  /** Leading mark — page glyph, `Avatar`, or `Favicon`. */
   icon?: React.ReactNode;
   /** Right-aligned context, e.g. the section name. */
   hint?: string;
@@ -164,7 +164,9 @@ export function CommandPalette({
                         isActive ? "bg-accent text-foreground" : "text-popover-foreground",
                       )}
                     >
-                      {it.icon && <span className="grid size-4 shrink-0 place-items-center text-muted-foreground">{it.icon}</span>}
+                      {it.icon && (
+                        <span className="grid size-5 shrink-0 place-items-center text-muted-foreground">{it.icon}</span>
+                      )}
                       <span className="flex-1 truncate">{it.label}</span>
                       {it.hint && <span className="shrink-0 text-[12px] text-muted-foreground">{it.hint}</span>}
                     </div>

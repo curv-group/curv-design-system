@@ -4,6 +4,7 @@ export { cn } from "./lib/cn";
 export { Card, type CardProps } from "./components/card";
 export { Button, type ButtonProps } from "./components/button";
 export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps } from "./components/avatar";
+export { Favicon, type FaviconProps } from "./components/favicon";
 export { Badge, type BadgeProps } from "./components/badge";
 export { MultiSelect, type MultiSelectProps, type MultiSelectOption } from "./components/multi-select";
 export { Sparkline, type SparklineProps } from "./components/sparkline";

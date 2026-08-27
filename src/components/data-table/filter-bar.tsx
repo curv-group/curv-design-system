@@ -58,7 +58,12 @@ const MENU_POPUP = cn(
 const MENU_ROW =
   "flex cursor-default select-none items-center gap-2 rounded px-2 py-1.5 outline-none transition-colors data-[highlighted]:bg-accent data-[popup-open]:bg-accent";
 
-export type FilterOption = { value: string; label: string };
+export type FilterOption = {
+  value: string;
+  label: string;
+  /** 16–20px identity — `Avatar` for a person, `Favicon` for a brand. */
+  icon?: React.ReactNode;
+};
 export type RangeValue = { min: number | null; max: number | null };
 export type RangePreset = { label: string; min: number | null; max: number | null };
 
@@ -164,6 +169,7 @@ function ValueList<Row>({
             >
               {checked && <IconCheck className="size-3" />}
             </span>
+            {opt.icon ? <span className="shrink-0">{opt.icon}</span> : null}
             <span className="flex-1 truncate">{opt.label}</span>
           </button>
         );
@@ -381,6 +387,7 @@ function AddFilterMenu<Row>({
                               <span className="flex size-4 shrink-0 items-center justify-center rounded border border-border text-transparent group-data-[checked]:border-primary group-data-[checked]:bg-primary group-data-[checked]:text-primary-foreground">
                                 <IconCheck className="size-3" />
                               </span>
+                              {opt.icon ? <span className="shrink-0">{opt.icon}</span> : null}
                               <span className="flex-1 truncate">{opt.label}</span>
                             </Menu.CheckboxItem>
                           ))

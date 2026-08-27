@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Combobox as C } from "@base-ui/react/combobox";
 import { cn } from "../lib/cn";
+import { overlayPopupMotion } from "../lib/overlay";
 
 /**
  * MultiSelect — pick several options (the Linear filter pattern, on base-ui
@@ -95,9 +96,8 @@ export function MultiSelect({
         <C.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
           <C.Popup
             className={cn(
-              "max-h-[min(24rem,var(--available-height))] w-[max(var(--anchor-width),12rem)] origin-[var(--transform-origin)] overflow-hidden rounded-lg border border-border bg-popover text-[13px] text-popover-foreground shadow-lg outline-none",
-              "transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] data-[ending-style]:duration-100",
-              "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 motion-safe:data-[starting-style]:scale-95 motion-safe:data-[ending-style]:scale-95",
+              "max-h-[min(24rem,var(--available-height))] w-[max(var(--anchor-width),12rem)] overflow-hidden rounded-lg border border-border bg-popover text-[13px] text-popover-foreground shadow-lg outline-none",
+              overlayPopupMotion,
             )}
           >
             <div className="border-b border-border p-1.5">

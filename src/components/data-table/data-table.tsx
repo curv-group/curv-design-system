@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "../../lib/cn";
+import { Menu, MenuItem } from "../menu";
 import { SegmentedControl } from "../segmented-control";
 import { downloadCsv, downloadPdf, type CellValue } from "./export";
 import {
@@ -150,8 +151,6 @@ export interface DataTableProps<Row> {
 // filter, views and export read as one perfectly aligned band.
 export const dataTableToolbarButton =
   "inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 text-[13px] font-medium text-foreground transition-[transform,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-foreground/20 active:scale-[0.97]";
-const menuRow =
-  "flex w-full items-center rounded-md px-2 py-1.5 text-left text-[13px] text-foreground transition hover:bg-accent";
 
 function accessor<Row>(col: DataTableColumn<Row>, row: Row): CellValue {
   if (col.value) return col.value(row);
@@ -364,9 +363,7 @@ export function DataTable<Row>({
       return null;
     });
 
-  const [menuOpen, setMenuOpen] = React.useState(false);
   const runExport = (kind: "csv" | "pdf") => {
-    setMenuOpen(false);
     const headers = columns.map((c) => c.header);
     const align = aligns;
     const data = sorted.map((row) => columns.map((c) => accessor(c, row)));
@@ -401,28 +398,25 @@ export function DataTable<Row>({
             <div className="ml-auto flex items-center gap-3">
               {summary}
               {exportFilename && (
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setMenuOpen((v) => !v)}
-                    aria-expanded={menuOpen}
-                    aria-haspopup="menu"
-                    className={cn(dataTableToolbarButton, menuOpen && "border-foreground/20")}
-                  >
-                    <IconDownload />
-                    Export
-                    <IconChevronDown className={cn("transition-transform", menuOpen && "rotate-180")} />
-                  </button>
-                  {menuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" aria-hidden onClick={() => setMenuOpen(false)} />
-                      <div role="menu" className="absolute right-0 z-50 mt-1 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
-                        <button type="button" role="menuitem" className={menuRow} onClick={() => runExport("csv")}>Export CSV</button>
-                        <button type="button" role="menuitem" className={menuRow} onClick={() => runExport("pdf")}>Export PDF</button>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <Menu
+                  align="end"
+                  trigger={
+                    <button
+                      type="button"
+                      className={cn(
+                        dataTableToolbarButton,
+                        "group data-[popup-open]:border-foreground/20",
+                      )}
+                    >
+                      <IconDownload />
+                      Export
+                      <IconChevronDown className="transition-transform duration-150 group-data-[popup-open]:rotate-180" />
+                    </button>
+                  }
+                >
+                  <MenuItem onClick={() => runExport("csv")}>Export CSV</MenuItem>
+                  <MenuItem onClick={() => runExport("pdf")}>Export PDF</MenuItem>
+                </Menu>
               )}
             </div>
           )}

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Tooltip as T } from "@base-ui/react/tooltip";
 import { cn } from "../lib/cn";
+import { overlayPopupMotion } from "../lib/overlay";
 
 /**
  * Tooltip — a small inverted chip anchored to its trigger (base-ui). Wrap a
@@ -60,12 +61,8 @@ export function Tooltip({ content, children, side = "top", sideOffset = 6, delay
         <T.Positioner side={side} sideOffset={sideOffset} className="z-50">
           <T.Popup
             className={cn(
-              "origin-[var(--transform-origin)] rounded-md bg-foreground px-2 py-1 text-[12px] font-medium text-background shadow-card",
-              // Motion: 125–200ms, ease-out, origin-aware; reduced-motion keeps
-              // the fade but drops the scale (motion-safe gate).
-              "transition-[transform,opacity] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]",
-              "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-100",
-              "motion-safe:data-[starting-style]:scale-95 motion-safe:data-[ending-style]:scale-95",
+              "rounded-md bg-foreground px-2 py-1 text-[12px] font-medium text-background shadow-card",
+              overlayPopupMotion,
             )}
           >
             {content}

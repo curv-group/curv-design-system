@@ -2,14 +2,12 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 /**
- * A person, rendered identically everywhere: initials on a colour derived
- * deterministically from the name (so the same person is always the same
- * colour), or an image when `src` is given. Use it in table cells, menus,
- * comments — anywhere a person appears — so people never look hand-rolled.
- *
- * People stay `rounded-full`. A company without a logo can pass
- * `className="rounded-[4px]"` (squircle). A brand with a real mark is
- * `Favicon`, not a drawn stand-in inside this chip.
+ * A person or a named entity without a real logo: initials on a colour derived
+ * deterministically from the name, or an image when `src` is given. Always
+ * round — Geist Avatar is the same for a user or a team; Polaris Avatar is the
+ * same for an individual or a business. A square mark is `Favicon` or a
+ * product thumb, because those assets are square. Do not squircle this chip
+ * to “mean company.”
  */
 const SIZES = {
   sm: "size-5 text-[10px]",

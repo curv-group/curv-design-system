@@ -66,9 +66,11 @@ A peek at one row is a `Drawer`, not a new tab.
 5. Style through tokens (`bg-card`, `text-muted-foreground`, `verdict-*`).
    Sentence case. Never raw hex, `bg-neutral-100`, or CSS `uppercase`.
    When a row is an entity (a channel, vendor, person, file), pass a 16px
-   leading mark — real `Favicon` / logo, or `Avatar`. Do not draw stand-in
-   logos. Do not invent rainbow dots or illustration. `DataTable` column
-   `leading`, `BarBreakdown` `leading`, `CommandItem.icon`, `FilterOption.icon`.
+   leading mark — real `Favicon` / logo, or round `Avatar`. Do not draw
+   stand-in logos. Do not squircle letter avatars to mean “company.” Do not
+   invent rainbow dots or illustration. `DataTable` column `leading` /
+   `description`, `BarBreakdown` `leading`, `CommandItem.icon`,
+   `FilterOption.icon`.
 6. Run `npm run lint` and fix token errors (they name the substitute). Taste
    review comments on the PR; it does not block merge.
 

@@ -323,7 +323,7 @@ const DEAL_COLUMNS: DataTableColumn<DealRow>[] = [
     header: "Customer",
     width: 252,
     sticky: true,
-    leading: (r) => <Avatar name={r.customer} size="sm" className="rounded-[4px]" />,
+    leading: (r) => <Avatar name={r.customer} size="sm" />,
     render: (r) => <TableLink href={`#/customer-${r.id}`}>{r.customer}</TableLink>,
     value: (r) => r.customer,
   },
@@ -606,7 +606,7 @@ function KanbanDemo() {
             {col.cards.map((c) => (
               <KanbanCard key={c.id} href="#">
                 <div className="flex items-start gap-2">
-                  <Avatar name={c.name} size="sm" className={"person" in c && c.person ? undefined : "rounded-[4px]"} />
+                  <Avatar name={c.name} size="sm" />
                   <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">{c.name}</span>
                   <span className="mt-0.5 shrink-0 text-[10px] font-medium text-muted-foreground">{c.brand}</span>
                 </div>
@@ -950,7 +950,7 @@ const CMD_ITEMS: CommandItem[] = [
 ];
 
 const CMD_RECENTS: CommandItem[] = [
-  { id: "r-so1042", label: "SO-1042 · Adventure Works", hint: "Deal", icon: <Avatar name="Adventure Works" size="sm" className="rounded-[4px]" />, onSelect: () => {} },
+  { id: "r-so1042", label: "SO-1042 · Adventure Works", hint: "Deal", icon: <Avatar name="Adventure Works" size="sm" />, onSelect: () => {} },
   { id: "r-deals", label: "Deals", hint: "Pipeline", icon: <Inbox className="size-4" />, onSelect: () => {} },
   { id: "r-refunds", label: "Refunds", hint: "Finance", icon: <DollarSign className="size-4" />, onSelect: () => {} },
 ];
@@ -962,7 +962,7 @@ function CommandPaletteDemo() {
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
         Open search
       </Button>
-      <p className="text-[12px] text-muted-foreground">…or press ⌘K / Ctrl-K anywhere. ↑↓ to navigate, Enter to select, Esc to close.</p>
+      <p className="text-[12px] text-muted-foreground">…or press ⌘K / Ctrl-K anywhere.</p>
       <CommandPalette open={open} onOpenChange={setOpen} items={CMD_ITEMS} recents={CMD_RECENTS} />
     </div>
   );
@@ -1207,7 +1207,7 @@ const notifSquare = (bg: string, node: React.ReactNode) => (
 function ShellChromeDemo() {
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const [items, setItems] = React.useState<NotificationItem[]>([
-    { id: "1", title: "Deal assigned to you", body: "Contoso — $42k custom order", time: "2m ago", unread: true, href: "#", icon: <Avatar name="Contoso" size="sm" className="rounded-[4px]" /> },
+    { id: "1", title: "Deal assigned to you", body: "Contoso — $42k custom order", time: "2m ago", unread: true, href: "#", icon: <Avatar name="Contoso" size="sm" /> },
     { id: "2", title: "Feedback resolved", body: "“Export to CSV” shipped in v0.2.8", time: "1h ago", unread: true, href: "#", icon: notifSquare("bg-verdict-green/12 text-verdict-green", <ListChecks size={16} />) },
     { id: "3", title: "Whale spotted", body: "New high-value lead in Manual Review", time: "3h ago", href: "#", icon: notifSquare("bg-muted text-muted-foreground", <Bell size={16} />) },
   ]);
@@ -1521,7 +1521,8 @@ const columns = [
   // Identity column: a 16–20px mark, then the name. Comfortable min-width
   // so typical names fit; longer values truncate with an ellipsis.
   { key: "customer", header: "Customer", minWidth: 240, sticky: true,
-    leading: (r) => <Avatar name={r.customer} size="sm" className="rounded-[4px]" />,
+    leading: (r) => <Avatar name={r.customer} size="sm" />,
+    description: (r) => r.region,
     render: (r) => <TableLink href={\`#/customer-\${r.id}\`}>{r.customer}</TableLink>,
     value: (r) => r.customer },
   { key: "revenue", header: "Revenue", align: "right",
@@ -1539,7 +1540,7 @@ const columns = [
       {
         title: "Deals",
         description:
-          "Everything on: search + Filter (Linear-style chips) + view tabs + summary + Export. Customer and people columns carry a leading mark — company squircle, round avatar. Sort by header; scroll is virtualized.",
+          "Everything on: search + Filter (Linear-style chips) + view tabs + summary + Export. Customer and people columns carry a round avatar — same chip, whether the row is a company without a logo or a person. Sort by header; scroll is virtualized.",
         canvas: "surface",
         render: () => <DealsTableDemo />,
       },
@@ -1612,7 +1613,7 @@ const [range, setRange] = React.useState();
     demos: [
       {
         title: "Deal pipeline",
-        description: "Six fixed-width columns in one horizontal scroll track (drag the board sideways). Each card opens with the company (or person) mark — no rainbow brand dots. Ring dot per stage, filled green for Won; rotting-deal age turns red.",
+        description: "Six fixed-width columns in one horizontal scroll track (drag the board sideways). Each card opens with a round identity mark. Brand text (CT/TS) with no rainbow dots. Ring dot per stage, filled green for Won; rotting-deal age turns red.",
         canvas: "plain",
         render: () => <KanbanDemo />,
       },
@@ -1863,7 +1864,7 @@ const [open, setOpen] = useState(false);
     demos: [
       {
         title: "⌘K search",
-        description: "Press ⌘K / Ctrl-K (or the button) to open. Type to filter across label + keywords; ↑↓ to move, Enter to select, Esc to close. Every row has a leading mark — page glyph, or the company avatar on a recent deal.",
+        description: "Press ⌘K / Ctrl-K (or the button) to open. Type to filter; ↑↓ ↵ Esc live in the palette footer. Every row has a leading mark — page glyph, or a round avatar on a recent deal.",
         canvas: "center",
         render: () => <CommandPaletteDemo />,
       },
@@ -2112,7 +2113,7 @@ const [open, setOpen] = useState(false);
     name: "Avatar",
     group: "Data display",
     isNew: true,
-    summary: "A person, rendered identically everywhere — initials on a colour derived from the name, or an image. Powers table cells, menus, comments.",
+    summary: "A person, team, or company without a logo — initials or a photo, always round. A square mark is Favicon or a product thumb, because those files are square.",
     usage: `import { Avatar, AvatarGroup } from "@curvgroup/design-system";
 
 <Avatar name="Alex Morgan" />

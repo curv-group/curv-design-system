@@ -82,9 +82,24 @@ decoration.
 Do not add 3D blobs, illustration cards, glow, flags on every row, or a rainbow
 of category dots. Those are a different product. A refund *cause* is not a brand
 — it stays text. Colour on a bar still marks meaning (an exception), never a
-category. The OS passes the mark (`Favicon` for a brand, `Avatar` for a person,
-`DataTable` / `BarBreakdown` `leading`, `CommandItem.icon`, `FilterOption.icon`);
-the package does not detect YouTube. Never draw a stand-in logo.
+category.
+
+**Shape follows the asset, not the entity type.**
+
+| What it is | Mark | Shape |
+| --- | --- | --- |
+| A person, or a company/team without a logo | `Avatar` (initials or photo) | Round — always |
+| A real logo or favicon | `Favicon` | Slightly rounded square (the file is square) |
+| A product / SKU photo | thumb | Slightly rounded square |
+| Direct / “others” / a generic website | muted system glyph | Recessed tile |
+
+Shopify Polaris: Avatar = individual *or* business; Thumbnail = product photo.
+Geist: Avatar = a user *or* a team, same round chip. Linear: people and teams
+are circles; documents and logos keep their own silhouette.
+
+Do not squircle a letter `Avatar` to “mean company.” That invents a second
+shape for the same fallback. The OS passes the real image; the package does
+not detect YouTube.
 
 ## Color palette (neutral, navy-free)
 
@@ -538,9 +553,10 @@ meaning is "progress".
 - Identity columns use the **two-line cell**: primary in foreground medium,
   meta line below in caption muted. Never cram badges next to the primary
   text; never let a cell wrap accidentally. The identity column also takes a
-  **`leading` mark** — `Favicon` for a brand/domain, a product thumb, `Avatar`
-  for a person, `Avatar` + `rounded-[4px]` for a company without a logo. Status,
-  money, and named causes stay text.
+  **`leading` mark** — `Favicon` or a product thumb for a square asset, round
+  `Avatar` for a person or a company without a logo. Optional `description` is
+  a second muted line (Shopify title+variant). Status, money, and named causes
+  stay text.
 - **Filtering** for a table with 3+ facets uses the **Linear filter pattern**
   (see `app/(app)/deals/deals-filter.tsx`): a single dashed **"Filter"**
   button opening a menu of properties; **hovering a property opens a submenu**
